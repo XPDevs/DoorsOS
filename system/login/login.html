@@ -60,11 +60,11 @@
         /* Time and Date Box */
         .time-date-box {
             position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%); /* Vertically center it */
+            left: 50%; /* Center horizontally */
+            top: 50%; /* Center vertically */
+            transform: translate(-50%, -50%); /* Perfect centering */
             background-color: rgba(0, 0, 0, 0.6); /* Dark see-through box */
-            padding: 20px;
+            padding: 20px 40px;
             border-radius: 10px;
             text-align: center;
             color: white;
@@ -72,12 +72,12 @@
         }
 
         .time-date-box .time {
-            font-size: 48px; /* Large time font size */
-            margin-bottom: 10px;
+            font-size: 64px; /* Large time font size */
+            margin-bottom: 20px; /* Add spacing between time and date */
         }
 
         .time-date-box .date {
-            font-size: 24px; /* Large date font size */
+            font-size: 32px; /* Large date font size */
         }
 
         /* Power Button */
