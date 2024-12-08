@@ -3,17 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            background-color: black;
-            color: white;
-        }
-    </style>
+  <title>Redirecting...</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+  </style>
   <script>
-    // Redirect to home.html after 3 seconds
+    // Redirect to boot/boot.html after 3 seconds
     setTimeout(function() {
       window.location.href = "boot/boot.html";
-    }, 300);
+    }, 3000); // Adjusted time from 300ms to 3000ms for clarity
   </script>
+</head>
+<body>
 </body>
 </html>
