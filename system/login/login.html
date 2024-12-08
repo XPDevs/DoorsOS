@@ -66,10 +66,18 @@
             background-color: rgba(0, 0, 0, 0.6); /* Dark see-through box */
             padding: 20px;
             border-radius: 10px;
-            font-size: 24px;
             text-align: center;
             color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-date-box .time {
+            font-size: 48px; /* Large time font size */
+            margin-bottom: 10px;
+        }
+
+        .time-date-box .date {
+            font-size: 24px; /* Large date font size */
         }
 
         /* Power Button */
@@ -93,64 +101,14 @@
         .power-btn:hover {
             background-color: #e53935;
         }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px;
-            width: 300px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #ddd;
-        }
-
-        /* Button styling for the login success, error, and power modals */
-        .success-btn, .error-btn {
-            background-color: #4CAF50; /* Success button */
-            color: white;
-        }
-
-        .success-btn:hover, .error-btn:hover {
-            background-color: #45a049;
-        }
-
-        .error-btn {
-            background-color: #f44336; /* Error button */
-        }
-
-        .error-btn:hover {
-            background-color: #e53935;
-        }
     </style>
 </head>
 <body>
 
     <!-- Initial Screen (Time and Date Box) -->
     <div class="time-date-box" id="time-date-box">
-        <div id="time"></div>
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
     </div>
 
     <!-- Login Window -->
@@ -166,112 +124,56 @@
         <button class="power-btn" id="power-btn">⚡</button>
     </div>
 
-    <!-- Login Success Modal -->
-    <div class="modal" id="login-success-modal">
-        <div class="modal-content">
-            <h3>Login Successful!</h3>
-            <p>You have successfully logged in.</p>
-            <button class="success-btn" id="continue-btn">Continue</button>
-        </div>
-    </div>
-
-    <!-- Incorrect Login Modal -->
-    <div class="modal" id="login-error-modal">
-        <div class="modal-content">
-            <h3>Login Failed</h3>
-            <p>Incorrect username or password. Please try again.</p>
-            <button class="error-btn" id="error-btn">Try Again</button>
-        </div>
-    </div>
-
-    <!-- Shutdown/Restart Modal -->
-    <div class="modal" id="power-modal">
-        <div class="modal-content">
-            <h3>Power Options</h3>
-            <button id="shutdown-btn">Shutdown</button>
-            <button id="restart-btn">Restart</button>
-            <button id="cancel-btn">Cancel</button>
-        </div>
-    </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const loginBtn = document.getElementById("login-btn");
-            const usernameInput = document.getElementById("username");
-            const passwordInput = document.getElementById("password");
-            const powerBtn = document.getElementById("power-btn");
-            const powerModal = document.getElementById("power-modal");
-            const shutdownBtn = document.getElementById("shutdown-btn");
-            const restartBtn = document.getElementById("restart-btn");
-            const cancelBtn = document.getElementById("cancel-btn");
-            const loginSuccessModal = document.getElementById("login-success-modal");
-            const continueBtn = document.getElementById("continue-btn");
-            const loginErrorModal = document.getElementById("login-error-modal");
-            const errorBtn = document.getElementById("error-btn");
             const timeDateBox = document.getElementById("time-date-box");
             const loginWindow = document.getElementById("login-window");
+            let inactivityTimer;
 
-            // Show the time and date box
-            function updateTime() {
+            // Update time and date
+            function updateTimeAndDate() {
                 const now = new Date();
+
+                // Time formatting
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
                 const seconds = now.getSeconds().toString().padStart(2, '0');
                 document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+
+                // Date formatting
+                const day = now.toLocaleString('en-us', { weekday: 'long' });
+                const date = now.toLocaleDateString('en-us', { month: 'long', day: 'numeric', year: 'numeric' });
+                document.getElementById('date').textContent = `${day}, ${date}`;
             }
 
-            // Update the time every second
-            setInterval(updateTime, 1000);
+            // Update every second
+            updateTimeAndDate();
+            setInterval(updateTimeAndDate, 1000);
+
+            // Function to reset inactivity timer
+            function resetInactivityTimer() {
+                clearTimeout(inactivityTimer);
+                inactivityTimer = setTimeout(function () {
+                    loginWindow.style.display = "none"; // Hide login window
+                    timeDateBox.style.display = "flex"; // Show time/date box
+                }, 10000); // 10 seconds
+            }
+
+            // Add event listeners for resetting inactivity timer
+            document.body.addEventListener("mousemove", resetInactivityTimer);
+            document.body.addEventListener("keydown", resetInactivityTimer);
+            document.body.addEventListener("click", resetInactivityTimer);
+
+            // Start the timer on initial load
+            resetInactivityTimer();
 
             // User clicks anywhere to start the login process
             document.body.addEventListener("click", function () {
                 timeDateBox.style.display = "none"; // Hide the time/date box
                 loginWindow.style.display = "block"; // Show the login window
-            });
-
-            // Login functionality
-            loginBtn.addEventListener("click", function () {
-                const storedUsername = localStorage.getItem("username");
-                const storedPassword = localStorage.getItem("password");
-
-                const enteredUsername = usernameInput.value;
-                const enteredPassword = passwordInput.value;
-
-                if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
-                    loginSuccessModal.style.display = "flex"; // Show login success modal
-                } else {
-                    loginErrorModal.style.display = "flex"; // Show login error modal
-                }
-            });
-
-            // Login Success Continue button
-            continueBtn.addEventListener("click", function () {
-                loginSuccessModal.style.display = "none"; // Hide success modal
-                window.location.href = "/dashboard.html"; // Redirect to the desired page
-            });
-
-            // Login Error Try Again button
-            errorBtn.addEventListener("click", function () {
-                loginErrorModal.style.display = "none"; // Hide error modal
-            });
-
-            // Power Button and Modal
-            powerBtn.addEventListener("click", function () {
-                powerModal.style.display = "flex";
-            });
-
-            cancelBtn.addEventListener("click", function () {
-                powerModal.style.display = "none";
-            });
-
-            shutdownBtn.addEventListener("click", function () {
-                window.location.href = "../../end/shut.html"; // Redirect to shutdown page
-            });
-
-            restartBtn.addEventListener("click", function () {
-                window.location.href = "../../end/rest.html"; // Redirect to restart page
-            });
+            }, { once: true }); // Ensures this event only fires once
         });
     </script>
+
 </body>
 </html>
