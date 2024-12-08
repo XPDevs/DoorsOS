@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Installer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .installer-window {
+            background-color: white;
+            border: 2px solid #ccc;
+            padding: 20px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .install-btn, .next-btn, .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .install-btn:hover, .next-btn:hover, .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal" id="warning-modal">
+        <div class="modal-content">
+            <p>If you close the setup, the OS will shutdown.</p>
+            <button id="close-setup-btn">Close Setup</button>
+            <button id="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div class="installer-window" id="installer-window">
+        <div class="window-header" id="window-header">
+            <span>Operating System Installer</span>
+            <button id="close-btn" class="close-btn">X</button>
+        </div>
+        <div id="installation-status" class="status">
+            <p>Preparing installation...</p>
+        </div>
+        <div class="question" id="question-container">
+            <!-- The question content will go here -->
+        </div>
+        <button id="next-btn" class="next-btn">Next</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const closeBtn = document.getElementById("close-btn");
+            const warningModal = document.getElementById("warning-modal");
+            const closeSetupBtn = document.getElementById("close-setup-btn");
+            const cancelBtn = document.getElementById("cancel-btn");
+            const nextBtn = document.getElementById("next-btn");
+            const questionContainer = document.getElementById("question-container");
+
+            let currentStep = 0;
+            let userData = {};
+
+            const questions = [
+                { question: "What is your name?", type: "text", key: "username" },
+                { question: "Select your preferred language", type: "select", options: ["English", "Spanish", "French"], key: "language" },
+                { question: "Do you agree to the terms and conditions?", type: "checkbox", key: "terms" }
+            ];
+
+            function showQuestion() {
+                const q = questions[currentStep];
+                let inputField;
+
+                if (q.type === "text") {
+                    inputField = `<input type="text" id="user-input" placeholder="${q.question}" required>`;
+                } else if (q.type === "select") {
+                    inputField = `<select id="user-input">
+                        ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>`;
+                } else if (q.type === "checkbox") {
+                    inputField = `<label><input type="checkbox" id="user-input"> ${q.question}</label>`;
+                }
+
+                questionContainer.innerHTML = `
+                    <p>${q.question}</p>
+                    ${inputField}
+                `;
+            }
+
+            nextBtn.addEventListener("click", function () {
+                const userInput = document.getElementById("user-input");
+
+                if (questions[currentStep].type === "checkbox" && !userInput.checked) {
+                    alert("You must agree to the terms and conditions.");
+                    return;
+                }
+
+                userData[questions[currentStep].key] = userInput.value || userInput.checked;
+
+                currentStep++;
+
+                if (currentStep < questions.length) {
+                    showQuestion();
+                } else {
+                    nextBtn.textContent = "Start Installation";
+                    nextBtn.classList.add("install-btn");
+                    nextBtn.classList.remove("next-btn");
+                    nextBtn.addEventListener("click", startInstallation);
+                }
+            });
+
+            function startInstallation() {
+                nextBtn.disabled = true;
+                status.innerHTML = "<p>Installing Operating System...</p>";
+
+                let progress = 0;
+                const interval = setInterval(function () {
+                    progress += 10;
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        status.innerHTML = "<p>Installation complete!</p>";
+                        localStorage.setItem("osInstalled", "true");
+                    }
+                }, 500);
+            }
+
+            // Show the warning modal when clicking the close button
+            closeBtn.addEventListener("click", function () {
+                warningModal.style.display = "flex";
+            });
+
+            // Redirect to the shutdown page when clicking "Close Setup"
+            closeSetupBtn.addEventListener("click", function () {
+                window.location.href = "../end/shut.html";  // Redirect to shut.html
+            });
+
+            // Cancel closing setup
+            cancelBtn.addEventListener("click", function () {
+                warningModal.style.display = "none";
+            });
+
+            // Start the installation process by showing the first question
+            showQuestion();
+        });
+    </script>
+    
+</body>
+</html>
