@@ -16,6 +16,7 @@
             height: 100vh;
             margin: 0;
             position: relative;
+            overflow: hidden;
         }
 
         .login-window {
@@ -25,6 +26,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: center;
+            display: none; /* Hidden by default */
         }
 
         .login-window h2 {
@@ -53,6 +55,23 @@
 
         .login-window button:hover {
             background-color: #45a049;
+        }
+
+        /* Time and Date Box */
+        .time-date-box {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.6);  /* Slight transparency */
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
         }
 
         /* Power Button */
@@ -131,6 +150,11 @@
 </head>
 <body>
 
+    <!-- Initial Screen (Time and Date Box) -->
+    <div class="time-date-box" id="time-date-box">
+        <div id="time"></div>
+    </div>
+
     <!-- Login Window -->
     <div class="login-window" id="login-window">
         <h2>Login</h2>
@@ -186,6 +210,26 @@
             const continueBtn = document.getElementById("continue-btn");
             const loginErrorModal = document.getElementById("login-error-modal");
             const errorBtn = document.getElementById("error-btn");
+            const timeDateBox = document.getElementById("time-date-box");
+            const loginWindow = document.getElementById("login-window");
+
+            // Show the time and date box
+            function updateTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            }
+
+            // Update the time every second
+            setInterval(updateTime, 1000);
+
+            // User clicks anywhere to start the login process
+            document.body.addEventListener("click", function () {
+                timeDateBox.style.display = "none"; // Hide the time/date box
+                loginWindow.style.display = "block"; // Show the login window
+            });
 
             // Login functionality
             loginBtn.addEventListener("click", function () {
@@ -195,14 +239,10 @@
                 const enteredUsername = usernameInput.value;
                 const enteredPassword = passwordInput.value;
 
-                if (storedUsername && storedPassword) {
-                    if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
-                        loginSuccessModal.style.display = "flex"; // Show login success modal
-                    } else {
-                        loginErrorModal.style.display = "flex"; // Show login error modal
-                    }
+                if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
+                    loginSuccessModal.style.display = "flex"; // Show login success modal
                 } else {
-                    loginErrorModal.style.display = "flex"; // Show login error modal if no username or password is set
+                    loginErrorModal.style.display = "flex"; // Show login error modal
                 }
             });
 
@@ -231,10 +271,9 @@
             });
 
             restartBtn.addEventListener("click", function () {
-                window.location.href = "../../end/rest.html"; // Redirect to restart page
+                window.location.href = "../../end/restart.html"; // Redirect to restart page
             });
         });
     </script>
-
 </body>
 </html>
