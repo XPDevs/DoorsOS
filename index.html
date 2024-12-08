@@ -2,23 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Press Enter</title>
     <style>
         body {
             margin: 0;
-            height: 100vh;
             background-color: black;
             color: white;
             font-family: 'Lucida Console', Monaco, monospace;
             overflow: hidden;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh; /* Full viewport height */
+            width: 100vw; /* Full viewport width */
         }
 
         #main-text {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 1rem; /* Small text */
+            margin: 10px;
+            font-size: calc(1vw + 1vh + 0.5vmin); /* Scales font size relative to screen */
         }
     </style>
 </head>
@@ -30,6 +32,16 @@
                 window.location.href = 'check.html';
             }
         });
+
+        // Ensure display fits screen by resizing dynamically
+        function adjustScreen() {
+            const html = document.documentElement;
+            html.style.height = `${window.innerHeight}px`;
+            html.style.width = `${window.innerWidth}px`;
+        }
+
+        window.addEventListener('resize', adjustScreen);
+        adjustScreen(); // Call on load
     </script>
 </body>
 </html>
