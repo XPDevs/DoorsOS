@@ -47,14 +47,15 @@
       // Clear local storage
       localStorage.clear();
       
-      // Redirect to restart.html
+      // Redirect to rest.html
       window.location.href = "rest.html";
     });
 
-    document.getElementById('delete-btn').addEventListener('click', function() {
-           // Redirect to restart.html
-      window.location.href = "rest.html";
-    }); 
+    // Close the operation (cancel)
+    document.getElementById('exit-btn').addEventListener('click', function() {
+      // Optionally, you can close the page or do something else here
+      window.location.href = "index.html"; // Example redirection to the main page
+    });
   </script>
 </body>
 </html>
