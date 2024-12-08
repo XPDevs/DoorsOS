@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('bg.jpg');  /* Background image */
+            background-image: url('bg.jpg'); /* Background image */
             background-size: cover; /* Cover the entire page */
             background-position: center; /* Center the image */
             display: flex;
@@ -20,7 +20,7 @@
         }
 
         .login-window {
-            background-color: rgba(255, 255, 255, 0.8);  /* Slight transparency */
+            background-color: rgba(255, 255, 255, 0.8); /* Slight transparency */
             padding: 30px;
             width: 300px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -60,18 +60,16 @@
         /* Time and Date Box */
         .time-date-box {
             position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(255, 255, 255, 0.6);  /* Slight transparency */
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%); /* Vertically center it */
+            background-color: rgba(0, 0, 0, 0.6); /* Dark see-through box */
             padding: 20px;
             border-radius: 10px;
             font-size: 24px;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Power Button */
@@ -131,7 +129,7 @@
 
         /* Button styling for the login success, error, and power modals */
         .success-btn, .error-btn {
-            background-color: #4CAF50;  /* Success button */
+            background-color: #4CAF50; /* Success button */
             color: white;
         }
 
@@ -140,7 +138,7 @@
         }
 
         .error-btn {
-            background-color: #f44336;  /* Error button */
+            background-color: #f44336; /* Error button */
         }
 
         .error-btn:hover {
@@ -246,7 +244,7 @@
                 }
             });
 
-            // Login Success Continue button (redirect to another page after login success)
+            // Login Success Continue button
             continueBtn.addEventListener("click", function () {
                 loginSuccessModal.style.display = "none"; // Hide success modal
                 window.location.href = "/dashboard.html"; // Redirect to the desired page
