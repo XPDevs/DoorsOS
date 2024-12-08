@@ -270,12 +270,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "dashboard.html"; // Redirect after success
             }, 2000);
         } else {
-            // Incorrect login
-            loginMessage.textContent = "Incorrect username or password. Please try again.";
-            loginMessage.style.color = "red";
-
-            // Show the error message
-            errorMessage.style.display = "block";
+            // Successful login: Redirect to another page
+            loginMessage.textContent = "Login Successful!";
+            loginMessage.style.color = "green";
+            setTimeout(() => {
+                window.location.href = "dashboard.html"; // Redirect after success
+            }, 2000);
         }
     });
 
