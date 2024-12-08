@@ -179,97 +179,109 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const mainScreen = document.getElementById("main-screen");
-            const loginScreen = document.getElementById("login-screen");
-            const powerModal = document.getElementById("power-modal");
-            const powerBtn = document.getElementById("power-btn");
-            const shutdownBtn = document.getElementById("shutdown-btn");
-            const restartBtn = document.getElementById("restart-btn");
-            const cancelBtn = document.getElementById("cancel-btn");
+document.addEventListener("DOMContentLoaded", function () {
+    const mainScreen = document.getElementById("main-screen");
+    const loginScreen = document.getElementById("login-screen");
+    const powerModal = document.getElementById("power-modal");
+    const powerBtn = document.getElementById("power-btn");
+    const shutdownBtn = document.getElementById("shutdown-btn");
+    const restartBtn = document.getElementById("restart-btn");
+    const cancelBtn = document.getElementById("cancel-btn");
 
-            const loginBtn = document.getElementById("login-btn");
-            const usernameInput = document.getElementById("username");
-            const passwordInput = document.getElementById("password");
-            const loginMessage = document.getElementById("login-message");
+    const loginBtn = document.getElementById("login-btn");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const loginMessage = document.getElementById("login-message");
 
-            let inactivityTimer;
+    let inactivityTimer;
 
-            // Show date and time
-            function updateTimeAndDate() {
-                const now = new Date();
-                document.getElementById("time").textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                document.getElementById("date").textContent = now.toLocaleDateString();
-            }
-            setInterval(updateTimeAndDate, 1000);
-            updateTimeAndDate();
+    // Show date and time
+    function updateTimeAndDate() {
+        const now = new Date();
+        document.getElementById("time").textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById("date").textContent = now.toLocaleDateString();
+    }
+    setInterval(updateTimeAndDate, 1000);
+    updateTimeAndDate();
 
-            // Switch to login screen
-            function switchToLoginScreen() {
-                mainScreen.classList.remove("active");
-                loginScreen.classList.add("active");
-                resetInactivityTimer();
-            }
+    // Switch to login screen
+    function switchToLoginScreen() {
+        mainScreen.classList.remove("active");
+        loginScreen.classList.add("active");
+        resetInactivityTimer();
+    }
 
-            function resetInactivityTimer() {
-                clearTimeout(inactivityTimer);
-                inactivityTimer = setTimeout(() => {
-                    loginScreen.classList.remove("active");
-                    mainScreen.classList.add("active");
-                }, 10000); // 10 seconds
-            }
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            loginScreen.classList.remove("active");
+            mainScreen.classList.add("active");
+        }, 10000); // 10 seconds
+    }
 
-            // Event listeners for transitions
-            mainScreen.addEventListener("click", switchToLoginScreen);
-            mainScreen.addEventListener("keypress", switchToLoginScreen);
+    // Event listeners for transitions
+    mainScreen.addEventListener("click", switchToLoginScreen);
+    mainScreen.addEventListener("keypress", switchToLoginScreen);
 
-            loginScreen.addEventListener("click", resetInactivityTimer);
-            loginScreen.addEventListener("keypress", resetInactivityTimer);
+    loginScreen.addEventListener("click", resetInactivityTimer);
+    loginScreen.addEventListener("keypress", resetInactivityTimer);
 
-            // Power options
-            powerBtn.addEventListener("click", () => {
-                powerModal.style.display = "flex";
-            });
+    // Power options
+    powerBtn.addEventListener("click", () => {
+        powerModal.style.display = "flex";
+    });
 
-            cancelBtn.addEventListener("click", () => {
-                powerModal.style.display = "none";
-            });
+    cancelBtn.addEventListener("click", () => {
+        powerModal.style.display = "none";
+    });
 
-            shutdownBtn.addEventListener("click", () => {
-                window.location.href = "../../end/shut.html";
-            });
+    shutdownBtn.addEventListener("click", () => {
+        window.location.href = "../../end/shut.html";
+    });
 
-            restartBtn.addEventListener("click", () => {
-                window.location.href = "../../end/rest.html";
-            });
+    restartBtn.addEventListener("click", () => {
+        window.location.href = "../../end/rest.html";
+    });
 
-            // Login functionality
-            loginBtn.addEventListener("click", function () {
-                const storedUsername = localStorage.getItem("username");
-                const storedPassword = localStorage.getItem("password");
+    // Login functionality
+    loginBtn.addEventListener("click", function () {
+        // Get stored username and password from localStorage
+        const storedUsername = localStorage.getItem("username");
+        const storedPassword = localStorage.getItem("password");
 
-                const enteredUsername = usernameInput.value;
-                const enteredPassword = passwordInput.value;
+        // Get the entered username and password, trimming spaces
+        const enteredUsername = usernameInput.value.trim();
+        const enteredPassword = passwordInput.value.trim();
 
-                if (!enteredUsername || !enteredPassword) {
-                    loginMessage.textContent = "Please enter both username and password.";
-                    return;
-                }
+        // Debugging: log the stored and entered values
+        console.log("Stored Username: " + storedUsername);
+        console.log("Entered Username: " + enteredUsername);
+        console.log("Stored Password: " + storedPassword);
+        console.log("Entered Password: " + enteredPassword);
 
-                if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
-                    // Successful login: Redirect to another page
-                    loginMessage.textContent = "Login Successful!";
-                    loginMessage.style.color = "green";
-                    setTimeout(() => {
-                        window.location.href = "/dashboard.html"; // Redirect after success
-                    }, 2000);
-                } else {
-                    // Incorrect login
-                    loginMessage.textContent = "Incorrect username or password. Please try again.";
-                    loginMessage.style.color = "red";
-                }
-            });
-        });
+        // Check if username or password is empty
+        if (!enteredUsername || !enteredPassword) {
+            loginMessage.textContent = "Please enter both username and password.";
+            loginMessage.style.color = "red";
+            return;
+        }
+
+        // Check if entered values match stored values
+        if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
+            // Successful login: Redirect to another page
+            loginMessage.textContent = "Login Successful!";
+            loginMessage.style.color = "green";
+            setTimeout(() => {
+                window.location.href = "/dashboard.html"; // Redirect after success
+            }, 2000);
+        } else {
+            // Incorrect login
+            loginMessage.textContent = "Incorrect username or password. Please try again.";
+            loginMessage.style.color = "red";
+        }
+    });
+});
+
     </script>
 </body>
 </html>
