@@ -192,6 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
     const loginMessage = document.getElementById("login-message");
+    const errorMessage = document.getElementById("error-message");
 
     let inactivityTimer;
 
@@ -245,19 +246,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Login functionality
     loginBtn.addEventListener("click", function () {
-        // Get stored username and password from localStorage with updated keys
+        // Get stored username and password from localStorage
         const storedUsername = localStorage.getItem("username");
         const storedPassword = localStorage.getItem("password");
 
         // Get the entered username and password, trimming spaces
         const enteredUsername = usernameInput.value.trim();
         const enteredPassword = passwordInput.value.trim();
-
-        // Debugging: log the stored and entered values
-        console.log("Stored Username: " + storedUsername);
-        console.log("Entered Username: " + enteredUsername);
-        console.log("Stored Password: " + storedPassword);
-        console.log("Entered Password: " + enteredPassword);
 
         // Check if username or password is empty
         if (!enteredUsername || !enteredPassword) {
@@ -272,13 +267,38 @@ document.addEventListener("DOMContentLoaded", function () {
             loginMessage.textContent = "Login Successful!";
             loginMessage.style.color = "green";
             setTimeout(() => {
-                window.location.href = "/dashboard.html"; // Redirect after success
+                window.location.href = "dashboard.html"; // Redirect after success
             }, 2000);
         } else {
             // Incorrect login
             loginMessage.textContent = "Incorrect username or password. Please try again.";
             loginMessage.style.color = "red";
+
+            // Show the error message
+            errorMessage.style.display = "block";
         }
+    });
+
+    // Additional error message logic from the new script
+    document.addEventListener("DOMContentLoaded", function () {
+        loginBtn.addEventListener("click", function () {
+            // Get the username and password from localStorage
+            const storedUsername = localStorage.getItem("username");
+            const storedPassword = localStorage.getItem("password");
+
+            // Get the entered username and password
+            const enteredUsername = usernameInput.value;
+            const enteredPassword = passwordInput.value;
+
+            // Check if the entered username and password match the stored ones
+            if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
+                // Redirect to the main page or dashboard
+                window.location.href = "dashboard.html";  // Replace with your desired page
+            } else {
+                // Display an error message if the credentials don't match
+                errorMessage.style.display = "block";
+            }
+        });
     });
 });
 
