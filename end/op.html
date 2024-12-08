@@ -38,6 +38,7 @@
   <div class="container">
     <h1>Warning: This will delete all saved data</h1>
     <button id="delete-btn">Delete Local Storage and Restart</button>
+    <button id="exit-btn">Cancel</button>
   </div>
 
   <script>
@@ -49,6 +50,11 @@
       // Redirect to restart.html
       window.location.href = "rest.html";
     });
+
+    document.getElementById('delete-btn').addEventListener('click', function() {
+           // Redirect to restart.html
+      window.location.href = "rest.html";
+    }); 
   </script>
 </body>
 </html>
