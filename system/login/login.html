@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Line Interface</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: black;
+            color: green;
+            padding: 20px;
+        }
+        input {
+            background-color: black;
+            color: green;
+            border: none;
+            width: 100%;
+            font-family: monospace;
+            font-size: 16px;
+            padding: 5px;
+        }
+        .command-line {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="output" class="command-line"></div>
+    <input type="text" id="cmd" class="command-line" placeholder="Type a command..." onkeydown="if(event.key === 'Enter'){runCommand()}">
+    
+    <script>
+        function runCommand() {
+            const cmdInput = document.getElementById('cmd');
+            const command = cmdInput.value.trim().toLowerCase();
+            const output = document.getElementById('output');
+
+            // Clear input field
+            cmdInput.value = '';
+
+            // Display command in output area
+            output.innerHTML += `<div>> ${command}</div>`;
+
+            // Execute command
+            if (command === 'reboot now') {
+                window.location.href = '../../end/rest.html';
+            } else if (command === 'shutdown now') {
+                window.location.href = '../../end/shut.html';
+            } else {
+                output.innerHTML += `<div>Command not recognized</div>`;
+            }
+
+            // Scroll to the bottom of the output
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
+</body>
+</html>
