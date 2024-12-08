@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operation Page</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #333; /* Dark background */
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    .container {
+      text-align: center;
+    }
+    button {
+      padding: 20px 40px;
+      background-color: #f44336;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #e53935;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Warning: This will delete all saved data</h1>
+    <button id="delete-btn">Delete Local Storage and Restart</button>
+  </div>
+
+  <script>
+    // Delete localStorage and restart, then redirect
+    document.getElementById('delete-btn').addEventListener('click', function() {
+      // Clear local storage
+      localStorage.clear();
+      
+      // Redirect to restart.html
+      window.location.href = "rest.html";
+    });
+  </script>
+</body>
+</html>
