@@ -101,6 +101,67 @@
         .power-btn:hover {
             background-color: #e53935;
         }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            width: 300px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .modal-content button:hover {
+            background-color: #ddd;
+        }
+
+        .shutdown-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .shutdown-btn:hover {
+            background-color: #e53935;
+        }
+
+        .restart-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .restart-btn:hover {
+            background-color: #45a049;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .cancel-btn:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
 <body>
@@ -124,10 +185,25 @@
         <button class="power-btn" id="power-btn">⚡</button>
     </div>
 
+    <!-- Power Options Modal -->
+    <div class="modal" id="power-modal">
+        <div class="modal-content">
+            <h3>Power Options</h3>
+            <button class="shutdown-btn" id="shutdown-btn">Shutdown</button>
+            <button class="restart-btn" id="restart-btn">Restart</button>
+            <button class="cancel-btn" id="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const timeDateBox = document.getElementById("time-date-box");
             const loginWindow = document.getElementById("login-window");
+            const powerModal = document.getElementById("power-modal");
+            const powerBtn = document.getElementById("power-btn");
+            const shutdownBtn = document.getElementById("shutdown-btn");
+            const restartBtn = document.getElementById("restart-btn");
+            const cancelBtn = document.getElementById("cancel-btn");
             let inactivityTimer;
 
             // Update time and date
@@ -137,8 +213,7 @@
                 // Time formatting
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
-                const seconds = now.getSeconds().toString().padStart(2, '0');
-                document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+                document.getElementById('time').textContent = `${hours}:${minutes}`;
 
                 // Date formatting
                 const day = now.toLocaleString('en-us', { weekday: 'long' });
@@ -150,7 +225,7 @@
             updateTimeAndDate();
             setInterval(updateTimeAndDate, 1000);
 
-            // Function to reset inactivity timer
+            // Reset inactivity timer
             function resetInactivityTimer() {
                 clearTimeout(inactivityTimer);
                 inactivityTimer = setTimeout(function () {
@@ -171,7 +246,25 @@
             document.body.addEventListener("click", function () {
                 timeDateBox.style.display = "none"; // Hide the time/date box
                 loginWindow.style.display = "block"; // Show the login window
-            }, { once: true }); // Ensures this event only fires once
+            }, { once: true });
+
+            // Power Button Modal
+            powerBtn.addEventListener("click", function () {
+                powerModal.style.display = "flex";
+            });
+
+            // Power Options
+            shutdownBtn.addEventListener("click", function () {
+                window.location.href = "../../end/shut.html"; // Shutdown
+            });
+
+            restartBtn.addEventListener("click", function () {
+                window.location.href = "../../end/rest.html"; // Restart
+            });
+
+            cancelBtn.addEventListener("click", function () {
+                powerModal.style.display = "none"; // Close modal
+            });
         });
     </script>
 
