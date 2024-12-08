@@ -107,6 +107,24 @@
         button:hover {
             background-color: #ddd;
         }
+
+        /* Button styling for the login success, error, and power modals */
+        .success-btn, .error-btn {
+            background-color: #4CAF50;  /* Success button */
+            color: white;
+        }
+
+        .success-btn:hover, .error-btn:hover {
+            background-color: #45a049;
+        }
+
+        .error-btn {
+            background-color: #f44336;  /* Error button */
+        }
+
+        .error-btn:hover {
+            background-color: #e53935;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +147,16 @@
         <div class="modal-content">
             <h3>Login Successful!</h3>
             <p>You have successfully logged in.</p>
-            <button id="continue-btn">Continue</button>
+            <button class="success-btn" id="continue-btn">Continue</button>
+        </div>
+    </div>
+
+    <!-- Incorrect Login Modal -->
+    <div class="modal" id="login-error-modal">
+        <div class="modal-content">
+            <h3>Login Failed</h3>
+            <p>Incorrect username or password. Please try again.</p>
+            <button class="error-btn" id="error-btn">Try Again</button>
         </div>
     </div>
 
@@ -155,6 +182,8 @@
             const cancelBtn = document.getElementById("cancel-btn");
             const loginSuccessModal = document.getElementById("login-success-modal");
             const continueBtn = document.getElementById("continue-btn");
+            const loginErrorModal = document.getElementById("login-error-modal");
+            const errorBtn = document.getElementById("error-btn");
 
             // Login functionality
             loginBtn.addEventListener("click", function () {
@@ -167,14 +196,19 @@
                 if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
                     loginSuccessModal.style.display = "flex"; // Show login success modal
                 } else {
-                    alert("Incorrect username or password.");
+                    loginErrorModal.style.display = "flex"; // Show login error modal
                 }
             });
 
-            // Continue button (redirect to another page after login success)
+            // Login Success Continue button (redirect to another page after login success)
             continueBtn.addEventListener("click", function () {
                 loginSuccessModal.style.display = "none"; // Hide success modal
                 window.location.href = "/dashboard.html"; // Redirect to the desired page
+            });
+
+            // Login Error Try Again button
+            errorBtn.addEventListener("click", function () {
+                loginErrorModal.style.display = "none"; // Hide error modal
             });
 
             // Power Button and Modal
@@ -187,13 +221,11 @@
             });
 
             shutdownBtn.addEventListener("click", function () {
-                alert("Shutting down the system...");
-                window.location.href = "../../end/shut.html"; // Example shutdown page
+                window.location.href = "../../end/shut.html"; // Redirect to shutdown page
             });
 
             restartBtn.addEventListener("click", function () {
-                alert("Restarting the system...");
-                window.location.href = "../../end/rest.html"; // Example restart page
+                window.location.href = "../../end/rest.html"; // Redirect to restart page
             });
         });
     </script>
