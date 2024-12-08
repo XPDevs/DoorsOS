@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #ADD8E6;  /* Light blue background */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -227,7 +227,7 @@
                         setTimeout(function () {
                             // After installation, store that OS is installed
                             localStorage.setItem("osInstalled", "true");
-                            window.location.href = "../end/shut.html";  // Redirect to shutdown after install
+                            window.location.href = "../end/rest.html";  // Redirect to rest.html after installation
                         }, 1000);
                     }
                 }, 1000);
@@ -238,17 +238,16 @@
                 warningModal.style.display = "flex";
             });
 
-            // Redirect to the shutdown page when clicking "Close Setup"
+            // Redirect to shutdown page if the user chooses to close setup
             closeSetupBtn.addEventListener("click", function () {
-                window.location.href = "../end/shut.html";  // Redirect to shut.html
+                window.location.href = "../end/shut.html";
             });
 
-            // Cancel closing setup
             cancelBtn.addEventListener("click", function () {
                 warningModal.style.display = "none";
             });
 
-            // Start the installation process by showing the first question
+            // Start the first question
             showQuestion();
         });
     </script>
