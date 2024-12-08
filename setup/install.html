@@ -187,28 +187,29 @@
             }
         });
 
-        function showReviewInfo() {
-            // Mask the password to avoid displaying it
-            const passwordDisplay = userData.password ? "********" : "No password set";
+function showReviewInfo() {
+    // Display the password directly (not recommended for security reasons, but here it is as per your request)
+    const passwordDisplay = userData.password || "No password set";
 
-            questionContainer.innerHTML = `
-                <p><strong>Review your information:</strong></p>
-                <p>Language: ${userData.language}</p>
-                <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
-                <p>Username: ${userData.username}</p>
-                <p>Password: ${passwordDisplay}</p>
-                <p>Installation Type: ${userData.installationType}</p>
-                <p>Install Path: ${userData.installPath}</p>
-                <p>Do you agree with this information?</p>
-                <button id="agree-btn" class="submit-btn">Yes, Install</button>
-                <button id="disagree-btn" class="submit-btn">No, Restart</button>
-            `;
+    questionContainer.innerHTML = `
+        <p><strong>Review your information:</strong></p>
+        <p>Language: ${userData.language}</p>
+        <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
+        <p>Username: ${userData.username}</p>
+        <p>Password: ${passwordDisplay}</p> <!-- Display password here -->
+        <p>Installation Type: ${userData.installationType}</p>
+        <p>Install Path: ${userData.installPath}</p>
+        <p>Do you agree with this information?</p>
+        <button id="agree-btn" class="submit-btn">Yes, Install</button>
+        <button id="disagree-btn" class="submit-btn">No, Restart</button>
+    `;
 
-            document.getElementById("agree-btn").addEventListener("click", startInstallation);
-            document.getElementById("disagree-btn").addEventListener("click", function () {
-                window.location.href = "../end/rest.html";  // Redirect to restart page
-            });
-        }
+    document.getElementById("agree-btn").addEventListener("click", startInstallation);
+    document.getElementById("disagree-btn").addEventListener("click", function () {
+        window.location.href = "../end/rest.html";  // Redirect to restart page
+    });
+}
+
 
         function startInstallation() {
             questionContainer.innerHTML = `
