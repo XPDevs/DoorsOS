@@ -6,27 +6,64 @@
     <title>Login</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            background-image: url('bg.jpg'); /* Background image */
-            background-size: cover; /* Cover the entire page */
-            background-position: center; /* Center the image */
+            background: url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            position: relative;
-            overflow: hidden;
         }
 
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s, visibility 1s;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Time and Date Box */
+        .time-date-box {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px 40px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-date-box .time {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .time-date-box .date {
+            font-size: 32px;
+        }
+
+        /* Login Window */
         .login-window {
-            background-color: rgba(255, 255, 255, 0.8); /* Slight transparency */
+            background-color: white;
             padding: 30px;
             width: 300px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: center;
-            display: none; /* Hidden by default */
         }
 
         .login-window h2 {
@@ -57,34 +94,11 @@
             background-color: #45a049;
         }
 
-        /* Time and Date Box */
-        .time-date-box {
-            position: absolute;
-            left: 50%; /* Center horizontally */
-            top: 50%; /* Center vertically */
-            transform: translate(-50%, -50%); /* Perfect centering */
-            background-color: rgba(0, 0, 0, 0.6); /* Dark see-through box */
-            padding: 20px 40px;
-            border-radius: 10px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .time-date-box .time {
-            font-size: 64px; /* Large time font size */
-            margin-bottom: 20px; /* Add spacing between time and date */
-        }
-
-        .time-date-box .date {
-            font-size: 32px; /* Large date font size */
-        }
-
         /* Power Button */
         .power-btn-container {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 20px;
+            left: 20px;
         }
 
         .power-btn {
@@ -102,7 +116,7 @@
             background-color: #e53935;
         }
 
-        /* Modal */
+        /* Power Options Modal */
         .modal {
             display: none;
             position: fixed;
@@ -120,153 +134,120 @@
             background-color: white;
             padding: 20px;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 5px;
             width: 300px;
         }
 
-        .modal-content button {
+        button {
             padding: 10px 20px;
             margin: 10px;
             cursor: pointer;
             border-radius: 5px;
-            border: none;
         }
 
-        .modal-content button:hover {
+        button:hover {
             background-color: #ddd;
-        }
-
-        .shutdown-btn {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .shutdown-btn:hover {
-            background-color: #e53935;
-        }
-
-        .restart-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .restart-btn:hover {
-            background-color: #45a049;
-        }
-
-        .cancel-btn {
-            background-color: #ccc;
-            color: black;
-        }
-
-        .cancel-btn:hover {
-            background-color: #bbb;
         }
     </style>
 </head>
 <body>
 
-    <!-- Initial Screen (Time and Date Box) -->
-    <div class="time-date-box" id="time-date-box">
-        <div class="time" id="time"></div>
-        <div class="date" id="date"></div>
+    <!-- Main Screen: Time and Date -->
+    <div class="screen active" id="main-screen">
+        <div class="time-date-box">
+            <div class="time" id="time"></div>
+            <div class="date" id="date"></div>
+        </div>
     </div>
 
-    <!-- Login Window -->
-    <div class="login-window" id="login-window">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Enter Username" />
-        <input type="password" id="password" placeholder="Enter Password" />
-        <button id="login-btn">Login</button>
-    </div>
-
-    <!-- Power Button -->
-    <div class="power-btn-container">
-        <button class="power-btn" id="power-btn">⚡</button>
+    <!-- Login Screen -->
+    <div class="screen" id="login-screen">
+        <div class="login-window">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Enter Username" />
+            <input type="password" id="password" placeholder="Enter Password" />
+            <button id="login-btn">Login</button>
+        </div>
     </div>
 
     <!-- Power Options Modal -->
     <div class="modal" id="power-modal">
         <div class="modal-content">
             <h3>Power Options</h3>
-            <button class="shutdown-btn" id="shutdown-btn">Shutdown</button>
-            <button class="restart-btn" id="restart-btn">Restart</button>
-            <button class="cancel-btn" id="cancel-btn">Cancel</button>
+            <button id="shutdown-btn">Shutdown</button>
+            <button id="restart-btn">Restart</button>
+            <button id="cancel-btn">Cancel</button>
         </div>
+    </div>
+
+    <!-- Power Button (Visible on All Screens) -->
+    <div class="power-btn-container">
+        <button class="power-btn" id="power-btn">⚡</button>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const timeDateBox = document.getElementById("time-date-box");
-            const loginWindow = document.getElementById("login-window");
+            const mainScreen = document.getElementById("main-screen");
+            const loginScreen = document.getElementById("login-screen");
             const powerModal = document.getElementById("power-modal");
             const powerBtn = document.getElementById("power-btn");
             const shutdownBtn = document.getElementById("shutdown-btn");
             const restartBtn = document.getElementById("restart-btn");
             const cancelBtn = document.getElementById("cancel-btn");
+
             let inactivityTimer;
 
-            // Update time and date
+            // Show date and time
             function updateTimeAndDate() {
                 const now = new Date();
+                document.getElementById("time").textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.getElementById("date").textContent = now.toLocaleDateString();
+            }
+            setInterval(updateTimeAndDate, 1000);
+            updateTimeAndDate();
 
-                // Time formatting
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                document.getElementById('time').textContent = `${hours}:${minutes}`;
-
-                // Date formatting
-                const day = now.toLocaleString('en-us', { weekday: 'long' });
-                const date = now.toLocaleDateString('en-us', { month: 'long', day: 'numeric', year: 'numeric' });
-                document.getElementById('date').textContent = `${day}, ${date}`;
+            // Switch to login screen
+            function switchToLoginScreen() {
+                mainScreen.classList.remove("active");
+                loginScreen.classList.add("active");
+                resetInactivityTimer();
             }
 
-            // Update every second
-            updateTimeAndDate();
-            setInterval(updateTimeAndDate, 1000);
+            // Reset to main screen after inactivity
+            function resetToMainScreen() {
+                loginScreen.classList.remove("active");
+                mainScreen.classList.add("active");
+            }
 
-            // Reset inactivity timer
             function resetInactivityTimer() {
                 clearTimeout(inactivityTimer);
-                inactivityTimer = setTimeout(function () {
-                    loginWindow.style.display = "none"; // Hide login window
-                    timeDateBox.style.display = "flex"; // Show time/date box
-                }, 10000); // 10 seconds
+                inactivityTimer = setTimeout(resetToMainScreen, 10000); // 10 seconds
             }
 
-            // Add event listeners for resetting inactivity timer
-            document.body.addEventListener("mousemove", resetInactivityTimer);
-            document.body.addEventListener("keydown", resetInactivityTimer);
-            document.body.addEventListener("click", resetInactivityTimer);
+            // Event listeners for transitions
+            mainScreen.addEventListener("click", switchToLoginScreen);
+            mainScreen.addEventListener("keypress", switchToLoginScreen);
 
-            // Start the timer on initial load
-            resetInactivityTimer();
+            loginScreen.addEventListener("click", resetInactivityTimer);
+            loginScreen.addEventListener("keypress", resetInactivityTimer);
 
-            // User clicks anywhere to start the login process
-            document.body.addEventListener("click", function () {
-                timeDateBox.style.display = "none"; // Hide the time/date box
-                loginWindow.style.display = "block"; // Show the login window
-            }, { once: true });
-
-            // Power Button Modal
-            powerBtn.addEventListener("click", function () {
+            // Power options
+            powerBtn.addEventListener("click", () => {
                 powerModal.style.display = "flex";
             });
 
-            // Power Options
-            shutdownBtn.addEventListener("click", function () {
-                window.location.href = "../../end/shut.html"; // Shutdown
+            cancelBtn.addEventListener("click", () => {
+                powerModal.style.display = "none";
             });
 
-            restartBtn.addEventListener("click", function () {
-                window.location.href = "../../end/rest.html"; // Restart
+            shutdownBtn.addEventListener("click", () => {
+                window.location.href = "../../end/shut.html";
             });
 
-            cancelBtn.addEventListener("click", function () {
-                powerModal.style.display = "none"; // Close modal
+            restartBtn.addEventListener("click", () => {
+                window.location.href = "../../end/rest.html";
             });
         });
     </script>
-
 </body>
 </html>
