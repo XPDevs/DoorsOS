@@ -1,5 +1,35 @@
 <!DOCTYPE html>
-<html>
-<H1>HI</H2>
-<p>This is a fake webpage for testing</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Press Enter</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: 'Lucida Console', Monaco, monospace;
+            overflow: hidden;
+        }
+
+        #main-text {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1rem; /* Small text */
+        }
+    </style>
+</head>
+<body>
+    <div id="main-text">Press 'Enter' to start.</div>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                window.location.href = 'check.html';
+            }
+        });
+    </script>
+</body>
 </html>
