@@ -130,6 +130,7 @@
             const warningModal = document.getElementById("warning-modal");
             const closeSetupBtn = document.getElementById("close-setup-btn");
             const cancelBtn = document.getElementById("cancel-btn");
+            const installerWindow = document.getElementById("installer-window");
             const nextBtn = document.getElementById("next-btn");
             const questionContainer = document.getElementById("question-container");
 
@@ -137,17 +138,20 @@
             let userData = {};
 
             const questions = [
-                { question: "What is your name?", type: "text", key: "username" },
-                { question: "Select your preferred language", type: "select", options: ["English", "Spanish", "French"], key: "language" },
-                { question: "Do you agree to the terms and conditions?", type: "checkbox", key: "terms" }
+                { question: "What language do you want to use for this installation?", type: "select", options: ["English", "Spanish", "French", "German"], key: "language" },
+                { question: "Do you accept the terms and conditions?", type: "checkbox", key: "terms" },
+                { question: "What is your username?", type: "text", key: "username" },
+                { question: "What would you like your password to be?", type: "password", key: "password" },
+                { question: "Choose the type of installation: Typical or Custom", type: "select", options: ["Typical", "Custom"], key: "installationType" },
+                { question: "Where would you like to install the OS? (Enter installation path)", type: "text", key: "installPath" }
             ];
 
             function showQuestion() {
                 const q = questions[currentStep];
                 let inputField;
 
-                if (q.type === "text") {
-                    inputField = `<input type="text" id="user-input" placeholder="${q.question}" required>`;
+                if (q.type === "text" || q.type === "password") {
+                    inputField = `<input type="${q.type}" id="user-input" placeholder="${q.question}" required>`;
                 } else if (q.type === "select") {
                     inputField = `<select id="user-input">
                         ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
@@ -177,26 +181,56 @@
                 if (currentStep < questions.length) {
                     showQuestion();
                 } else {
-                    nextBtn.textContent = "Start Installation";
-                    nextBtn.classList.add("install-btn");
-                    nextBtn.classList.remove("next-btn");
-                    nextBtn.addEventListener("click", startInstallation);
+                    nextBtn.textContent = "Review Information";
+                    nextBtn.removeEventListener("click", arguments.callee); // Remove previous click event
+                    nextBtn.addEventListener("click", showReviewInfo);
                 }
             });
 
+            function showReviewInfo() {
+                questionContainer.innerHTML = `
+                    <p><strong>Review your information:</strong></p>
+                    <p>Language: ${userData.language}</p>
+                    <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
+                    <p>Username: ${userData.username}</p>
+                    <p>Installation Type: ${userData.installationType}</p>
+                    <p>Install Path: ${userData.installPath}</p>
+                    <p>Do you agree with this information?</p>
+                    <button id="agree-btn" class="submit-btn">Yes, Install</button>
+                    <button id="disagree-btn" class="submit-btn">No, Restart</button>
+                `;
+
+                document.getElementById("agree-btn").addEventListener("click", startInstallation);
+                document.getElementById("disagree-btn").addEventListener("click", function () {
+                    window.location.href = "../end/rest.html";  // Redirect to restart page
+                });
+            }
+
             function startInstallation() {
-                nextBtn.disabled = true;
-                status.innerHTML = "<p>Installing Operating System...</p>";
+                questionContainer.innerHTML = `
+                    <p>Installing your operating system...</p>
+                    <p>Progress: <span id="install-progress">0%</span></p>
+                    <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+                `;
 
                 let progress = 0;
-                const interval = setInterval(function () {
+                const progressBar = document.getElementById("progress-bar");
+                const progressText = document.getElementById("install-progress");
+
+                let interval = setInterval(function () {
                     progress += 10;
+                    progressBar.value = progress;
+                    progressText.textContent = `${progress}%`;
+
                     if (progress === 100) {
                         clearInterval(interval);
-                        status.innerHTML = "<p>Installation complete!</p>";
-                        localStorage.setItem("osInstalled", "true");
+                        setTimeout(function () {
+                            // After installation, store that OS is installed
+                            localStorage.setItem("osInstalled", "true");
+                            window.location.href = "../end/shut.html";  // Redirect to shutdown after install
+                        }, 1000);
                     }
-                }, 500);
+                }, 1000);
             }
 
             // Show the warning modal when clicking the close button
@@ -218,6 +252,6 @@
             showQuestion();
         });
     </script>
-    
+
 </body>
 </html>
