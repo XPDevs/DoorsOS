@@ -1,1 +1,174 @@
-<a href="boot.html">Return</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop UI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #cce7ff;
+        }
+
+        #desktop {
+            height: 100vh;
+            position: relative;
+            background-color: #87CEFA;
+        }
+
+        .window {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden initially */
+        }
+
+        .window-header {
+            background: #2f2f2f;
+            color: white;
+            padding: 5px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .window-content {
+            padding: 10px;
+        }
+
+        button {
+            padding: 5px;
+            margin-left: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #0078d4;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #005a8d;
+        }
+
+        #taskbar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            justify-content: space-between;
+        }
+
+        #startButton {
+            background: #2f2f2f;
+            color: white;
+        }
+
+        #startMenu {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            width: 150px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #startMenu button {
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            background-color: white;
+            border: none;
+        }
+
+        #startMenu button:hover {
+            background-color: #0078d4;
+            color: white;
+        }
+
+        #taskbarApps {
+            display: flex;
+            gap: 10px;
+        }
+
+        #taskbarApps button {
+            background-color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="desktop">
+        <!-- Desktop App Windows -->
+        <div id="window1" class="window" style="top: 50px; left: 50px;">
+            <div class="window-header">
+                <span>App 1</span>
+                <button class="close-btn" onclick="closeWindow('window1')">X</button>
+                <button class="minimize-btn" onclick="minimizeWindow('window1')">_</button>
+            </div>
+            <div class="window-content">
+                <p>This is App 1. You can add more content here.</p>
+            </div>
+        </div>
+
+        <!-- Taskbar -->
+        <div id="taskbar">
+            <button id="startButton" onclick="toggleStartMenu()">Start</button>
+            <div id="startMenu" class="start-menu">
+                <button onclick="window.location.href='../index.html'">Restart</button>
+                <button onclick="window.location.href='../end/shut.html'">Shutdown</button>
+            </div>
+            <div id="taskbarApps"></div>
+        </div>
+    </div>
+
+    <script>
+        let isStartMenuVisible = false;
+
+        // Toggle Start Menu visibility
+        function toggleStartMenu() {
+            const startMenu = document.getElementById('startMenu');
+            isStartMenuVisible = !isStartMenuVisible;
+            startMenu.style.display = isStartMenuVisible ? 'block' : 'none';
+        }
+
+        // Minimize window and add to taskbar
+        function minimizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.display = 'none';
+
+            const taskbarApps = document.getElementById('taskbarApps');
+            const taskbarButton = document.createElement('button');
+            taskbarButton.textContent = windowId;
+            taskbarButton.onclick = function() {
+                reopenWindow(windowId);
+            };
+            taskbarApps.appendChild(taskbarButton);
+        }
+
+        // Reopen minimized window
+        function reopenWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.display = 'block';
+            document.getElementById('taskbarApps').removeChild(document.querySelector(`#taskbarApps button:contains(${windowId})`));
+        }
+
+        // Close window
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
