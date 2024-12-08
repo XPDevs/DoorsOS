@@ -125,6 +125,16 @@
         .error-btn:hover {
             background-color: #e53935;
         }
+
+        .delete-btn {
+            background-color: #f44336; /* Red button */
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #e53935;
+        }
+
     </style>
 </head>
 <body>
@@ -160,12 +170,13 @@
         </div>
     </div>
 
-    <!-- Shutdown/Restart Modal -->
+    <!-- Shutdown/Restart/Delete Everything Modal -->
     <div class="modal" id="power-modal">
         <div class="modal-content">
             <h3>Power Options</h3>
             <button id="shutdown-btn">Shutdown</button>
             <button id="restart-btn">Restart</button>
+            <button id="delete-btn" class="delete-btn">Delete Everything</button>
             <button id="cancel-btn">Cancel</button>
         </div>
     </div>
@@ -184,6 +195,7 @@
             const continueBtn = document.getElementById("continue-btn");
             const loginErrorModal = document.getElementById("login-error-modal");
             const errorBtn = document.getElementById("error-btn");
+            const deleteBtn = document.getElementById("delete-btn");
 
             // Login functionality
             loginBtn.addEventListener("click", function () {
@@ -221,11 +233,19 @@
             });
 
             shutdownBtn.addEventListener("click", function () {
-                window.location.href = "../../end/shut.html"; // Redirect to shutdown page
+                window.location.href = "../end/shut.html"; // Redirect to shutdown page
             });
 
             restartBtn.addEventListener("click", function () {
-                window.location.href = "../../end/rest.html"; // Redirect to restart page
+                window.location.href = "../end/rest.html"; // Redirect to restart page
+            });
+
+            // Delete Everything button
+            deleteBtn.addEventListener("click", function () {
+                // Clear localStorage
+                localStorage.clear();
+                // Restart the page after clearing localStorage
+                location.reload();
             });
         });
     </script>
