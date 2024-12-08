@@ -7,7 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff;  /* Light blue background */
+            background-image: url('your-image-url.jpg');  /* Background image */
+            background-size: cover; /* Cover the entire page */
+            background-position: center; /* Center the image */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +19,7 @@
         }
 
         .login-window {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.8);  /* Slight transparency */
             padding: 30px;
             width: 300px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -125,16 +127,6 @@
         .error-btn:hover {
             background-color: #e53935;
         }
-
-        .delete-btn {
-            background-color: #f44336; /* Red button */
-            color: white;
-        }
-
-        .delete-btn:hover {
-            background-color: #e53935;
-        }
-
     </style>
 </head>
 <body>
@@ -170,13 +162,12 @@
         </div>
     </div>
 
-    <!-- Shutdown/Restart/Delete Everything Modal -->
+    <!-- Shutdown/Restart Modal -->
     <div class="modal" id="power-modal">
         <div class="modal-content">
             <h3>Power Options</h3>
             <button id="shutdown-btn">Shutdown</button>
             <button id="restart-btn">Restart</button>
-            <button id="delete-btn" class="delete-btn">Delete Everything</button>
             <button id="cancel-btn">Cancel</button>
         </div>
     </div>
@@ -195,7 +186,6 @@
             const continueBtn = document.getElementById("continue-btn");
             const loginErrorModal = document.getElementById("login-error-modal");
             const errorBtn = document.getElementById("error-btn");
-            const deleteBtn = document.getElementById("delete-btn");
 
             // Login functionality
             loginBtn.addEventListener("click", function () {
@@ -205,10 +195,14 @@
                 const enteredUsername = usernameInput.value;
                 const enteredPassword = passwordInput.value;
 
-                if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
-                    loginSuccessModal.style.display = "flex"; // Show login success modal
+                if (storedUsername && storedPassword) {
+                    if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
+                        loginSuccessModal.style.display = "flex"; // Show login success modal
+                    } else {
+                        loginErrorModal.style.display = "flex"; // Show login error modal
+                    }
                 } else {
-                    loginErrorModal.style.display = "flex"; // Show login error modal
+                    loginErrorModal.style.display = "flex"; // Show login error modal if no username or password is set
                 }
             });
 
@@ -238,14 +232,6 @@
 
             restartBtn.addEventListener("click", function () {
                 window.location.href = "../../end/rest.html"; // Redirect to restart page
-            });
-
-            // Delete Everything button
-            deleteBtn.addEventListener("click", function () {
-                // Clear localStorage
-                localStorage.clear();
-                // Restart the page after clearing localStorage
-                location.reload();
             });
         });
     </script>
