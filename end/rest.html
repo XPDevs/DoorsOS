@@ -44,14 +44,43 @@
 <body>
   <div class="container">
     <div class="spinner"></div>
-<p>Restarting your computer.</p>
+    <p>Restarting your computer.</p>
   </div>
 
   <script>
+    let shiftPressedTime = 0;
+    let shiftHeldDown = false;
+
+    // Detect if the Shift key is held down
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Shift' && !shiftHeldDown) {
+        shiftPressedTime = Date.now(); // Start tracking when Shift is pressed
+        shiftHeldDown = true;
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'Shift') {
+        shiftHeldDown = false;
+      }
+    });
+
+    // Check if Shift key is held down for more than 5 seconds
+    function checkShiftDuration() {
+      if (shiftHeldDown && Date.now() - shiftPressedTime >= 5000) {
+        window.location.href = 'op.html'; // Redirect to op.html after holding Shift for 5 seconds
+      }
+    }
+
     // Redirect to check.html after 10 seconds
     setTimeout(() => {
-      window.location.href = "../index.html";
+      if (!shiftHeldDown || Date.now() - shiftPressedTime < 5000) {
+        window.location.href = "../index.html";
+      }
     }, 10000);
+
+    // Periodically check if Shift is held for 5 seconds
+    setInterval(checkShiftDuration, 100);
   </script>
 </body>
 </html>
