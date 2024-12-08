@@ -195,6 +195,10 @@
             const restartBtn = document.getElementById("restart-btn");
             const cancelBtn = document.getElementById("cancel-btn");
 
+            const loginBtn = document.getElementById("login-btn");
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+
             let inactivityTimer;
 
             // Show date and time
@@ -246,6 +250,23 @@
 
             restartBtn.addEventListener("click", () => {
                 window.location.href = "../../end/rest.html";
+            });
+
+            // Login functionality
+            loginBtn.addEventListener("click", function () {
+                const storedUsername = localStorage.getItem("username");
+                const storedPassword = localStorage.getItem("password");
+
+                const enteredUsername = usernameInput.value;
+                const enteredPassword = passwordInput.value;
+
+                if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
+                    // Successful login: Redirect to another page
+                    alert("Login Successful!");
+                } else {
+                    // Incorrect login
+                    alert("Incorrect username or password. Please try again.");
+                }
             });
         });
     </script>
