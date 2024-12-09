@@ -144,6 +144,33 @@
         button:hover {
             background-color: #ddd;
         }
+/* Spinner Animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1); /* Light gray border */
+    border-left: 4px solid #4CAF50; /* Green border */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite; /* Continuous spin */
+}
+
+.welcome-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    color: green;
+    font-size: 18px;
+}
     </style>
 </head>
 <body>
@@ -253,7 +280,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (enteredUsername === storedUsername && enteredPassword === storedPassword) {
-            loginMessage.textContent = "Login Successful!";
+            loginMessage.innerHTML = `
+                <div class="welcome-message">
+                    <div class="spinner"></div>
+                    <p>Welcome</p>
+                </div>
+            `;
             loginMessage.style.color = "green";
             setTimeout(() => {
                 window.location.href = "dashboard.html";
