@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fake Desktop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100vh;
+      background: url('bg.jpg') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+    }
+    .taskbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #333;
+      height: 40px;
+      padding: 0 10px;
+      box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
+      width: 100%;
+    }
+    .start-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    .start-button img {
+      height: 30px;
+      width: 30px;
+    }
+    .start-menu {
+      display: none;
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      background: #444;
+      border: 1px solid #555;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      z-index: 1000;
+      border-radius: 4px;
+    }
+    .start-menu a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 3px;
+      margin-bottom: 5px;
+    }
+    .start-menu a:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="taskbar">
+    <button class="start-button" id="startButton">
+      <img src="https://via.placeholder.com/30" alt="Start">
+    </button>
+  </div>
+  <div class="start-menu" id="startMenu">
+    <a href="../../end/shut.html">Shutdown</a>
+    <a href="../../end/rest.html">Restart</a>
+    <a href="../login/login.html">Lock</a>
+  </div>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const startMenu = document.getElementById('startMenu');
+
+    startButton.addEventListener('click', () => {
+      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+        startMenu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
