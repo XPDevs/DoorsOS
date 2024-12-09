@@ -64,13 +64,18 @@
     .start-menu a:hover {
       background: #555;
     }
+    .taskbar-time {
+      font-size: 14px;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <div class="taskbar">
     <button class="start-button" id="startButton">
-      <img src="https://via.placeholder.com/30" alt="Start">
+      <img src="taskbar/eye.jpg" alt="Start">
     </button>
+    <div class="taskbar-time" id="taskbarTime"></div>
   </div>
   <div class="start-menu" id="startMenu">
     <a href="../../end/shut.html">Shutdown</a>
@@ -81,16 +86,50 @@
   <script>
     const startButton = document.getElementById('startButton');
     const startMenu = document.getElementById('startMenu');
+    const taskbarTime = document.getElementById('taskbarTime');
+    let inactivityTimer;
 
+    // Toggle the start menu
     startButton.addEventListener('click', () => {
       startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+      resetInactivityTimer();
     });
 
+    // Close the start menu when clicking outside
     window.addEventListener('click', (e) => {
       if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
         startMenu.style.display = 'none';
       }
+      resetInactivityTimer();
     });
+
+    // Update the time and date dynamically
+    function updateTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const date = now.toLocaleDateString();
+      taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
+    }
+
+    // Reset the inactivity timer
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        window.location.href = "../login/login.html";
+      }, 60000); // 1 minute (60000 ms)
+    }
+
+    // Detect activity and reset timer
+    window.addEventListener('mousemove', resetInactivityTimer);
+    window.addEventListener('keydown', resetInactivityTimer);
+
+    // Update the time every second
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call to set the time immediately
+
+    // Start the inactivity timer on page load
+    resetInactivityTimer();
   </script>
 </body>
 </html>
