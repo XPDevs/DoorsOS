@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored Credentials</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .credentials {
+            margin-top: 20px;
+        }
+        .credentials p {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Stored Credentials</h2>
+        <div class="credentials">
+            <p><strong>Username:</strong> <span id="username-display">Loading...</span></p>
+            <p><strong>Password:</strong> <span id="password-display">Loading...</span></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const usernameDisplay = document.getElementById("username-display");
+            const passwordDisplay = document.getElementById("password-display");
+
+            const storedUsername = localStorage.getItem("username");
+            const storedPassword = localStorage.getItem("password");
+
+            if (storedUsername && storedPassword) {
+                usernameDisplay.textContent = storedUsername;
+                passwordDisplay.textContent = storedPassword;
+            } else {
+                usernameDisplay.textContent = "No username found.";
+                passwordDisplay.textContent = "No password found.";
+            }
+        });
+    </script>
+    
+</body>
+</html>
