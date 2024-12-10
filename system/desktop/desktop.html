@@ -158,6 +158,9 @@
     <div class="taskbar-icon" id="app3Icon">
       <img src="taskbar/ht.jpg" alt="HTML Editor Icon">
     </div>
+    <div class="taskbar-icon" id="app4Icon">
+      <img src="taskbar/gear.jpg" alt="Settings">
+    </div>
     <div class="taskbar-time" id="taskbarTime"></div>
   </div>
 
@@ -206,6 +209,21 @@
     </div>
   </div>
 
+  <!-- Window 4: settings -->
+  <div class="window" id="window4">
+    <div class="window-header" id="window4Header">
+      <span>Settings</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window4Minimize"></div>
+        <div class="window-button" id="window4Maximize"></div>
+        <div class="window-button" id="window4Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/settings/settings.html"></iframe>
+    </div>
+  </div>
+
   <div class="start-menu" id="startMenu">
     <a href="../../end/shut.html">Shutdown</a>
     <a href="../../end/rest.html">Restart</a>
@@ -219,62 +237,56 @@
     const window1 = document.getElementById('window1');
     const window2 = document.getElementById('window2');
     const window3 = document.getElementById('window3');
+    const window4 = document.getElementById('window4');
     const app1Icon = document.getElementById('app1Icon');
     const app2Icon = document.getElementById('app2Icon');
     const app3Icon = document.getElementById('app3Icon');
+    const app4Icon = document.getElementById('app4Icon');
     const window1CloseButton = document.getElementById('window1Close');
     const window2CloseButton = document.getElementById('window2Close');
     const window3CloseButton = document.getElementById('window3Close');
-    const window1Header = document.getElementById('window1Header');
-    const window2Header = document.getElementById('window2Header');
-    const window3Header = document.getElementById('window3Header');
-
+    const window4CloseButton = document.getElementById('window4Close');
+    
     let isDragging = false;
-    let offsetX, offsetY;
+    let offsetX = 0;
+    let offsetY = 0;
 
-    // Toggle the start menu
     startButton.addEventListener('click', () => {
       startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Close the start menu when clicking outside
-    window.addEventListener('click', (e) => {
-      if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
-        startMenu.style.display = 'none';
-      }
-    });
-
-    // Show the text editor window
     app1Icon.addEventListener('click', () => {
       window1.style.display = 'block';
     });
 
-    // Show the file explorer window
     app2Icon.addEventListener('click', () => {
       window2.style.display = 'block';
     });
 
-    // Show the HTML editor window
     app3Icon.addEventListener('click', () => {
       window3.style.display = 'block';
     });
 
-    // Close the text editor window
+    app4Icon.addEventListener('click', () => {
+      window4.style.display = 'block';
+    });
+
     window1CloseButton.addEventListener('click', () => {
       window1.style.display = 'none';
     });
 
-    // Close the file explorer window
     window2CloseButton.addEventListener('click', () => {
       window2.style.display = 'none';
     });
 
-    // Close the HTML editor window
     window3CloseButton.addEventListener('click', () => {
       window3.style.display = 'none';
     });
 
-    // Make the window draggable
+    window4CloseButton.addEventListener('click', () => {
+      window4.style.display = 'none';
+    });
+
     function makeDraggable(windowElement, headerElement) {
       headerElement.addEventListener('mousedown', (e) => {
         isDragging = true;
@@ -298,16 +310,15 @@
       }
     }
 
-    // Make all windows draggable
-    makeDraggable(window1, window1Header);
-    makeDraggable(window2, window2Header);
-    makeDraggable(window3, window3Header);
+    makeDraggable(window1, document.getElementById('window1Header'));
+    makeDraggable(window2, document.getElementById('window2Header'));
+    makeDraggable(window3, document.getElementById('window3Header'));
+    makeDraggable(window4, document.getElementById('window4Header'));
 
-    // Update taskbar time and date every second
     setInterval(() => {
       const now = new Date();
       const time = now.toLocaleTimeString();
-      const date = now.toLocaleDateString(); // Get the date in MM/DD/YYYY format
+      const date = now.toLocaleDateString();
       taskbarTime.textContent = `${time} | ${date}`;
     }, 1000);
   </script>
