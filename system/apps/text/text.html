@@ -130,61 +130,6 @@
             background: #d4d4d4;
         }
 
-        /* Fake file explorer */
-        .file-explorer {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .file-explorer input {
-            width: 80%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .file-explorer button {
-            padding: 8px 15px;
-            background: #0078d7;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 5px;
-        }
-
-        .file-explorer button:hover {
-            background: #005fa3;
-        }
-
-        .file-explorer button.cancel {
-            background: #e1e1e1;
-            color: #333;
-        }
-
-        .file-explorer button.cancel:hover {
-            background: #ccc;
-        }
-
-        .file-explorer button.open {
-            background: #28a745;
-        }
-
-        .file-explorer button.open:hover {
-            background: #218838;
-        }
-
     </style>
 </head>
 <body>
@@ -192,8 +137,7 @@
         <header class="editor-header">
             <button onclick="toggleFileMenu()">File</button>
             <div id="file-menu">
-                <button onclick="showFileExplorer()">Save Content</button>
-                <button onclick="showOpenFileModal()">Open Content</button>
+                <button onclick="showSaveModal()">Save Content</button>
                 <button onclick="showModal()">Clear Content</button>
             </div>
         </header>
@@ -209,7 +153,7 @@
         </div>
     </div>
 
-    <!-- Modal for Alerts -->
+    <!-- Modal for Alerts (e.g. save confirmation) -->
     <div class="modal" id="alertModal">
         <div class="modal-content">
             <p id="alertMessage"></p>
@@ -217,38 +161,20 @@
         </div>
     </div>
 
-    <!-- Fake File Explorer Modal for Save -->
-    <div class="file-explorer" id="fileExplorer">
-        <h3>Save As</h3>
-        <label for="directory">Choose Directory:</label>
-        <input type="text" id="directory" value="Documents" placeholder="Enter directory name (default is Documents)">
-        <input type="text" id="fileName" placeholder="Enter file name">
-        <button onclick="downloadFile()">Save</button>
-        <button class="cancel" onclick="closeFileExplorer()">Cancel</button>
-    </div>
-
-    <!-- Fake File Explorer Modal for Open -->
-    <div class="file-explorer" id="openFileExplorer">
-        <h3>Open File</h3>
-        <label for="openDirectory">Enter directory location (default is Documents):</label>
-        <input type="text" id="openDirectory" value="Documents">
-        <input type="text" id="openFileName" placeholder="Enter file name">
-        <button class="open" onclick="openFile()">Open</button>
-        <button class="cancel" onclick="closeOpenFileExplorer()">Cancel</button>
+    <!-- Modal for Save Confirmation -->
+    <div class="modal" id="saveModal">
+        <div class="modal-content">
+            <p>Your content has been saved successfully!</p>
+            <button onclick="closeSaveModal()">OK</button>
+        </div>
     </div>
 
     <script>
         const editor = document.getElementById('text-editor');
         const modal = document.getElementById('clearModal');
         const alertModal = document.getElementById('alertModal');
+        const saveModal = document.getElementById('saveModal');
         const fileMenu = document.getElementById('file-menu');
-        const fileExplorer = document.getElementById('fileExplorer');
-        const openFileExplorer = document.getElementById('openFileExplorer');
-        const fileNameInput = document.getElementById('fileName');
-        const directoryInput = document.getElementById('directory');
-        const openFileNameInput = document.getElementById('openFileName');
-        const openDirectoryInput = document.getElementById('openDirectory');
-        const alertMessage = document.getElementById('alertMessage');
 
         // Load saved content from localStorage
         window.onload = () => {
@@ -275,29 +201,15 @@
             }
         });
 
-        // Show the fake file explorer to save the file
-        function showFileExplorer() {
-            fileExplorer.style.display = 'block';
-            fileMenu.style.display = 'none';
+        // Show save confirmation modal
+        function showSaveModal() {
+            localStorage.setItem('textEditorContent', editor.value); // Save to localStorage
+            saveModal.style.display = 'flex';
         }
 
-        // Close file explorer
-        function closeFileExplorer() {
-            fileExplorer.style.display = 'none';
-        }
-
-        // Download the file
-        function downloadFile() {
-            const directory = directoryInput.value || 'Documents';
-            const fileName = fileNameInput.value || 'untitled.txt';
-
-            const fileContent = editor.value;
-            const blob = new Blob([fileContent], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `${directory}/${fileName}`;
-            link.click();
-            closeFileExplorer();
+        // Close the save modal
+        function closeSaveModal() {
+            saveModal.style.display = 'none';
         }
 
         // Show modal for clearing content
@@ -315,34 +227,6 @@
             editor.value = '';
             localStorage.removeItem('textEditorContent');
             hideModal();
-        }
-
-        // Show the open file explorer
-        function showOpenFileModal() {
-            openFileExplorer.style.display = 'block';
-            fileMenu.style.display = 'none';
-        }
-
-        // Close the open file explorer
-        function closeOpenFileExplorer() {
-            openFileExplorer.style.display = 'none';
-        }
-
-        // Open file
-        function openFile() {
-            const directory = openDirectoryInput.value || 'Documents';
-            const fileName = openFileNameInput.value;
-            if (fileName) {
-                const savedContent = localStorage.getItem(fileName);
-                if (savedContent) {
-                    editor.value = savedContent;
-                    localStorage.setItem('textEditorContent', savedContent);
-                    showAlert('File opened!');
-                } else {
-                    showAlert('File not found!');
-                }
-            }
-            closeOpenFileExplorer();
         }
 
         // Show alert in modal
