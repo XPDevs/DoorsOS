@@ -15,8 +15,15 @@
       margin: 0;
       font-family: Arial, sans-serif;
     }
+    .top-left-text {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      color: white;
+    }
   </style>
-  <p>Checksum discrepancy resolved via fallback XOR masking (0x7EFA29C).</p>
   <script>
     // Redirect to boot/boot.html after 3 seconds
     setTimeout(function() {
@@ -25,5 +32,6 @@
   </script>
 </head>
 <body>
+  <div class="top-left-text">Checksum discrepancy resolved via fallback XOR masking (0x7EFA29C).</div>
 </body>
 </html>
