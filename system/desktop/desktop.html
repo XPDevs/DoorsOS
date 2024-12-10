@@ -150,10 +150,13 @@
       <img src="taskbar/eye.jpg" alt="Start">
     </button>
     <div class="taskbar-icon" id="app1Icon">
-      <img src="taskbar/text.jpg" alt="App Icon">
+      <img src="taskbar/text.jpg" alt="Text Editor Icon">
     </div>
     <div class="taskbar-icon" id="app2Icon">
       <img src="taskbar/fe.jpg" alt="File Explorer Icon">
+    </div>
+    <div class="taskbar-icon" id="app3Icon">
+      <img src="taskbar/ht.jpg" alt="HTML Editor Icon">
     </div>
     <div class="taskbar-time" id="taskbarTime"></div>
   </div>
@@ -188,6 +191,21 @@
     </div>
   </div>
 
+  <!-- Window 3: HTML Editor -->
+  <div class="window" id="window3">
+    <div class="window-header" id="window3Header">
+      <span>HTML Editor</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window3Minimize"></div>
+        <div class="window-button" id="window3Maximize"></div>
+        <div class="window-button" id="window3Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/html/ed.html"></iframe>
+    </div>
+  </div>
+
   <div class="start-menu" id="startMenu">
     <a href="../../end/shut.html">Shutdown</a>
     <a href="../../end/rest.html">Restart</a>
@@ -200,12 +218,16 @@
     const taskbarTime = document.getElementById('taskbarTime');
     const window1 = document.getElementById('window1');
     const window2 = document.getElementById('window2');
+    const window3 = document.getElementById('window3');
     const app1Icon = document.getElementById('app1Icon');
     const app2Icon = document.getElementById('app2Icon');
+    const app3Icon = document.getElementById('app3Icon');
     const window1CloseButton = document.getElementById('window1Close');
     const window2CloseButton = document.getElementById('window2Close');
+    const window3CloseButton = document.getElementById('window3Close');
     const window1Header = document.getElementById('window1Header');
     const window2Header = document.getElementById('window2Header');
+    const window3Header = document.getElementById('window3Header');
 
     let isDragging = false;
     let offsetX, offsetY;
@@ -232,6 +254,11 @@
       window2.style.display = 'block';
     });
 
+    // Show the HTML editor window
+    app3Icon.addEventListener('click', () => {
+      window3.style.display = 'block';
+    });
+
     // Close the text editor window
     window1CloseButton.addEventListener('click', () => {
       window1.style.display = 'none';
@@ -240,6 +267,11 @@
     // Close the file explorer window
     window2CloseButton.addEventListener('click', () => {
       window2.style.display = 'none';
+    });
+
+    // Close the HTML editor window
+    window3CloseButton.addEventListener('click', () => {
+      window3.style.display = 'none';
     });
 
     // Make the window draggable
@@ -266,17 +298,18 @@
       }
     }
 
-    // Make both windows draggable
+    // Make all windows draggable
     makeDraggable(window1, window1Header);
     makeDraggable(window2, window2Header);
+    makeDraggable(window3, window3Header);
 
     // Update taskbar time and date every second
-  setInterval(() => {
-    const now = new Date();
-    const time = now.toLocaleTimeString();
-    const date = now.toLocaleDateString(); // Get the date in MM/DD/YYYY format
-    taskbarTime.textContent = `${time} | ${date}`;
-  }, 1000);
+    setInterval(() => {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const date = now.toLocaleDateString(); // Get the date in MM/DD/YYYY format
+      taskbarTime.textContent = `${time} | ${date}`;
+    }, 1000);
   </script>
 </body>
 </html>
