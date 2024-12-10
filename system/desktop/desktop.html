@@ -152,9 +152,13 @@
     <div class="taskbar-icon" id="app1Icon">
       <img src="taskbar/text.jpg" alt="App Icon">
     </div>
+    <div class="taskbar-icon" id="app2Icon">
+      <img src="taskbar/fe.jpg" alt="File Explorer Icon">
+    </div>
     <div class="taskbar-time" id="taskbarTime"></div>
   </div>
 
+  <!-- Window 1: Text Editor -->
   <div class="window" id="window1">
     <div class="window-header" id="window1Header">
       <span>Text Editor</span>
@@ -169,6 +173,21 @@
     </div>
   </div>
 
+  <!-- Window 2: File Explorer -->
+  <div class="window" id="window2">
+    <div class="window-header" id="window2Header">
+      <span>File Explorer</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window2Minimize"></div>
+        <div class="window-button" id="window2Maximize"></div>
+        <div class="window-button" id="window2Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/file-explorer/file.html"></iframe>
+    </div>
+  </div>
+
   <div class="start-menu" id="startMenu">
     <a href="../../end/shut.html">Shutdown</a>
     <a href="../../end/rest.html">Restart</a>
@@ -180,9 +199,13 @@
     const startMenu = document.getElementById('startMenu');
     const taskbarTime = document.getElementById('taskbarTime');
     const window1 = document.getElementById('window1');
+    const window2 = document.getElementById('window2');
     const app1Icon = document.getElementById('app1Icon');
+    const app2Icon = document.getElementById('app2Icon');
     const window1CloseButton = document.getElementById('window1Close');
-    const windowHeader = document.getElementById('window1Header');
+    const window2CloseButton = document.getElementById('window2Close');
+    const window1Header = document.getElementById('window1Header');
+    const window2Header = document.getElementById('window2Header');
 
     let isDragging = false;
     let offsetX, offsetY;
@@ -199,48 +222,61 @@
       }
     });
 
-    // Show the app window when the icon is clicked
+    // Show the text editor window
     app1Icon.addEventListener('click', () => {
       window1.style.display = 'block';
     });
 
-    // Close the window when the close button is clicked
+    // Show the file explorer window
+    app2Icon.addEventListener('click', () => {
+      window2.style.display = 'block';
+    });
+
+    // Close the text editor window
     window1CloseButton.addEventListener('click', () => {
       window1.style.display = 'none';
     });
 
-    // Make the window draggable
-    windowHeader.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      offsetX = e.clientX - window1.offsetLeft;
-      offsetY = e.clientY - window1.offsetTop;
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+    // Close the file explorer window
+    window2CloseButton.addEventListener('click', () => {
+      window2.style.display = 'none';
     });
 
-    function onMouseMove(e) {
-      if (isDragging) {
-        window1.style.left = `${e.clientX - offsetX}px`;
-        window1.style.top = `${e.clientY - offsetY}px`;
+    // Make the window draggable
+    function makeDraggable(windowElement, headerElement) {
+      headerElement.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - windowElement.offsetLeft;
+        offsetY = e.clientY - windowElement.offsetTop;
+        document.addEventListener('mousemove', dragWindow);
+        document.addEventListener('mouseup', stopDragging);
+      });
+
+      function dragWindow(e) {
+        if (isDragging) {
+          windowElement.style.left = e.clientX - offsetX + 'px';
+          windowElement.style.top = e.clientY - offsetY + 'px';
+        }
+      }
+
+      function stopDragging() {
+        isDragging = false;
+        document.removeEventListener('mousemove', dragWindow);
+        document.removeEventListener('mouseup', stopDragging);
       }
     }
 
-    function onMouseUp() {
-      isDragging = false;
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    }
+    // Make both windows draggable
+    makeDraggable(window1, window1Header);
+    makeDraggable(window2, window2Header);
 
-    // Update the time dynamically
-    function updateTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const date = now.toLocaleDateString();
-      taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
+    // Update taskbar time and date every second
+  setInterval(() => {
+    const now = new Date();
+    const time = now.toLocaleTimeString();
+    const date = now.toLocaleDateString(); // Get the date in MM/DD/YYYY format
+    taskbarTime.textContent = `${time} | ${date}`;
+  }, 1000);
   </script>
 </body>
 </html>
