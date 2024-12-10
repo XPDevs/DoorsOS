@@ -231,96 +231,113 @@
   </div>
 
   <script>
-    const startButton = document.getElementById('startButton');
-    const startMenu = document.getElementById('startMenu');
-    const taskbarTime = document.getElementById('taskbarTime');
-    const window1 = document.getElementById('window1');
-    const window2 = document.getElementById('window2');
-    const window3 = document.getElementById('window3');
-    const window4 = document.getElementById('window4');
-    const app1Icon = document.getElementById('app1Icon');
-    const app2Icon = document.getElementById('app2Icon');
-    const app3Icon = document.getElementById('app3Icon');
-    const app4Icon = document.getElementById('app4Icon');
-    const window1CloseButton = document.getElementById('window1Close');
-    const window2CloseButton = document.getElementById('window2Close');
-    const window3CloseButton = document.getElementById('window3Close');
-    const window4CloseButton = document.getElementById('window4Close');
-    
-    let isDragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
+   // JavaScript for Desktop Simulation
 
-    startButton.addEventListener('click', () => {
-      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-    });
+const startButton = document.getElementById('startButton');
+const startMenu = document.getElementById('startMenu');
+const taskbarTime = document.getElementById('taskbarTime');
 
-    app1Icon.addEventListener('click', () => {
-      window1.style.display = 'block';
-    });
+const appIcons = [
+  { id: 'app1Icon', windowId: 'window1' },
+  { id: 'app2Icon', windowId: 'window2' },
+  { id: 'app3Icon', windowId: 'window3' },
+  { id: 'app4Icon', windowId: 'window4' },
+];
 
-    app2Icon.addEventListener('click', () => {
-      window2.style.display = 'block';
-    });
+// Set up draggable windows
+const draggableWindows = [
+  { windowId: 'window1', headerId: 'window1Header' },
+  { windowId: 'window2', headerId: 'window2Header' },
+  { windowId: 'window3', headerId: 'window3Header' },
+  { windowId: 'window4', headerId: 'window4Header' },
+];
 
-    app3Icon.addEventListener('click', () => {
-      window3.style.display = 'block';
-    });
+let isDragging = false;
+let offsetX, offsetY;
 
-    app4Icon.addEventListener('click', () => {
-      window4.style.display = 'block';
-    });
+function updateTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const date = now.toLocaleDateString();
+  taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
+}
+setInterval(updateTime, 1000);
+updateTime();
 
-    window1CloseButton.addEventListener('click', () => {
-      window1.style.display = 'none';
-    });
+startButton.addEventListener('click', () => {
+  startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+});
 
-    window2CloseButton.addEventListener('click', () => {
-      window2.style.display = 'none';
-    });
+window.addEventListener('click', (e) => {
+  if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+    startMenu.style.display = 'none';
+  }
+});
 
-    window3CloseButton.addEventListener('click', () => {
-      window3.style.display = 'none';
-    });
+// Window controls and draggable functionality
+function makeDraggable(windowElement, headerElement) {
+  headerElement.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - windowElement.offsetLeft;
+    offsetY = e.clientY - windowElement.offsetTop;
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
-    window4CloseButton.addEventListener('click', () => {
-      window4.style.display = 'none';
-    });
-
-    function makeDraggable(windowElement, headerElement) {
-      headerElement.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        offsetX = e.clientX - windowElement.offsetLeft;
-        offsetY = e.clientY - windowElement.offsetTop;
-        document.addEventListener('mousemove', dragWindow);
-        document.addEventListener('mouseup', stopDragging);
-      });
-
-      function dragWindow(e) {
-        if (isDragging) {
-          windowElement.style.left = e.clientX - offsetX + 'px';
-          windowElement.style.top = e.clientY - offsetY + 'px';
-        }
-      }
-
-      function stopDragging() {
-        isDragging = false;
-        document.removeEventListener('mousemove', dragWindow);
-        document.removeEventListener('mouseup', stopDragging);
-      }
+  function onMouseMove(e) {
+    if (isDragging) {
+      windowElement.style.left = `${e.clientX - offsetX}px`;
+      windowElement.style.top = `${e.clientY - offsetY}px`;
     }
+  }
 
-    makeDraggable(window1, document.getElementById('window1Header'));
-    makeDraggable(window2, document.getElementById('window2Header'));
-    makeDraggable(window3, document.getElementById('window3Header'));
-    makeDraggable(window4, document.getElementById('window4Header'));
+  function onMouseUp() {
+    isDragging = false;
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+}
 
-    setInterval(() => {
-      const now = new Date();
-      const time = now.toLocaleTimeString();
-      const date = now.toLocaleDateString();
-      taskbarTime.textContent = `${time} | ${date}`;
-    }, 1000);
+draggableWindows.forEach(({ windowId, headerId }) => {
+  const windowElement = document.getElementById(windowId);
+  const headerElement = document.getElementById(headerId);
+  makeDraggable(windowElement, headerElement);
+});
+
+appIcons.forEach(({ id, windowId }) => {
+  const icon = document.getElementById(id);
+  const windowElement = document.getElementById(windowId);
+
+  icon.addEventListener('click', () => {
+    windowElement.style.display = 'block';
+  });
+
+  const closeButton = windowElement.querySelector('.window-button:nth-child(3)');
+  const maximizeButton = windowElement.querySelector('.window-button:nth-child(2)');
+  const minimizeButton = windowElement.querySelector('.window-button:nth-child(1)');
+
+  closeButton.addEventListener('click', () => {
+    windowElement.style.display = 'none';
+  });
+
+  maximizeButton.addEventListener('click', () => {
+    const isFullScreen = windowElement.classList.toggle('fullscreen');
+    if (isFullScreen) {
+      windowElement.style.left = '0';
+      windowElement.style.top = '0';
+      windowElement.style.width = '100vw';
+      windowElement.style.height = '100vh';
+    } else {
+      windowElement.removeAttribute('style');
+    }
+  });
+
+  minimizeButton.addEventListener('click', () => {
+    windowElement.style.display = 'none';
+  });
+});
+
   </script>
 </body>
 </html>
