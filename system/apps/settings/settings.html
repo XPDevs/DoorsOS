@@ -3,63 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stored Credentials</title>
+    <title>Settings</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
         }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
+
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            border-right: 1px solid #ddd;
+            padding: 10px;
         }
-        h2 {
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
             color: #333;
         }
-        .credentials {
-            margin-top: 20px;
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
         }
-        .credentials p {
-            font-size: 18px;
-            color: #555;
+
+        .sidebar ul li {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #ddd;
+        }
+
+        .sidebar ul li.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
+    <div class="sidebar">
+        <h2>Settings</h2>
+        <ul>
+            <li class="active" data-section="system">System</li>
+            <li data-section="devices">Devices</li>
+            <li data-section="network">Network & Internet</li>
+            <li data-section="personalization">Personalization</li>
+            <li data-section="accounts">Accounts</li>
+            <li data-section="privacy">Privacy</li>
+            <li data-section="update">Update & Security</li>
+        </ul>
+    </div>
 
-    <div class="container">
-        <h2>Stored Credentials</h2>
-        <div class="credentials">
-            <p><strong>Username:</strong> <span id="username-display">Loading...</span></p>
-            <p><strong>Password:</strong> <span id="password-display">Loading...</span></p>
+    <div class="content">
+        <div class="section" id="system-section">
+            <h1>System</h1>
+            <p>Manage display, notifications, power, and storage options.</p>
+        </div>
+
+        <div class="section" id="devices-section" style="display: none;">
+            <h1>Devices</h1>
+            <p>Manage connected devices, Bluetooth, and printers.</p>
+        </div>
+
+        <div class="section" id="network-section" style="display: none;">
+            <h1>Network & Internet</h1>
+            <p>Configure Wi-Fi, Ethernet, and VPN settings.</p>
+        </div>
+
+        <div class="section" id="personalization-section" style="display: none;">
+            <h1>Personalization</h1>
+            <p>Customize themes, colors, lock screen, and desktop background.</p>
+        </div>
+
+        <div class="section" id="accounts-section" style="display: none;">
+            <h1>Accounts</h1>
+            <h2>Change Password</h2>
+            <div class="input-group">
+                <label for="old-password">Old Password</label>
+                <input type="password" id="old-password">
+            </div>
+            <div class="input-group">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password">
+            </div>
+            <button class="button" id="change-password">Change Password</button>
+            <p class="message" id="password-message"></p>
+        </div>
+
+        <div class="section" id="privacy-section" style="display: none;">
+            <h1>Privacy</h1>
+            <p>Control app permissions and privacy settings.</p>
+        </div>
+
+        <div class="section" id="update-section" style="display: none;">
+            <h1>Update & Security</h1>
+            <p>Check for updates, manage recovery options, and backups.</p>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const usernameDisplay = document.getElementById("username-display");
-            const passwordDisplay = document.getElementById("password-display");
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebarItems = document.querySelectorAll(".sidebar ul li");
+            const sections = document.querySelectorAll(".section");
+            const passwordMessage = document.getElementById("password-message");
 
-            const storedUsername = localStorage.getItem("username");
-            const storedPassword = localStorage.getItem("password");
+            // Switching sections
+            sidebarItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    // Remove active class
+                    sidebarItems.forEach(i => i.classList.remove("active"));
+                    // Add active class to clicked item
+                    item.classList.add("active");
 
-            if (storedUsername && storedPassword) {
-                usernameDisplay.textContent = storedUsername;
-                passwordDisplay.textContent = storedPassword;
-            } else {
-                usernameDisplay.textContent = "No username found.";
-                passwordDisplay.textContent = "No password found.";
-            }
+                    // Hide all sections
+                    sections.forEach(section => section.style.display = "none");
+
+                    // Show selected section
+                    const sectionId = `${item.dataset.section}-section`;
+                    document.getElementById(sectionId).style.display = "block";
+                });
+            });
+
+            // Change password functionality
+            document.getElementById("change-password").addEventListener("click", () => {
+                const oldPassword = document.getElementById("old-password").value;
+                const newPassword = document.getElementById("new-password").value;
+                const storedPassword = localStorage.getItem("password");
+
+                if (!oldPassword || !newPassword) {
+                    passwordMessage.textContent = "Please fill out both fields.";
+                    passwordMessage.style.color = "red";
+                    return;
+                }
+
+                if (oldPassword !== storedPassword) {
+                    passwordMessage.textContent = "Old password is incorrect.";
+                    passwordMessage.style.color = "red";
+                    return;
+                }
+
+                localStorage.setItem("password", newPassword);
+                passwordMessage.textContent = "Password changed successfully!";
+                passwordMessage.style.color = "green";
+            });
         });
     </script>
-    
 </body>
 </html>
