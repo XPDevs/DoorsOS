@@ -31,12 +31,9 @@
       box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
       width: 100%;
     }
-
-    /* Add space between each item except the time */
     .taskbar > *:not(.taskbar-time) {
-      margin-right: 15px; /* Adds spacing between items except the time */
+      margin-right: 15px;
     }
-
     .taskbar-icon {
       width: 30px;
       height: 30px;
@@ -48,7 +45,6 @@
       align-items: center;
       cursor: pointer;
       transition: background 0.3s;
-      position: relative;
     }
     .taskbar-icon:hover {
       background-color: #555;
@@ -58,29 +54,11 @@
       height: 100%;
       object-fit: cover;
     }
-    .taskbar-icon::after {
-      content: "File Explorer"; /* Tooltip text */
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #333;
-      color: #fff;
-      padding: 5px;
-      border-radius: 4px;
-      font-size: 12px;
-      display: none;
-    }
-    .taskbar-icon:hover::after {
-      display: block;
-    }
-
     .taskbar-time {
       font-size: 14px;
       color: #fff;
-      margin-left: auto; /* Ensures time aligns to the right */
+      margin-left: auto;
     }
-
     .start-button {
       background: none;
       border: none;
@@ -114,7 +92,6 @@
     .start-menu a:hover {
       background: #555;
     }
-
     .window {
       width: 300px;
       height: 400px;
@@ -125,8 +102,7 @@
       left: 50px;
       border-radius: 5px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      cursor: move;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .window-header {
       background: #333;
@@ -139,44 +115,28 @@
     }
     .window-buttons {
       display: flex;
-      flex-direction: column; /* Stack buttons vertically */
-      align-items: center; /* Center buttons horizontally */
-      justify-content: center; /* Center the buttons vertically */
       margin-left: auto;
-      margin-top: 5px;
-      margin-bottom: 5px;
     }
     .window-button {
-      width: 12px;  /* Size of the buttons */
+      width: 12px;
       height: 12px;
-      background-color: #ccc;
-      margin: 2px;
-      border-radius: 50%;  /* Circular button */
+      margin-left: 5px;
+      border-radius: 50%;
       cursor: pointer;
     }
-    .window-button:hover {
-      background-color: #aaa;  /* Darker color on hover */
-    }
     .window-button:nth-child(1) {
-      background-color: #1e90ff; /* Blue for minimize button */
+      background-color: #1e90ff;
     }
     .window-button:nth-child(2) {
-      background-color: #00ff00; /* Green for maximize button */
+      background-color: #00ff00;
     }
     .window-button:nth-child(3) {
-      background-color: #ff0000; /* Red for close button */
+      background-color: #ff0000;
     }
-    .window-button:active {
-      background-color: #888;  /* Darker color when clicked */
-    }
-    .window-resize-handle {
-      width: 15px;
-      height: 15px;
-      background-color: #ccc;
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      cursor: se-resize;
+    .window-content iframe {
+      width: 100%;
+      height: calc(100% - 40px); /* Adjusted to account for header height */
+      border: none;
     }
   </style>
 </head>
@@ -186,25 +146,23 @@
       <img src="taskbar/eye.jpg" alt="Start">
     </button>
     <div class="taskbar-icon" id="app1Icon">
-      <img src="taskbar/fe.jpg" alt="App Icon"> <!-- App Icon -->
+      <img src="taskbar/fe.jpg" alt="App Icon">
     </div>
     <div class="taskbar-time" id="taskbarTime"></div>
   </div>
 
-  <!-- Fake Window Example -->
   <div class="window" id="window1">
     <div class="window-header" id="window1Header">
+      <span>Fake App</span>
       <div class="window-buttons">
-        <div class="window-button" id="window1Minimize"></div>  <!-- Minimize Button -->
-        <div class="window-button" id="window1Maximize"></div>  <!-- Maximize Button -->
-        <div class="window-button" id="window1Close"></div>      <!-- Close Button -->
+        <div class="window-button" id="window1Minimize"></div>
+        <div class="window-button" id="window1Maximize"></div>
+        <div class="window-button" id="window1Close"></div>
       </div>
-      Window 1
     </div>
     <div class="window-content">
-      <p>Fake window content goes here.</p>
+      <iframe src="../apps/file-explorer/file.html"></iframe>
     </div>
-    <div class="window-resize-handle" id="window1Resize"></div>
   </div>
 
   <div class="start-menu" id="startMenu">
@@ -219,12 +177,15 @@
     const taskbarTime = document.getElementById('taskbarTime');
     const window1 = document.getElementById('window1');
     const app1Icon = document.getElementById('app1Icon');
-    let inactivityTimer;
+    const window1CloseButton = document.getElementById('window1Close');
+    const windowHeader = document.getElementById('window1Header');
+
+    let isDragging = false;
+    let offsetX, offsetY;
 
     // Toggle the start menu
     startButton.addEventListener('click', () => {
       startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-      resetInactivityTimer();
     });
 
     // Close the start menu when clicking outside
@@ -232,47 +193,19 @@
       if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
         startMenu.style.display = 'none';
       }
-      resetInactivityTimer();
     });
 
-    // Update the time and date dynamically
-    function updateTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const date = now.toLocaleDateString();
-      taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
-    }
-
-    // Reset the inactivity timer
-    function resetInactivityTimer() {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        window.location.href = "../login/login.html";
-      }, 60000); // 1 minute (60000 ms)
-    }
-
-    // Detect activity and reset timer
-    window.addEventListener('mousemove', resetInactivityTimer);
-    window.addEventListener('keydown', resetInactivityTimer);
-
-    // Update the time every second
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call to set the time immediately
-
-    // Start the inactivity timer on page load
-    resetInactivityTimer();
-
-    // Show the app window when clicked
+    // Show the app window when the icon is clicked
     app1Icon.addEventListener('click', () => {
-      window1.style.display = 'block'; // Show the window
+      window1.style.display = 'block';
     });
 
-    // Basic window drag functionality
-    const windowHeader = document.getElementById('window1Header');
-    let isDragging = false;
-    let offsetX, offsetY;
+    // Close the window when the close button is clicked
+    window1CloseButton.addEventListener('click', () => {
+      window1.style.display = 'none';
+    });
 
+    // Make the window draggable
     windowHeader.addEventListener('mousedown', (e) => {
       isDragging = true;
       offsetX = e.clientX - window1.offsetLeft;
@@ -283,8 +216,8 @@
 
     function onMouseMove(e) {
       if (isDragging) {
-        window1.style.left = e.clientX - offsetX + 'px';
-        window1.style.top = e.clientY - offsetY + 'px';
+        window1.style.left = `${e.clientX - offsetX}px`;
+        window1.style.top = `${e.clientY - offsetY}px`;
       }
     }
 
@@ -293,6 +226,17 @@
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     }
+
+    // Update the time dynamically
+    function updateTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const date = now.toLocaleDateString();
+      taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 </body>
 </html>
