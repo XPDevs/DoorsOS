@@ -133,9 +133,13 @@
     .window-button:nth-child(3) {
       background-color: #ff0000;
     }
+    .window-content {
+      width: 100%;
+      height: calc(100% - 40px); /* Adjusted to exclude the header height */
+    }
     .window-content iframe {
       width: 100%;
-      height: calc(100% - 40px); /* Adjusted to account for header height */
+      height: 100%;
       border: none;
     }
   </style>
