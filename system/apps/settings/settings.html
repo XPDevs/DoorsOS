@@ -62,12 +62,6 @@
             margin-bottom: 20px;
         }
 
-        .section h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
         .input-group {
             margin-bottom: 15px;
         }
@@ -78,35 +72,50 @@
             font-size: 14px;
         }
 
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
         .input-group input[type="checkbox"] {
             width: auto;
         }
 
-        .button {
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
             padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
+            margin: 5px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .button:hover {
-            background-color: #45a049;
+        .modal-content .restart-later {
+            background-color: #ccc;
         }
 
-        .message {
-            margin-top: 10px;
-            font-size: 14px;
+        .modal-content .restart-now {
+            background-color: #4CAF50;
+            color: white;
         }
     </style>
 </head>
@@ -114,211 +123,52 @@
     <div class="sidebar">
         <h2>Settings</h2>
         <ul>
-            <li class="active" data-section="system">System</li>
-            <li data-section="devices">Devices</li>
-            <li data-section="network">Network & Internet</li>
-            <li data-section="personalization">Personalization</li>
-            <li data-section="accounts">Accounts</li>
-            <li data-section="privacy">Privacy</li>
-            <li data-section="update">Update & Security</li>
-            <li data-section="sound">Sound</li>
-            <li data-section="time">Date & Time</li>
+            <li class="active" data-section="personalization">Personalization</li>
         </ul>
     </div>
 
     <div class="content">
-        <!-- System Section -->
-        <div class="section" id="system-section">
-            <h1>System</h1>
-            <div class="input-group">
-                <label for="brightness">Brightness</label>
-                <input type="range" id="brightness" min="0" max="100" value="50">
-            </div>
-            <div class="input-group">
-                <label for="volume">Volume</label>
-                <input type="range" id="volume" min="0" max="100" value="75">
-            </div>
-            <div class="input-group">
-                <label for="storage">Storage</label>
-                <select id="storage">
-                    <option value="500GB">500GB</option>
-                    <option value="1TB">1TB</option>
-                    <option value="2TB">2TB</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Devices Section -->
-        <div class="section" id="devices-section" style="display: none;">
-            <h1>Devices</h1>
-            <div class="input-group">
-                <label for="bluetooth">Bluetooth</label>
-                <input type="checkbox" id="bluetooth"> Enable Bluetooth
-            </div>
-            <div class="input-group">
-                <label for="printer">Printer</label>
-                <select id="printer">
-                    <option value="HP">HP</option>
-                    <option value="Canon">Canon</option>
-                    <option value="Epson">Epson</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Network & Internet Section -->
-        <div class="section" id="network-section" style="display: none;">
-            <h1>Network & Internet</h1>
-            <div class="input-group">
-                <label for="wifi">Wi-Fi</label>
-                <input type="checkbox" id="wifi"> Enable Wi-Fi
-            </div>
-            <div class="input-group">
-                <label for="vpn">VPN</label>
-                <select id="vpn">
-                    <option value="None">None</option>
-                    <option value="NordVPN">NordVPN</option>
-                    <option value="ExpressVPN">ExpressVPN</option>
-                </select>
-            </div>
-        </div>
-
         <!-- Personalization Section -->
-        <div class="section" id="personalization-section" style="display: none;">
+        <div class="section" id="personalization-section">
             <h1>Personalization</h1>
+            <h2>Taskbar</h2>
             <div class="input-group">
-                <label for="theme">Theme</label>
-                <select id="theme">
-                    <option value="Light">Light</option>
-                    <option value="Dark">Dark</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="background">Background</label>
-                <input type="file" id="background">
-            </div>
-        </div>
-
-        <!-- Accounts Section -->
-        <div class="section" id="accounts-section" style="display: none;">
-            <h1>Accounts</h1>
-            <h2>Change Password</h2>
-            <div class="input-group">
-                <label for="old-password">Old Password</label>
-                <input type="password" id="old-password">
-            </div>
-            <div class="input-group">
-                <label for="new-password">New Password</label>
-                <input type="password" id="new-password">
-            </div>
-            <button class="button" id="change-password">Change Password</button>
-            <p class="message" id="password-message"></p>
-        </div>
-
-        <!-- Privacy Section -->
-        <div class="section" id="privacy-section" style="display: none;">
-            <h1>Privacy</h1>
-            <div class="input-group">
-                <label for="location">Location</label>
-                <input type="checkbox" id="location"> Allow apps to access location
-            </div>
-            <div class="input-group">
-                <label for="camera">Camera</label>
-                <input type="checkbox" id="camera"> Allow apps to access camera
-            </div>
-        </div>
-
-        <!-- Update & Security Section -->
-        <div class="section" id="update-section" style="display: none;">
-            <h1>Update & Security</h1>
-            <div class="input-group">
-                <label for="update-check">Check for Updates</label>
-                <button class="button" id="update-check">Check Now</button>
-            </div>
-            <div class="input-group">
-                <label for="backup">Backup</label>
-                <input type="checkbox" id="backup"> Enable automatic backups
-            </div>
-        </div>
-
-        <!-- Sound Section -->
-        <div class="section" id="sound-section" style="display: none;">
-            <h1>Sound</h1>
-            <div class="input-group">
-                <label for="sound">Sound Settings</label>
-                <select id="sound">
-                    <option value="Default">Default</option>
-                    <option value="Loud">Loud</option>
-                    <option value="Silent">Silent</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Date & Time Section -->
-        <div class="section" id="time-section" style="display: none;">
-            <h1>Date & Time</h1>
-            <div class="input-group">
-                <label for="timezone">Time Zone</label>
-                <select id="timezone">
-                    <option value="GMT">GMT</option>
-                    <option value="EST">EST</option>
-                    <option value="PST">PST</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="format">Date Format</label>
-                <select id="format">
-                    <option value="MM-DD-YYYY">MM-DD-YYYY</option>
-                    <option value="DD-MM-YYYY">DD-MM-YYYY</option>
-                </select>
+                <label for="taskbar-overlay">
+                    <input type="checkbox" id="taskbar-overlay"> Enable Taskbar Overlay
+                </label>
             </div>
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal" id="restart-modal">
+        <div class="modal-content">
+            <h2>System Restart Required</h2>
+            <p>The system needs to restart to apply changes. Please choose an option:</p>
+            <button class="restart-later">Restart Later</button>
+            <button class="restart-now">Restart Now</button>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sidebarItems = document.querySelectorAll(".sidebar ul li");
-            const sections = document.querySelectorAll(".section");
-            const passwordMessage = document.getElementById("password-message");
+        const taskbarOverlayCheckbox = document.getElementById('taskbar-overlay');
+        const restartModal = document.getElementById('restart-modal');
+        const restartLaterButton = document.querySelector('.restart-later');
+        const restartNowButton = document.querySelector('.restart-now');
 
-            // Switching sections
-            sidebarItems.forEach(item => {
-                item.addEventListener("click", () => {
-                    // Remove active class
-                    sidebarItems.forEach(i => i.classList.remove("active"));
-                    // Add active class to clicked item
-                    item.classList.add("active");
+        // Show modal when the checkbox is toggled
+        taskbarOverlayCheckbox.addEventListener('change', () => {
+            restartModal.style.display = 'flex';
+        });
 
-                    // Hide all sections
-                    sections.forEach(section => section.style.display = "none");
+        // Close modal on "Restart Later"
+        restartLaterButton.addEventListener('click', () => {
+            restartModal.style.display = 'none';
+        });
 
-                    // Show selected section
-                    const sectionId = `${item.dataset.section}-section`;
-                    document.getElementById(sectionId).style.display = "block";
-                });
-            });
-
-            // Change password functionality
-            document.getElementById("change-password").addEventListener("click", () => {
-                const oldPassword = document.getElementById("old-password").value;
-                const newPassword = document.getElementById("new-password").value;
-                const storedPassword = localStorage.getItem("password");
-
-                if (!oldPassword || !newPassword) {
-                    passwordMessage.textContent = "Please fill out both fields.";
-                    passwordMessage.style.color = "red";
-                    return;
-                }
-
-                if (oldPassword !== storedPassword) {
-                    passwordMessage.textContent = "Old password is incorrect.";
-                    passwordMessage.style.color = "red";
-                    return;
-                }
-
-                localStorage.setItem("password", newPassword);
-                passwordMessage.textContent = "Password changed successfully!";
-                passwordMessage.style.color = "green";
-            });
+        // Redirect to another page on "Restart Now"
+        restartNowButton.addEventListener('click', () => {
+            window.location.href = '../../../end/rest.html';
         });
     </script>
 </body>
