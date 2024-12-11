@@ -22,15 +22,20 @@
       color: #ffffff;
     }
     .taskbar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      background: #333;
-      height: 40px;
-      padding: 0 10px;
-      box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
-      width: 100%;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #333;
+  height: 40px;
+  padding: 0 10px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  position: fixed; /* This keeps the taskbar fixed at the bottom */
+  bottom: 0; /* Ensures the taskbar stays at the bottom */
+  left: 0; /* Keeps the taskbar full width */
+  z-index: 1000; /* Ensures the taskbar stays on top of other content */
+}
+
     .taskbar > *:not(.taskbar-time) {
       margin-right: 15px;
     }
