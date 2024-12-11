@@ -78,12 +78,17 @@
             font-size: 14px;
         }
 
-        .input-group input {
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 8px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+
+        .input-group input[type="checkbox"] {
+            width: auto;
         }
 
         .button {
@@ -116,30 +121,84 @@
             <li data-section="accounts">Accounts</li>
             <li data-section="privacy">Privacy</li>
             <li data-section="update">Update & Security</li>
+            <li data-section="sound">Sound</li>
+            <li data-section="time">Date & Time</li>
         </ul>
     </div>
 
     <div class="content">
+        <!-- System Section -->
         <div class="section" id="system-section">
             <h1>System</h1>
-            <p>Manage display, notifications, power, and storage options.</p>
+            <div class="input-group">
+                <label for="brightness">Brightness</label>
+                <input type="range" id="brightness" min="0" max="100" value="50">
+            </div>
+            <div class="input-group">
+                <label for="volume">Volume</label>
+                <input type="range" id="volume" min="0" max="100" value="75">
+            </div>
+            <div class="input-group">
+                <label for="storage">Storage</label>
+                <select id="storage">
+                    <option value="500GB">500GB</option>
+                    <option value="1TB">1TB</option>
+                    <option value="2TB">2TB</option>
+                </select>
+            </div>
         </div>
 
+        <!-- Devices Section -->
         <div class="section" id="devices-section" style="display: none;">
             <h1>Devices</h1>
-            <p>Manage connected devices, Bluetooth, and printers.</p>
+            <div class="input-group">
+                <label for="bluetooth">Bluetooth</label>
+                <input type="checkbox" id="bluetooth"> Enable Bluetooth
+            </div>
+            <div class="input-group">
+                <label for="printer">Printer</label>
+                <select id="printer">
+                    <option value="HP">HP</option>
+                    <option value="Canon">Canon</option>
+                    <option value="Epson">Epson</option>
+                </select>
+            </div>
         </div>
 
+        <!-- Network & Internet Section -->
         <div class="section" id="network-section" style="display: none;">
             <h1>Network & Internet</h1>
-            <p>Configure Wi-Fi, Ethernet, and VPN settings.</p>
+            <div class="input-group">
+                <label for="wifi">Wi-Fi</label>
+                <input type="checkbox" id="wifi"> Enable Wi-Fi
+            </div>
+            <div class="input-group">
+                <label for="vpn">VPN</label>
+                <select id="vpn">
+                    <option value="None">None</option>
+                    <option value="NordVPN">NordVPN</option>
+                    <option value="ExpressVPN">ExpressVPN</option>
+                </select>
+            </div>
         </div>
 
+        <!-- Personalization Section -->
         <div class="section" id="personalization-section" style="display: none;">
             <h1>Personalization</h1>
-            <p>Customize themes, colors, lock screen, and desktop background.</p>
+            <div class="input-group">
+                <label for="theme">Theme</label>
+                <select id="theme">
+                    <option value="Light">Light</option>
+                    <option value="Dark">Dark</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="background">Background</label>
+                <input type="file" id="background">
+            </div>
         </div>
 
+        <!-- Accounts Section -->
         <div class="section" id="accounts-section" style="display: none;">
             <h1>Accounts</h1>
             <h2>Change Password</h2>
@@ -155,14 +214,63 @@
             <p class="message" id="password-message"></p>
         </div>
 
+        <!-- Privacy Section -->
         <div class="section" id="privacy-section" style="display: none;">
             <h1>Privacy</h1>
-            <p>Control app permissions and privacy settings.</p>
+            <div class="input-group">
+                <label for="location">Location</label>
+                <input type="checkbox" id="location"> Allow apps to access location
+            </div>
+            <div class="input-group">
+                <label for="camera">Camera</label>
+                <input type="checkbox" id="camera"> Allow apps to access camera
+            </div>
         </div>
 
+        <!-- Update & Security Section -->
         <div class="section" id="update-section" style="display: none;">
             <h1>Update & Security</h1>
-            <p>Check for updates, manage recovery options, and backups.</p>
+            <div class="input-group">
+                <label for="update-check">Check for Updates</label>
+                <button class="button" id="update-check">Check Now</button>
+            </div>
+            <div class="input-group">
+                <label for="backup">Backup</label>
+                <input type="checkbox" id="backup"> Enable automatic backups
+            </div>
+        </div>
+
+        <!-- Sound Section -->
+        <div class="section" id="sound-section" style="display: none;">
+            <h1>Sound</h1>
+            <div class="input-group">
+                <label for="sound">Sound Settings</label>
+                <select id="sound">
+                    <option value="Default">Default</option>
+                    <option value="Loud">Loud</option>
+                    <option value="Silent">Silent</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Date & Time Section -->
+        <div class="section" id="time-section" style="display: none;">
+            <h1>Date & Time</h1>
+            <div class="input-group">
+                <label for="timezone">Time Zone</label>
+                <select id="timezone">
+                    <option value="GMT">GMT</option>
+                    <option value="EST">EST</option>
+                    <option value="PST">PST</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="format">Date Format</label>
+                <select id="format">
+                    <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+                    <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                </select>
+            </div>
         </div>
     </div>
 
