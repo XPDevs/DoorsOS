@@ -334,7 +334,10 @@ appIcons.forEach(({ id, windowId }) => {
       windowElement.style.width = '100vw';
       windowElement.style.height = '100vh';
     } else {
-      windowElement.removeAttribute('style');
+      windowElement.style.left = '50px';
+      windowElement.style.top = '50px';
+      windowElement.style.width = '300px';
+      windowElement.style.height = '400px';
     }
   });
 
