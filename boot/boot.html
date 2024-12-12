@@ -48,10 +48,33 @@
   </div>
 
   <script>
+    let shiftHeld = false;
+    let shiftStartTime = 0;
+
     // Redirect to check.html after 10 seconds
     setTimeout(() => {
-      window.location.href = "check.html";
+      if (!shiftHeld) {
+        window.location.href = "check.html";
+      }
     }, 10000);
+
+    // Listen for keydown and keyup events
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Shift" && !shiftHeld) {
+        shiftStartTime = Date.now();
+        shiftHeld = true;
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "Shift") {
+        const shiftDuration = Date.now() - shiftStartTime;
+        if (shiftDuration >= 3000) {  // If Shift was held for 3 seconds
+          window.location.href = "boot2.html";
+        }
+        shiftHeld = false;
+      }
+    });
   </script>
 </body>
 </html>
