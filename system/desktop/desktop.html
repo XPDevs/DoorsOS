@@ -280,7 +280,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Window controls and draggable functionality
+/// Window controls and draggable functionality
 function makeDraggable(windowElement, headerElement) {
   headerElement.addEventListener('mousedown', (e) => {
     isDragging = true;
@@ -292,8 +292,27 @@ function makeDraggable(windowElement, headerElement) {
 
   function onMouseMove(e) {
     if (isDragging) {
-      windowElement.style.left = `${e.clientX - offsetX}px`;
-      windowElement.style.top = `${e.clientY - offsetY}px`;
+      const windowTop = e.clientY - offsetY;
+      const windowLeft = e.clientX - offsetX;
+
+      // Set the position of the window
+      windowElement.style.left = `${windowLeft}px`;
+      windowElement.style.top = `${windowTop}px`;
+
+      // Check if the window is being dragged to the top of the screen
+      if (windowTop <= 0) {
+        windowElement.classList.add('fullscreen');
+        windowElement.style.left = '0';
+        windowElement.style.top = '0';
+        windowElement.style.width = '100vw';
+        windowElement.style.height = '100vh';
+      } else if (windowElement.classList.contains('fullscreen')) {
+        windowElement.classList.remove('fullscreen');
+        windowElement.style.width = '300px';
+        windowElement.style.height = '400px';
+        windowElement.style.left = '50px';
+        windowElement.style.top = '50px';
+      }
     }
   }
 
@@ -345,6 +364,7 @@ appIcons.forEach(({ id, windowId }) => {
     windowElement.style.display = 'none';
   });
 });
+
 
   </script>
 </body>
