@@ -101,6 +101,10 @@
             margin-bottom: 20px;
         }
 
+        .modal-content p {
+            margin-bottom: 20px;
+        }
+
         .modal-content button {
             padding: 10px 20px;
             margin: 5px;
@@ -117,6 +121,21 @@
             background-color: #4CAF50;
             color: white;
         }
+
+        /* Factory Reset Section */
+        .factory-reset {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .factory-reset:hover {
+            background-color: #e53935;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +143,7 @@
         <h2>Settings</h2>
         <ul>
             <li class="active" data-section="personalization">Personalization</li>
+            <li data-section="factory-reset">Factory Reset</li>
         </ul>
     </div>
 
@@ -138,37 +158,64 @@
                 </label>
             </div>
         </div>
+
+        <!-- Factory Reset Section -->
+        <div class="section" id="factory-reset-section" style="display: none;">
+            <h1>Factory Reset</h1>
+            <div class="factory-reset">
+                <h2>Warning: This will delete all saved data</h2>
+                <button id="delete-btn">Delete Local Storage and Restart</button>
+                <button id="exit-btn">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal -->
     <div class="modal" id="restart-modal">
         <div class="modal-content">
             <h2>System Restart Required</h2>
-            <p>The system needs to restart to apply changes. Please choose an option:</p>
-            <button class="restart-later">Restart Later</button>
-            <button class="restart-now">Restart Now</button>
+            <p>The system needs to restart to apply changes. No further operations are permitted until the restart is complete.</p>
         </div>
     </div>
 
     <script>
         const taskbarOverlayCheckbox = document.getElementById('taskbar-overlay');
         const restartModal = document.getElementById('restart-modal');
-        const restartLaterButton = document.querySelector('.restart-later');
         const restartNowButton = document.querySelector('.restart-now');
+
+        const personalizationSection = document.getElementById('personalization-section');
+        const factoryResetSection = document.getElementById('factory-reset-section');
+        const factoryResetButton = document.querySelector('[data-section="factory-reset"]');
 
         // Show modal when the checkbox is toggled
         taskbarOverlayCheckbox.addEventListener('change', () => {
             restartModal.style.display = 'flex';
         });
 
-        // Close modal on "Restart Later"
-        restartLaterButton.addEventListener('click', () => {
-            restartModal.style.display = 'none';
+        // Toggle between sections
+        factoryResetButton.addEventListener('click', () => {
+            personalizationSection.style.display = 'none';
+            factoryResetSection.style.display = 'block';
         });
 
-        // Redirect to another page on "Restart Now"
-        restartNowButton.addEventListener('click', () => {
-            window.location.href = '../../../end/rest.html';
+        // Factory Reset actions
+        document.getElementById('delete-btn').addEventListener('click', function() {
+            // Clear local storage
+            localStorage.clear();
+
+            // Show restart modal
+            restartModal.style.display = 'flex';
+        });
+
+        // Prevent any actions until restart is complete
+        restartNowButton.addEventListener('click', function() {
+            // Here you can trigger the restart operation or show a message
+            
+        });
+
+        // Close the operation (cancel)
+        document.getElementById('exit-btn').addEventListener('click', function() {
+            window.location.href = "settings.html"; // Example redirection to the main page
         });
     </script>
 </body>
