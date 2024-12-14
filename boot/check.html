@@ -34,12 +34,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Check if the OS has been installed
-            const isInstalled = localStorage.getItem("osInstalled");
+            // Check the installation status from localStorage
+            const isInstalled = localStorage.getItem("isInstalled");
 
-            // Redirect based on installation status
+            // Redirect based on the value of isInstalled
             if (isInstalled === "true") {
-                // If installed, redirect to login.html
+                // If installed, redirect to login page
                 window.location.href = "../system/login/login.html";
             } else {
                 // If not installed, redirect to the setup page
