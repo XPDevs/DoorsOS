@@ -125,7 +125,7 @@
     </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const closeBtn = document.getElementById("close-btn");
     const warningModal = document.getElementById("warning-modal");
     const closeSetupBtn = document.getElementById("close-setup-btn");
@@ -147,34 +147,48 @@
 
     function showQuestion() {
         const q = questions[currentStep];
-        let inputField;
+        let inputField = "";
 
         if (q.type === "text" || q.type === "password") {
-            inputField = <input type="${q.type}" id="user-input" placeholder="${q.question}" required>;
+            inputField = `<input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>`;
         } else if (q.type === "select") {
-            inputField = <select id="user-input">
-                ${q.options.map(option => <option value="${option}">${option}</option>).join('')}
-            </select>;
+            inputField = `
+                <select id="user-input">
+                    ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                </select>
+            `;
         } else if (q.type === "checkbox") {
-            inputField = <label><input type="checkbox" id="user-input"> ${q.question}</label>;
+            inputField = `
+                <label>
+                    <input type="checkbox" id="user-input">
+                    I agree to the terms and conditions
+                </label>
+            `;
         }
 
-        questionContainer.innerHTML = 
+        questionContainer.innerHTML = `
             <p>${q.question}</p>
             ${inputField}
-        ;
+        `;
     }
 
     nextBtn.addEventListener("click", function () {
         const userInput = document.getElementById("user-input");
 
+        if (!userInput) return; // Prevent errors if input is missing.
+
+        // Validate input
         if (questions[currentStep].type === "checkbox" && !userInput.checked) {
             alert("You must agree to the terms and conditions.");
             return;
         }
 
-        userData[questions[currentStep].key] = userInput.value || userInput.checked;
+        // Store data
+        userData[questions[currentStep].key] = questions[currentStep].type === "checkbox"
+            ? userInput.checked
+            : userInput.value;
 
+        // Move to the next step
         currentStep++;
 
         if (currentStep < questions.length) {
@@ -185,61 +199,73 @@
     });
 
     function showReviewInfo() {
-        questionContainer.innerHTML = 
+        questionContainer.innerHTML = `
             <p><strong>Review your information:</strong></p>
             <p>Language: ${userData.language}</p>
             <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
             <p>Username: ${userData.username}</p>
-            <p>Password: ${userData.password || "No password set"}</p>
+            <p>Password: ${userData.password ? "********" : "No password set"}</p>
             <p>Installation Type: ${userData.installationType}</p>
             <p>Install Path: ${userData.installPath}</p>
             <p>Do you agree with this information?</p>
             <button id="agree-btn" class="submit-btn">Yes, Install</button>
             <button id="disagree-btn" class="submit-btn">No, Restart</button>
-        ;
+        `;
 
         document.getElementById("agree-btn").addEventListener("click", startInstallation);
         document.getElementById("disagree-btn").addEventListener("click", function () {
-            window.location.href = "../end/rest.html";
+            currentStep = 0;
+            userData = {};
+            showQuestion();
         });
     }
 
-function startInstallation() {
-    localStorage.setItem("username", userData.username);
-    localStorage.setItem("password", userData.password);
+    function startInstallation() {
+        localStorage.setItem("username", userData.username);
+        localStorage.setItem("password", userData.password);
+        localStorage.setItem("isInstalled", "true");
 
-    // Set isInstalled to true
-    localStorage.setItem("isInstalled", "true");
+        questionContainer.innerHTML = `
+            <p>Installing your operating system...</p>
+            <p>Progress: <span id="install-progress">0%</span></p>
+            <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+        `;
 
-    questionContainer.innerHTML = `
-        <p>Installing your operating system...</p>
-        <p>Progress: <span id="install-progress">0%</span></p>
-        <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
-    `;
+        let progress = 0;
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("install-progress");
 
-    let progress = 0;
-    const progressBar = document.getElementById("progress-bar");
-    const progressText = document.getElementById("install-progress");
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.value = progress;
+            progressText.innerText = `${progress}%`;
 
-    const interval = setInterval(() => {
-        progress += 1;
-        progressBar.value = progress;
-        progressText.innerText = `${progress}%`;
+            if (progress >= 100) {
+                clearInterval(interval);
+                questionContainer.innerHTML = `
+                    <p>Installation Complete!</p>
+                    <p>Your OS has been successfully installed.</p>
+                    <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
+                `;
+            }
+        }, 100);
+    }
 
-        if (progress >= 100) {
-            clearInterval(interval);
-            questionContainer.innerHTML = `
-                <p>Installation Complete!</p>
-                <p>Your OS has been successfully installed.</p>
-                <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
-            `;
-        }
-    }, 100);
-}
+    closeBtn.addEventListener("click", function () {
+        warningModal.style.display = "flex";
+    });
 
+    closeSetupBtn.addEventListener("click", function () {
+        window.location.href = "../end/rest.html";
+    });
+
+    cancelBtn.addEventListener("click", function () {
+        warningModal.style.display = "none";
+    });
 
     showQuestion();
 });
+
 </script>
     
 </body>
