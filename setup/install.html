@@ -204,46 +204,39 @@
         });
     }
 
-    function startInstallation() {
-        localStorage.setItem("username", userData.username);
-        localStorage.setItem("password", userData.password);
+function startInstallation() {
+    localStorage.setItem("username", userData.username);
+    localStorage.setItem("password", userData.password);
 
-        questionContainer.innerHTML = 
-            <p>Installing your operating system...</p>
-            <p>Progress: <span id="install-progress">0%</span></p>
-            <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
-        ;
+    // Set isInstalled to true
+    localStorage.setItem("isInstalled", "true");
 
-        let progress = 0;
-        const progressBar = document.getElementById("progress-bar");
-        const progressText = document.getElementById("install-progress");
+    questionContainer.innerHTML = `
+        <p>Installing your operating system...</p>
+        <p>Progress: <span id="install-progress">0%</span></p>
+        <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+    `;
 
-        let interval = setInterval(function () {
-            progress += 10;
-            progressBar.value = progress;
-            progressText.textContent = ${progress}%;
+    let progress = 0;
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("install-progress");
 
-            if (progress === 100) {
-                clearInterval(interval);
-                setTimeout(function () {
-                    localStorage.setItem("osInstalled", "true");
-                    window.location.href = "../end/rest.html";
-                }, 1000);
-            }
-        }, 1000);
-    }
+    const interval = setInterval(() => {
+        progress += 1;
+        progressBar.value = progress;
+        progressText.innerText = `${progress}%`;
 
-    closeBtn.addEventListener("click", function () {
-        warningModal.style.display = "flex";
-    });
+        if (progress >= 100) {
+            clearInterval(interval);
+            questionContainer.innerHTML = `
+                <p>Installation Complete!</p>
+                <p>Your OS has been successfully installed.</p>
+                <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
+            `;
+        }
+    }, 100);
+}
 
-    closeSetupBtn.addEventListener("click", function () {
-        window.location.href = "../end/shut.html";
-    });
-
-    cancelBtn.addEventListener("click", function () {
-        warningModal.style.display = "none";
-    });
 
     showQuestion();
 });
