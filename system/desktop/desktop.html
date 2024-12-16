@@ -527,17 +527,47 @@ let currentItem = null;
 
 const gridSpacing = 100;
 let occupiedCells = [];
+let itemElements = [];
 
 desktop.addEventListener('contextmenu', (e) => {
   e.preventDefault();
-  const { clientX: mouseX, clientY: mouseY } = e;
-  contextMenu.style.top = `${mouseY}px`;
-  contextMenu.style.left = `${mouseX}px`;
-  contextMenu.style.display = 'block';
-});
 
-window.addEventListener('click', () => {
-  contextMenu.style.display = 'none';
+  const { clientX: mouseX, clientY: mouseY } = e;
+  const x = Math.round(mouseX / gridSpacing) * gridSpacing;
+  const y = Math.round(mouseY / gridSpacing) * gridSpacing;
+
+  const existingItem = itemElements.find(item => 
+    Math.round(item.offsetLeft / gridSpacing) * gridSpacing === x && 
+    Math.round(item.offsetTop / gridSpacing) * gridSpacing === y
+  );
+
+  if (existingItem) {
+    // If an item exists in this square, show the "Open" and "Delete" options
+    openItemContextMenu(existingItem, mouseX, mouseY);
+  } else {
+    // If no item exists, show the "New Folder" and "New File" options
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+    contextMenu.style.display = 'block';
+    
+    const newFolderOption = document.createElement('div');
+    newFolderOption.classList.add('context-menu-item');
+    newFolderOption.textContent = 'New Folder';
+    newFolderOption.addEventListener('click', () => {
+      createNewItem('folder');
+    });
+
+    const newFileOption = document.createElement('div');
+    newFileOption.classList.add('context-menu-item');
+    newFileOption.textContent = 'New File';
+    newFileOption.addEventListener('click', () => {
+      createNewItem('file');
+    });
+
+    contextMenu.innerHTML = ''; // Clear existing options
+    contextMenu.appendChild(newFolderOption);
+    contextMenu.appendChild(newFileOption);
+  }
 });
 
 function createNewItem(type) {
@@ -550,19 +580,12 @@ function createNewItem(type) {
   desktop.appendChild(item);
   makeDraggable(item);
 
+  itemElements.push(item);  // Track the item
   currentItem = item;
   nameModal.style.display = 'flex';
   itemNameInput.value = '';
   contextMenu.style.display = 'none';
 }
-
-newFolderButton.addEventListener('click', () => {
-  createNewItem('folder');
-});
-
-newFileButton.addEventListener('click', () => {
-  createNewItem('file');
-});
 
 saveNameButton.addEventListener('click', () => {
   const newName = itemNameInput.value.trim();
@@ -606,27 +629,15 @@ function makeDraggable(item) {
     y = Math.round(y / gridSpacing) * gridSpacing;
 
     if (!isPositionOccupied(x, y)) {
-      item.style.position = 'absolute';
       item.style.left = `${x}px`;
       item.style.top = `${y}px`;
+      markPositionOccupied(x, y);
     }
   }
 
   function dropItem() {
     window.removeEventListener('mousemove', moveItem);
     window.removeEventListener('mouseup', dropItem);
-
-    const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
-    const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
-
-    if (!isPositionOccupied(x, y)) {
-      item.style.left = `${x}px`;
-      item.style.top = `${y}px`;
-      markPositionOccupied(x, y);
-    } else {
-      item.style.left = `${item.offsetLeft}px`;
-      item.style.top = `${item.offsetTop}px`;
-    }
   }
 }
 
@@ -637,19 +648,6 @@ function isPositionOccupied(x, y) {
 function markPositionOccupied(x, y) {
   occupiedCells.push({ x, y });
 }
-
-function removeOccupiedPosition(x, y) {
-  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
-}
-
-// Right-click event on files/folders
-desktop.addEventListener('contextmenu', (e) => {
-  const item = e.target.closest('.desktop-item');
-  if (item) {
-    e.preventDefault();
-    openItemContextMenu(item, e.clientX, e.clientY);
-  }
-});
 
 function openItemContextMenu(item, mouseX, mouseY) {
   contextMenu.style.top = `${mouseY}px`;
@@ -688,6 +686,16 @@ function deleteItem(item) {
   removeOccupiedPosition(x, y);
   contextMenu.style.display = 'none';
 }
+
+function removeOccupiedPosition(x, y) {
+  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
+}
+
+// Hide context menu when clicking elsewhere
+window.addEventListener('click', () => {
+  contextMenu.style.display = 'none';
+});
+
 
   </script>
 </body>
