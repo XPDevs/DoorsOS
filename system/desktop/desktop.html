@@ -610,34 +610,56 @@ cancelNameButton.addEventListener('click', () => {
 
 function makeDraggable(item) {
   let offsetX, offsetY;
+  let isDragging = false;
 
   item.addEventListener('mousedown', (e) => {
-    e.preventDefault();
+    if (e.button === 0) {  // Left mouse button (0)
+      e.preventDefault();
 
-    offsetX = e.clientX - item.getBoundingClientRect().left;
-    offsetY = e.clientY - item.getBoundingClientRect().top;
+      isDragging = true;
 
-    window.addEventListener('mousemove', moveItem);
-    window.addEventListener('mouseup', dropItem);
+      offsetX = e.clientX - item.getBoundingClientRect().left;
+      offsetY = e.clientY - item.getBoundingClientRect().top;
+
+      window.addEventListener('mousemove', moveItem);
+      window.addEventListener('mouseup', dropItem);
+    }
   });
 
   function moveItem(e) {
-    let x = e.clientX - offsetX;
-    let y = e.clientY - offsetY;
+    if (isDragging) {
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
 
-    x = Math.round(x / gridSpacing) * gridSpacing;
-    y = Math.round(y / gridSpacing) * gridSpacing;
+      x = Math.round(x / gridSpacing) * gridSpacing;
+      y = Math.round(y / gridSpacing) * gridSpacing;
 
-    if (!isPositionOccupied(x, y)) {
-      item.style.left = `${x}px`;
-      item.style.top = `${y}px`;
-      markPositionOccupied(x, y);
+      if (!isPositionOccupied(x, y)) {
+        item.style.position = 'absolute';
+        item.style.left = `${x}px`;
+        item.style.top = `${y}px`;
+      }
     }
   }
 
   function dropItem() {
-    window.removeEventListener('mousemove', moveItem);
-    window.removeEventListener('mouseup', dropItem);
+    if (isDragging) {
+      const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
+      const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
+
+      if (!isPositionOccupied(x, y)) {
+        item.style.left = `${x}px`;
+        item.style.top = `${y}px`;
+        markPositionOccupied(x, y);
+      } else {
+        item.style.left = `${item.offsetLeft}px`;
+        item.style.top = `${item.offsetTop}px`;
+      }
+
+      isDragging = false;
+      window.removeEventListener('mousemove', moveItem);
+      window.removeEventListener('mouseup', dropItem);
+    }
   }
 }
 
@@ -647,6 +669,10 @@ function isPositionOccupied(x, y) {
 
 function markPositionOccupied(x, y) {
   occupiedCells.push({ x, y });
+}
+
+function removeOccupiedPosition(x, y) {
+  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
 }
 
 function openItemContextMenu(item, mouseX, mouseY) {
@@ -687,11 +713,6 @@ function deleteItem(item) {
   contextMenu.style.display = 'none';
 }
 
-function removeOccupiedPosition(x, y) {
-  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
-}
-
-// Hide context menu when clicking elsewhere
 window.addEventListener('click', () => {
   contextMenu.style.display = 'none';
 });
