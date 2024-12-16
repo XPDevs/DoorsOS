@@ -194,12 +194,110 @@
   height: 50px;
   margin-bottom: 5px;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 300px;
+}
+
+.modal-content input {
+  width: 80%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-buttons button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.modal-buttons button#confirmName {
+  background: #4caf50;
+  color: white;
+}
+
+.modal-buttons button#cancelName {
+  background: #f44336;
+  color: white;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 300px;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 8px 16px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #444;
+  color: white;
+}
+
   </style>
 </head>
 <body>
   <div class="desktop" id="desktop">
   <!-- New files and folders will appear here -->
 </div>
+
+<!-- Modal for Renaming Folder/File -->
+<div id="nameModal" class="modal">
+  <div class="modal-content">
+    <label for="itemName">Enter Name:</label>
+    <input type="text" id="itemName" placeholder="Name your folder/file">
+    <button id="saveNameButton">Save</button>
+    <button id="cancelNameButton">Cancel</button>
+  </div>
+</div>
+
+
 
 <div class="context-menu" id="contextMenu">
   <div class="context-menu-item" id="newFolder">New Folder</div>
@@ -421,10 +519,15 @@ appIcons.forEach(({ id, windowId }) => {
   });
 });
 
-  const desktop = document.getElementById('desktop');
+const desktop = document.getElementById('desktop');
 const contextMenu = document.getElementById('contextMenu');
 const newFolderButton = document.getElementById('newFolder');
 const newFileButton = document.getElementById('newFile');
+const nameModal = document.getElementById('nameModal');
+const itemNameInput = document.getElementById('itemName');
+const saveNameButton = document.getElementById('saveNameButton');
+const cancelNameButton = document.getElementById('cancelNameButton');
+let currentItem = null;  // To track the item being renamed
 
 // Right-click menu functionality
 desktop.addEventListener('contextmenu', (e) => {
@@ -441,29 +544,63 @@ window.addEventListener('click', () => {
   contextMenu.style.display = 'none';
 });
 
-// Adding placeholder "New Folder"
-newFolderButton.addEventListener('click', () => {
-  const folder = document.createElement('div');
-  folder.classList.add('desktop-item');
-  folder.innerHTML = `
-    <img src="taskbar/fe.jpg" alt="Folder">
-    <span>New Folder</span>
+// New Folder or File Button Logic
+function createNewItem(type) {
+  const item = document.createElement('div');
+  item.classList.add('desktop-item');
+  item.innerHTML = `
+    <img src="taskbar/${type === 'folder' ? 'fe.jpg' : 'textf.png'}" alt="${type}">
+    <span>${type === 'folder' ? 'New Folder' : 'New File'}</span>
   `;
-  desktop.appendChild(folder);
-  contextMenu.style.display = 'none';
+  desktop.appendChild(item);
+
+  // Open the modal for the user to name the item
+  currentItem = item;  // Track the item (folder or file)
+  nameModal.style.display = 'flex';
+  itemNameInput.value = '';  // Reset the input field
+  contextMenu.style.display = 'none';  // Hide context menu if open
+}
+
+// New Folder Button Logic
+newFolderButton.addEventListener('click', () => {
+  createNewItem('folder');
 });
 
-// Adding placeholder "New File"
+// New File Button Logic
 newFileButton.addEventListener('click', () => {
-  const file = document.createElement('div');
-  file.classList.add('desktop-item');
-  file.innerHTML = `
-    <img src="taskbar/textf.png" alt="File">
-    <span>New File</span>
-  `;
-  desktop.appendChild(file);
-  contextMenu.style.display = 'none';
+  createNewItem('file');
 });
+
+// Save the name entered by the user
+saveNameButton.addEventListener('click', () => {
+  const newName = itemNameInput.value.trim();
+
+  // Only create or rename if the input isn't empty
+  if (newName) {
+    if (!currentItem) {
+      // If currentItem is null, create a new file or folder
+      const type = contextMenu.style.display === 'none' ? 'file' : 'folder';  // Determine item type
+      createNewItem(type);
+    } else {
+      // Rename the existing item
+      currentItem.querySelector('span').textContent = newName;
+    }
+    // Close the modal
+    nameModal.style.display = 'none';
+    currentItem = null;  // Reset the current item
+  } else {
+    alert('Please enter a valid name for the item.');  // Show a message if the name is empty
+  }
+});
+
+// Cancel and close the modal
+cancelNameButton.addEventListener('click', () => {
+  nameModal.style.display = 'none';
+  currentItem = null;  // Reset the current item
+});
+
+
+
 
   </script>
 </body>
