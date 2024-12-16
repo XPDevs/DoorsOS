@@ -529,6 +529,10 @@ const saveNameButton = document.getElementById('saveNameButton');
 const cancelNameButton = document.getElementById('cancelNameButton');
 let currentItem = null;  // To track the item being renamed
 
+// Variables for grid
+const gridSpacing = 100;  // The size of each grid cell in pixels
+let occupiedCells = [];  // Array to track occupied grid cells
+
 // Right-click menu functionality
 desktop.addEventListener('contextmenu', (e) => {
   e.preventDefault();
@@ -553,6 +557,9 @@ function createNewItem(type) {
     <span>${type === 'folder' ? 'New Folder' : 'New File'}</span>
   `;
   desktop.appendChild(item);
+
+  // Make the item draggable
+  makeDraggable(item);
 
   // Open the modal for the user to name the item
   currentItem = item;  // Track the item (folder or file)
@@ -599,9 +606,100 @@ cancelNameButton.addEventListener('click', () => {
   currentItem = null;  // Reset the current item
 });
 
+// Function to make the item draggable
+function makeDraggable(item) {
+  let offsetX, offsetY;
 
+  item.addEventListener('mousedown', (e) => {
+    e.preventDefault();
 
+    // Calculate the offset between mouse position and the item
+    offsetX = e.clientX - item.getBoundingClientRect().left;
+    offsetY = e.clientY - item.getBoundingClientRect().top;
 
+    // Add event listeners to move the item
+    window.addEventListener('mousemove', moveItem);
+    window.addEventListener('mouseup', dropItem);
+  });
+
+  // Move the item
+  function moveItem(e) {
+    // Calculate the position
+    let x = e.clientX - offsetX;
+    let y = e.clientY - offsetY;
+
+    // Snap the item to the grid
+    x = Math.round(x / gridSpacing) * gridSpacing;
+    y = Math.round(y / gridSpacing) * gridSpacing;
+
+    // Check if the new position is occupied
+    if (!isPositionOccupied(x, y)) {
+      // Update item position if the position is not occupied
+      item.style.position = 'absolute';
+      item.style.left = `${x}px`;
+      item.style.top = `${y}px`;
+    }
+  }
+
+  // Drop the item and lock it to the grid
+  function dropItem() {
+    window.removeEventListener('mousemove', moveItem);
+    window.removeEventListener('mouseup', dropItem);
+
+    // Calculate the final position
+    const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
+    const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
+
+    // Snap the final position to the grid if it's not occupied
+    if (!isPositionOccupied(x, y)) {
+      // Lock item to the grid
+      item.style.left = `${x}px`;
+      item.style.top = `${y}px`;
+
+      // Mark the position as occupied
+      markPositionOccupied(x, y);
+    } else {
+      // If position is occupied, reset the item's position
+      item.style.left = `${item.offsetLeft}px`;
+      item.style.top = `${item.offsetTop}px`;
+    }
+  }
+}
+
+// Check if a position is occupied
+function isPositionOccupied(x, y) {
+  // Loop through the occupied positions and check if the current position matches
+  return occupiedCells.some(cell => cell.x === x && cell.y === y);
+}
+
+// Mark a position as occupied
+function markPositionOccupied(x, y) {
+  occupiedCells.push({ x, y });
+}
+
+// Remove the occupied position when an item is deleted or moved
+function removeOccupiedPosition(x, y) {
+  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
+}
+
+// Adjust grid based on screen size (optional but useful for responsiveness)
+function adjustGridSize() {
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+
+  // Calculate the number of grid cells per screen dimension
+  const gridColumns = Math.floor(screenWidth / gridSpacing);
+  const gridRows = Math.floor(screenHeight / gridSpacing);
+
+  // Optionally, you can update the grid lines on the screen here for visual debugging (hidden by default)
+  // This can be done by adding CSS styles for grid lines in the future
+}
+
+// Run the grid adjustment on window resize
+window.addEventListener('resize', adjustGridSize);
+
+// Initial grid setup
+adjustGridSize();
   </script>
 </body>
 </html>
