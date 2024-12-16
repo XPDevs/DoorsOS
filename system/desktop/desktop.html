@@ -390,8 +390,6 @@ button:hover {
   </div>
 
   <script>
-   // JavaScript for Desktop Simulation
-
 const startButton = document.getElementById('startButton');
 const startMenu = document.getElementById('startMenu');
 const taskbarTime = document.getElementById('taskbarTime');
@@ -434,7 +432,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-/// Window controls and draggable functionality
+// Window controls and draggable functionality
 function makeDraggable(windowElement, headerElement) {
   headerElement.addEventListener('mousedown', (e) => {
     isDragging = true;
@@ -449,11 +447,9 @@ function makeDraggable(windowElement, headerElement) {
       const windowTop = e.clientY - offsetY;
       const windowLeft = e.clientX - offsetX;
 
-      // Set the position of the window
       windowElement.style.left = `${windowLeft}px`;
       windowElement.style.top = `${windowTop}px`;
 
-      // Check if the window is being dragged to the top of the screen
       if (windowTop <= 0) {
         windowElement.classList.add('fullscreen');
         windowElement.style.left = '0';
@@ -527,28 +523,23 @@ const nameModal = document.getElementById('nameModal');
 const itemNameInput = document.getElementById('itemName');
 const saveNameButton = document.getElementById('saveNameButton');
 const cancelNameButton = document.getElementById('cancelNameButton');
-let currentItem = null;  // To track the item being renamed
+let currentItem = null;
 
-// Variables for grid
-const gridSpacing = 100;  // The size of each grid cell in pixels
-let occupiedCells = [];  // Array to track occupied grid cells
+const gridSpacing = 100;
+let occupiedCells = [];
 
-// Right-click menu functionality
 desktop.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   const { clientX: mouseX, clientY: mouseY } = e;
-
   contextMenu.style.top = `${mouseY}px`;
   contextMenu.style.left = `${mouseX}px`;
   contextMenu.style.display = 'block';
 });
 
-// Close context menu when clicking elsewhere
 window.addEventListener('click', () => {
   contextMenu.style.display = 'none';
 });
 
-// New Folder or File Button Logic
 function createNewItem(type) {
   const item = document.createElement('div');
   item.classList.add('desktop-item');
@@ -557,149 +548,147 @@ function createNewItem(type) {
     <span>${type === 'folder' ? 'New Folder' : 'New File'}</span>
   `;
   desktop.appendChild(item);
-
-  // Make the item draggable
   makeDraggable(item);
 
-  // Open the modal for the user to name the item
-  currentItem = item;  // Track the item (folder or file)
+  currentItem = item;
   nameModal.style.display = 'flex';
-  itemNameInput.value = '';  // Reset the input field
-  contextMenu.style.display = 'none';  // Hide context menu if open
+  itemNameInput.value = '';
+  contextMenu.style.display = 'none';
 }
 
-// New Folder Button Logic
 newFolderButton.addEventListener('click', () => {
   createNewItem('folder');
 });
 
-// New File Button Logic
 newFileButton.addEventListener('click', () => {
   createNewItem('file');
 });
 
-// Save the name entered by the user
 saveNameButton.addEventListener('click', () => {
   const newName = itemNameInput.value.trim();
-
-  // Only create or rename if the input isn't empty
   if (newName) {
     if (!currentItem) {
-      // If currentItem is null, create a new file or folder
-      const type = contextMenu.style.display === 'none' ? 'file' : 'folder';  // Determine item type
+      const type = contextMenu.style.display === 'none' ? 'file' : 'folder';
       createNewItem(type);
     } else {
-      // Rename the existing item
       currentItem.querySelector('span').textContent = newName;
     }
-    // Close the modal
     nameModal.style.display = 'none';
-    currentItem = null;  // Reset the current item
+    currentItem = null;
   } else {
-    alert('Please enter a valid name for the item.');  // Show a message if the name is empty
+    alert('Please enter a valid name for the item.');
   }
 });
 
-// Cancel and close the modal
 cancelNameButton.addEventListener('click', () => {
   nameModal.style.display = 'none';
-  currentItem = null;  // Reset the current item
+  currentItem = null;
 });
 
-// Function to make the item draggable
 function makeDraggable(item) {
   let offsetX, offsetY;
 
   item.addEventListener('mousedown', (e) => {
     e.preventDefault();
 
-    // Calculate the offset between mouse position and the item
     offsetX = e.clientX - item.getBoundingClientRect().left;
     offsetY = e.clientY - item.getBoundingClientRect().top;
 
-    // Add event listeners to move the item
     window.addEventListener('mousemove', moveItem);
     window.addEventListener('mouseup', dropItem);
   });
 
-  // Move the item
   function moveItem(e) {
-    // Calculate the position
     let x = e.clientX - offsetX;
     let y = e.clientY - offsetY;
 
-    // Snap the item to the grid
     x = Math.round(x / gridSpacing) * gridSpacing;
     y = Math.round(y / gridSpacing) * gridSpacing;
 
-    // Check if the new position is occupied
     if (!isPositionOccupied(x, y)) {
-      // Update item position if the position is not occupied
       item.style.position = 'absolute';
       item.style.left = `${x}px`;
       item.style.top = `${y}px`;
     }
   }
 
-  // Drop the item and lock it to the grid
   function dropItem() {
     window.removeEventListener('mousemove', moveItem);
     window.removeEventListener('mouseup', dropItem);
 
-    // Calculate the final position
     const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
     const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
 
-    // Snap the final position to the grid if it's not occupied
     if (!isPositionOccupied(x, y)) {
-      // Lock item to the grid
       item.style.left = `${x}px`;
       item.style.top = `${y}px`;
-
-      // Mark the position as occupied
       markPositionOccupied(x, y);
     } else {
-      // If position is occupied, reset the item's position
       item.style.left = `${item.offsetLeft}px`;
       item.style.top = `${item.offsetTop}px`;
     }
   }
 }
 
-// Check if a position is occupied
 function isPositionOccupied(x, y) {
-  // Loop through the occupied positions and check if the current position matches
   return occupiedCells.some(cell => cell.x === x && cell.y === y);
 }
 
-// Mark a position as occupied
 function markPositionOccupied(x, y) {
   occupiedCells.push({ x, y });
 }
 
-// Remove the occupied position when an item is deleted or moved
 function removeOccupiedPosition(x, y) {
   occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
 }
 
-// Adjust grid based on screen size (optional but useful for responsiveness)
-function adjustGridSize() {
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
+// Right-click event on files/folders
+desktop.addEventListener('contextmenu', (e) => {
+  const item = e.target.closest('.desktop-item');
+  if (item) {
+    e.preventDefault();
+    openItemContextMenu(item, e.clientX, e.clientY);
+  }
+});
 
-  // Calculate the number of grid cells per screen dimension
-  const gridColumns = Math.floor(screenWidth / gridSpacing);
-  const gridRows = Math.floor(screenHeight / gridSpacing);
+function openItemContextMenu(item, mouseX, mouseY) {
+  contextMenu.style.top = `${mouseY}px`;
+  contextMenu.style.left = `${mouseX}px`;
+  contextMenu.style.display = 'block';
 
-  // Optionally, you can update the grid lines on the screen here for visual debugging (hidden by default)
-  // This can be done by adding CSS styles for grid lines in the future
+  const openOption = document.createElement('div');
+  openOption.classList.add('context-menu-item');
+  openOption.textContent = 'Open';
+  openOption.addEventListener('click', () => {
+    openItem(item);
+  });
+
+  const deleteOption = document.createElement('div');
+  deleteOption.classList.add('context-menu-item');
+  deleteOption.textContent = 'Delete';
+  deleteOption.addEventListener('click', () => {
+    deleteItem(item);
+  });
+
+  contextMenu.innerHTML = ''; // Clear existing options
+  contextMenu.appendChild(openOption);
+  contextMenu.appendChild(deleteOption);
 }
 
-// Run the grid adjustment on window resize
-window.addEventListener('resize', adjustGridSize);
+function openItem(item) {
+  alert(`Opening ${item.querySelector('span').textContent}`);
+  contextMenu.style.display = 'none';
+}
 
-// Initial grid setup
-adjustGridSize();
+function deleteItem(item) {
+  item.remove();
+  const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
+  const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
+
+  removeOccupiedPosition(x, y);
+  contextMenu.style.display = 'none';
+}
+
   </script>
 </body>
 </html>
