@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fake Desktop</title>
+  <title>Desktop</title>
   <style>
     * {
       margin: 0;
@@ -569,23 +569,71 @@ desktop.addEventListener('contextmenu', (e) => {
     contextMenu.appendChild(newFileOption);
   }
 });
-
 function createNewItem(type) {
   const item = document.createElement('div');
   item.classList.add('desktop-item');
-  item.innerHTML = `
-    <img src="taskbar/${type === 'folder' ? 'fe.jpg' : 'textf.png'}" alt="${type}">
-    <span>${type === 'folder' ? 'New Folder' : 'New File'}</span>
-  `;
-  desktop.appendChild(item);
-  makeDraggable(item);
 
-  itemElements.push(item);  // Track the item
-  currentItem = item;
-  nameModal.style.display = 'flex';
-  itemNameInput.value = '';
-  contextMenu.style.display = 'none';
+  if (type === 'file' || type === 'folder') {
+    // Show modal for naming the item
+    nameModal.style.display = 'flex';
+    itemNameInput.value = '';
+    currentItem = item;
+
+    // Set the context for file or folder creation
+    if (type === 'file') {
+      item.innerHTML = `
+        <img src="taskbar/textf.png" alt="file">
+        <span>New File</span>
+      `;
+    } else {
+      item.innerHTML = `
+        <img src="taskbar/fe.jpg" alt="folder">
+        <span>New Folder</span>
+      `;
+    }
+
+    // Add event listener to the Save button
+    saveNameButton.onclick = () => {
+      const newName = itemNameInput.value.trim();
+      if (newName) {
+        if (type === 'file' && newName.endsWith('.nexs')) {
+          // Special handling for .nexs files
+          item.innerHTML = `
+            <img src="taskbar/nexs.jpg" alt="file">
+            <span>${newName}</span>
+          `;
+        } else if (type === 'file') {
+          // Handle normal file creation
+          item.innerHTML = `
+            <img src="taskbar/textf.png" alt="file">
+            <span>${newName}</span>
+          `;
+        } else if (type === 'folder') {
+          // Handle folder creation
+          item.innerHTML = `
+            <img src="taskbar/fe.jpg" alt="folder">
+            <span>${newName}</span>
+          `;
+        }
+        desktop.appendChild(item);
+        makeDraggable(item);
+
+        itemElements.push(item);  // Track the item
+        currentItem = null;
+        nameModal.style.display = 'none'; // Hide modal after saving name
+        contextMenu.style.display = 'none'; // Hide context menu
+      } else {
+        alert('Please enter a valid name for the item.');
+      }
+    };
+
+    cancelNameButton.onclick = () => {
+      nameModal.style.display = 'none'; // Close modal without saving
+      currentItem = null;
+    };
+  }
 }
+
 
 saveNameButton.addEventListener('click', () => {
   const newName = itemNameInput.value.trim();
