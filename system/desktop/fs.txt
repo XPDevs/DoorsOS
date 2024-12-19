@@ -412,15 +412,38 @@ const draggableWindows = [
 let isDragging = false;
 let offsetX, offsetY;
 
-function updateTime() {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const date = now.toLocaleDateString();
-  taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
-}
-setInterval(updateTime, 1000);
-updateTime();
+document.addEventListener('DOMContentLoaded', () => {
+  const taskbarTime = document.getElementById('taskbarTime');
+
+  // Function to update the taskbar time and date every second
+  function updateTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const date = now.toLocaleDateString();
+    taskbarTime.textContent = `${hours}:${minutes} | ${date}`;
+  }
+
+  // Taskbar time click event
+  taskbarTime.addEventListener('click', () => {
+    alert('Taskbar time clicked!');
+    // You can replace the alert with any other action you want to perform
+  });
+
+  setInterval(updateTime, 1000);
+  updateTime(); // Initialize immediately
+});
+
+startButton.addEventListener('click', () => {
+  startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+window.addEventListener('click', (e) => {
+  if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+    startMenu.style.display = 'none';
+  }
+});
+
 
 startButton.addEventListener('click', () => {
   startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
