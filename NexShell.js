@@ -54,12 +54,12 @@ function KERNEL() {
 
       if (countdown < 0) {
         clearInterval(countdownInterval); // Stop the countdown when it's done
-        window.location.href = "../boot/boot.html"; // Redirect after countdown ends
+        window.location.href = "boot/boot.html"; // Redirect after countdown ends
       }
     }, 1000);
 }
 function INDEX() {
-window.location.href = "kernel/init.html"; // Redirect after countdown end
+window.location.href = "init.html"; // Redirect after countdown end
 }
 function BOOT() {
     let shiftHeld = false;
