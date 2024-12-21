@@ -1,275 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notepad-Like Text Editor</title>
-    <style>
+(function() {
+    // Create a new style element to add CSS
+    const style = document.createElement('style');
+    style.textContent = `
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            overflow-x: hidden;
-        }
-
-        .editor-container {
-            max-width: 100%;
-            margin: 0 auto;
-            background: #fff;
+            background-color: black;
+            color: white;
             display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        .editor-header {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            background: #e1e1e1;
-            padding: 8px 15px;
-            border-bottom: 1px solid #ccc;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        .editor-header button {
-            margin-right: 10px;
-            padding: 5px 15px;
-            border: 1px solid #ccc;
-            background: #f9f9f9;
-            color: #333;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .editor-header button:hover {
-            background: #e6e6e6;
-        }
-
-        .tab {
-            padding: 10px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            display: inline-block;
-            margin-right: 5px;
-            background-color: #e9e9e9;
-            border-radius: 5px;
-        }
-
-        .active-tab {
-            background-color: #d3d3d3;
-        }
-
-        #text-editor {
-            flex-grow: 1;
-            width: 100%;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            line-height: 1.6;
-            resize: none;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
             justify-content: center;
             align-items: center;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 90%;
-            max-width: 900px;
+            height: 100vh;
+            font-family: Arial, sans-serif;
             text-align: center;
-            position: relative;
         }
-
-        .modal button {
-            padding: 10px;
-            margin-top: 10px;
-            border: none;
-            background: #4CAF50;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        #message {
+            font-size: 2em;
         }
+    `;
+    document.head.appendChild(style);
 
-        .modal button.cancel {
-            background: #f44336;
-        }
+    // Create a message element to display the text
+    const message = document.createElement('div');
+    message.id = 'message';
+    message.textContent = 'This screen will redirect shortly...';
+    document.body.appendChild(message);
 
-        .modal button:hover {
-            background: #45a049;
-        }
-
-        .modal button.cancel:hover {
-            background: #e53935;
-        }
-    </style>
-</head>
-<body>
-    <div class="editor-container">
-        <header class="editor-header">
-            <button onclick="newTab()">New Tab</button>
-            <button onclick="saveFile()">Save</button>
-        </header>
-        <div id="tabs-container"></div>
-        <textarea id="text-editor" placeholder="Start typing HTML code here..."></textarea>
-    </div>
-
-    <!-- Modal for alerts -->
-    <div id="alertModal" class="modal">
-        <div class="modal-content">
-            <p id="alertMessage">This is an alert message.</p>
-            <button onclick="closeAlertModal()">OK</button>
-        </div>
-    </div>
-
-    <script>
-        let currentTab = null;
-        let tabs = [];
-
-        // Create a new tab
-        function newTab() {
-            const tabId = Date.now();
-            const tab = {
-                id: tabId,
-                fileName: null,
-                content: ''
-            };
-
-            tabs.push(tab);
-            currentTab = tab;
-
-            // Create a new tab button
-            const tabButton = document.createElement('div');
-            tabButton.classList.add('tab');
-            tabButton.textContent = `Untitled`;
-            tabButton.onclick = () => switchTab(tab);
-            tabButton.oncontextmenu = (e) => {
-                e.preventDefault();
-                showTabContextMenu(e, tab);
-            };
-
-            document.getElementById('tabs-container').appendChild(tabButton);
-            switchTab(tab);
-        }
-
-        // Switch to a specific tab
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('text-editor').value = tab.content;
-
-            // Update the active tab
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tabElement => {
-                tabElement.classList.remove('active-tab');
-            });
-            const activeTab = [...tabs].find(tabElement => tabElement.textContent === tab.fileName || tab.textContent === 'Untitled');
-            if (activeTab) activeTab.classList.add('active-tab');
-        }
-
-        // Save the content of the current tab
-        function saveFile() {
-            if (currentTab) {
-                const htmlContent = document.getElementById('text-editor').value;
-                if (currentTab.fileName) {
-                    // Save content to the existing file
-                    const blob = new Blob([htmlContent], { type: 'text/html' });
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = currentTab.fileName;
-                    a.click();
-                    currentTab.content = htmlContent;
-                } else {
-                    // Prompt for a filename if not saved before
-                    const fileName = prompt("Enter a name to save the file as:", "Untitled.html");
-                    if (fileName) {
-                        const blob = new Blob([htmlContent], { type: 'text/html' });
-                        const a = document.createElement('a');
-                        a.href = URL.createObjectURL(blob);
-                        a.download = fileName;
-                        a.click();
-
-                        currentTab.fileName = fileName;
-                        currentTab.content = htmlContent;
-                        switchTab(currentTab);
-                    }
-                }
-            }
-        }
-
-        // Show the context menu when right-clicking a tab
-        function showTabContextMenu(event, tab) {
-            event.preventDefault();
-
-            // Prompt the user with options (Rename, Save, etc.)
-            const menuOption = prompt("Choose an action:\n1. Rename\n2. Save\n3. Close Tab");
-
-            if (menuOption === '1') {
-                // Rename tab
-                const newName = prompt("Enter a new name for the tab:", tab.fileName || "Untitled");
-                if (newName) {
-                    tab.fileName = newName;
-                    const tabButtons = document.querySelectorAll('.tab');
-                    tabButtons.forEach(button => {
-                        if (button.textContent === 'Untitled') {
-                            button.textContent = newName;
-                        }
-                    });
-                }
-            } else if (menuOption === '2') {
-                // Save tab content
-                saveFile();
-            } else if (menuOption === '3') {
-                // Close the tab
-                closeTab(tab);
-            }
-        }
-
-        // Close a tab
-        function closeTab(tab) {
-            const tabIndex = tabs.indexOf(tab);
-            if (tabIndex !== -1) {
-                tabs.splice(tabIndex, 1);
-                const tabButtons = document.querySelectorAll('.tab');
-                tabButtons.forEach(button => {
-                    if (button.textContent === tab.fileName || button.textContent === 'Untitled') {
-                        button.remove();
-                    }
-                });
-
-                if (currentTab === tab) {
-                    // Switch to another tab if one exists
-                    if (tabs.length > 0) {
-                        currentTab = tabs[0];
-                        switchTab(currentTab);
-                    } else {
-                        document.getElementById('text-editor').value = '';
-                    }
-                }
-            }
-        }
-
-        // Close alert modal
-        function closeAlertModal() {
-            document.getElementById('alertModal').style.display = 'none';
-        }
-    </script>
-</body>
-</html>
+    // Redirect to another HTML file after 5 seconds
+    setTimeout(() => {
+        window.location.href = 'your-target-file.html'; // Replace with your desired target HTML file
+    }, 5000); // 5 seconds delay before redirecting
+})();
