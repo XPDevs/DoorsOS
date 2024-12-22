@@ -1,33 +1,91 @@
-(function() {
-    // Create a new style element to add CSS
-    const style = document.createElement('style');
-    style.textContent = `
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #message {
-            font-size: 2em;
-        }
-    `;
-    document.head.appendChild(style);
+#!/bin/bash
 
-    // Create a message element to display the text
-    const message = document.createElement('div');
-    message.id = 'message';
-    message.textContent = 'This screen will redirect shortly...';
-    document.body.appendChild(message);
+# Check for dialog and zenity, ensure at least one is installed
+if ! command -v dialog &>/dev/null && ! command -v zenity &>/dev/null; then
+  echo "Error: Neither dialog nor zenity is installed. Please install one of them."
+  exit 1
+fi
 
-    // Redirect to another HTML file after 5 seconds
-    setTimeout(() => {
-        window.location.href = 'your-target-file.html'; // Replace with your desired target HTML file
-    }, 5000); // 5 seconds delay before redirecting
-})();
+# Prompt user for preferred tool (dialog, zenity, or default to zenity)
+echo "Choose your preferred tool:"
+echo "1. dialog"
+echo "2. zenity (default)"
+read -p "Enter your choice (1/2): " tool_choice
+
+if [[ "$tool_choice" == "1" && -x "$(command -v dialog)" ]]; then
+  TOOL="dialog"
+elif [[ "$tool_choice" == "2" || -z "$tool_choice" ]]; then
+  TOOL="zenity"
+else
+  echo "Invalid choice or required tool not installed. Defaulting to zenity."
+  TOOL="zenity"
+fi
+
+# Function to collect input using dialog
+collect_input_dialog() {
+  tempfile=$(mktemp)
+  dialog --inputbox "$1" 10 50 2> "$tempfile"
+  result=$(<"$tempfile")
+  rm -f "$tempfile"
+  echo "$result"
+}
+
+# Function to collect input using zenity
+collect_input_zenity() {
+  zenity --entry --text "$1" --width=400
+}
+
+# Collect input based on the chosen tool
+collect_input() {
+  if [ "$TOOL" = "dialog" ]; then
+    collect_input_dialog "$1"
+  else
+    collect_input_zenity "$1"
+  fi
+}
+
+# Ask for kernel features
+features=$(collect_input "Enter the key features of your kernel (e.g., multi-threading, lightweight):")
+
+# Generate a version number and name
+version_number=$(date +"%y.%m.%d")  # Version based on the current date
+version_name="NexShell-$(echo "$features" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | cut -c 1-10)"
+
+# Ask for the kernel directory
+if [ "$TOOL" = "dialog" ]; then
+  tempfile=$(mktemp)
+  dialog --dselect "/" 10 50 2> "$tempfile"
+  kernel_dir=$(<"$tempfile")
+  rm -f "$tempfile"
+else
+  kernel_dir=$(zenity --file-selection --directory --title="Select Kernel Directory")
+fi
+
+# Verify the directory exists
+if [ ! -d "$kernel_dir" ]; then
+  if [ "$TOOL" = "dialog" ]; then
+    dialog --msgbox "Error: Directory $kernel_dir does not exist." 10 50
+  else
+    zenity --error --text="Error: Directory $kernel_dir does not exist."
+  fi
+  exit 1
+fi
+
+# Navigate to NexShell/version and create version.txt
+version_dir="$kernel_dir/NexShell/version"
+mkdir -p "$version_dir"
+
+# Write version information to version.txt
+echo "Version Number: $version_number" > "$version_dir/version.txt"
+echo "Version Name: $version_name" >> "$version_dir/version.txt"
+echo "Features: $features" >> "$version_dir/version.txt"
+
+# Display success message
+if [ "$TOOL" = "dialog" ]; then
+  dialog --msgbox "Version file created successfully!\n\nLocation: $version_dir/version.txt\n\nVersion Number: $version_number\nVersion Name: $version_name" 12 50
+else
+  zenity --info --text="Version file created successfully!\n\nLocation: $version_dir/version.txt\n\nVersion Number: $version_number\nVersion Name: $version_name" --width=400
+fi
+
+# Clear the screen
+clear
