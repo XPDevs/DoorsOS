@@ -20,10 +20,13 @@ if [ -z "$RUN_FILE" ]; then
   exit 1
 fi
 
-# Extract the base name and prepare file paths for conversions
+# Extract the directory and base name of the .nexsrc file
+FILE_DIR=$(dirname "$NEXSRC_FILE")
 BASE_NAME=$(basename "$NEXSRC_FILE" .nexsrc)
-NEXS_FILE="${BASE_NAME}.nexs"
-JS_FILE="${BASE_NAME}.js"
+
+# Define output file paths
+NEXS_FILE="$FILE_DIR/$BASE_NAME.nexs"
+JS_FILE="$FILE_DIR/$BASE_NAME.js"
 
 # Simulate .nexsrc to .nexs conversion
 zenity --info --text="Converting $NEXSRC_FILE to $NEXS_FILE..."
