@@ -19,7 +19,6 @@
 * For the html files to contain:
 *
 * <script src="/kernel/NexShell.js" defer></script>
-* <script src="/kernel/init.sh" defer></script>
 * <script>
 * window.onload = function() {
 * //call specific functions
@@ -32,6 +31,7 @@
 * Somethings may be buggy or not work at all
 * The SETUP function doesnt work read line: 179 about it
 *
+* add the the setup
 * fix the terminal application and add it to kernel
 *
 * Components:
@@ -774,7 +774,6 @@ const editor = document.getElementById('text-editor');
 * START OF TRAP
 */
 function SETUP() {
-
 }
 /**
 *
@@ -785,7 +784,6 @@ function SETUP() {
 *
 */
 function TERMINAL() {
-
 }
 /**
 * this is the terminal function it for some reason doesnt like to work and likes to make everything buggy
@@ -796,8 +794,42 @@ function TERMINAL() {
 * END OF TRAP
 */
 /**
-* when an update is needed this function will be called
-* will display a modal
+* End of the kernel for this there will be an error handiling section with all of the codefor if theres an error with any files just in case.
+* what will happen is that this function will be called and it will:
+*
+* Clear the screen and display a balck background with text and an image saying about theres been a kernel error
+* It will automaticlly restart and try again if not it will keep returning to this screen
 */
-function UPDATE() {
+function ERROR() {
+// Create a new style element to add CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: topleft;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #message {
+            font-size: 2em;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Create a message element to display the text
+    const message = document.createElement('div');
+    message.id = 'message';
+    message.textContent = 'Kernel Error';
+    document.body.appendChild(message);
+
+    // Redirect to another HTML file after 5 seconds
+    setTimeout(() => {
+        window.location.href = 'rest.html'; // Replace with your desired target HTML file
+    }, 5000); // 5 seconds delay before redirecting
 }
