@@ -1,91 +1,49 @@
 #!/bin/bash
 
-# Check for dialog and zenity, ensure at least one is installed
-if ! command -v dialog &>/dev/null && ! command -v zenity &>/dev/null; then
-  echo "Error: Neither dialog nor zenity is installed. Please install one of them."
+# Prompt the user to select the .nexsrc file
+NEXSRC_FILE=$(zenity --file-selection --title="Select a .nexsrc File")
+if [ -z "$NEXSRC_FILE" ]; then
+  zenity --error --text="No file selected. Exiting."
   exit 1
 fi
 
-# Prompt user for preferred tool (dialog, zenity, or default to zenity)
-echo "Choose your preferred tool:"
-echo "1. dialog"
-echo "2. zenity (default)"
-read -p "Enter your choice (1/2): " tool_choice
-
-if [[ "$tool_choice" == "1" && -x "$(command -v dialog)" ]]; then
-  TOOL="dialog"
-elif [[ "$tool_choice" == "2" || -z "$tool_choice" ]]; then
-  TOOL="zenity"
-else
-  echo "Invalid choice or required tool not installed. Defaulting to zenity."
-  TOOL="zenity"
-fi
-
-# Function to collect input using dialog
-collect_input_dialog() {
-  tempfile=$(mktemp)
-  dialog --inputbox "$1" 10 50 2> "$tempfile"
-  result=$(<"$tempfile")
-  rm -f "$tempfile"
-  echo "$result"
-}
-
-# Function to collect input using zenity
-collect_input_zenity() {
-  zenity --entry --text "$1" --width=400
-}
-
-# Collect input based on the chosen tool
-collect_input() {
-  if [ "$TOOL" = "dialog" ]; then
-    collect_input_dialog "$1"
-  else
-    collect_input_zenity "$1"
-  fi
-}
-
-# Ask for kernel features
-features=$(collect_input "Enter the key features of your kernel (e.g., multi-threading, lightweight):")
-
-# Generate a version number and name
-version_number=$(date +"%y.%m.%d")  # Version based on the current date
-version_name="NexShell-$(echo "$features" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | cut -c 1-10)"
-
-# Ask for the kernel directory
-if [ "$TOOL" = "dialog" ]; then
-  tempfile=$(mktemp)
-  dialog --dselect "/" 10 50 2> "$tempfile"
-  kernel_dir=$(<"$tempfile")
-  rm -f "$tempfile"
-else
-  kernel_dir=$(zenity --file-selection --directory --title="Select Kernel Directory")
-fi
-
-# Verify the directory exists
-if [ ! -d "$kernel_dir" ]; then
-  if [ "$TOOL" = "dialog" ]; then
-    dialog --msgbox "Error: Directory $kernel_dir does not exist." 10 50
-  else
-    zenity --error --text="Error: Directory $kernel_dir does not exist."
-  fi
+# Validate that the selected file exists
+if [ ! -f "$NEXSRC_FILE" ]; then
+  zenity --error --text="The selected file does not exist."
   exit 1
 fi
 
-# Navigate to NexShell/version and create version.txt
-version_dir="$kernel_dir/NexShell/version"
-mkdir -p "$version_dir"
-
-# Write version information to version.txt
-echo "Version Number: $version_number" > "$version_dir/version.txt"
-echo "Version Name: $version_name" >> "$version_dir/version.txt"
-echo "Features: $features" >> "$version_dir/version.txt"
-
-# Display success message
-if [ "$TOOL" = "dialog" ]; then
-  dialog --msgbox "Version file created successfully!\n\nLocation: $version_dir/version.txt\n\nVersion Number: $version_number\nVersion Name: $version_name" 12 50
-else
-  zenity --info --text="Version file created successfully!\n\nLocation: $version_dir/version.txt\n\nVersion Number: $version_number\nVersion Name: $version_name" --width=400
+# Prompt the user to select the script to run after conversion
+RUN_FILE=$(zenity --file-selection --title="Select the Script to Run After Conversion")
+if [ -z "$RUN_FILE" ]; then
+  zenity --error --text="No file selected. Exiting."
+  exit 1
 fi
 
-# Clear the screen
-clear
+# Extract the base name and prepare file paths for conversions
+BASE_NAME=$(basename "$NEXSRC_FILE" .nexsrc)
+NEXS_FILE="${BASE_NAME}.nexs"
+JS_FILE="${BASE_NAME}.js"
+
+# Simulate .nexsrc to .nexs conversion
+zenity --info --text="Converting $NEXSRC_FILE to $NEXS_FILE..."
+cp "$NEXSRC_FILE" "$NEXS_FILE" || {
+  zenity --error --text="Error during .nexsrc to .nexs conversion."
+  exit 1
+}
+
+# Simulate .nexs to .js conversion
+zenity --info --text="Converting $NEXS_FILE to $JS_FILE..."
+cp "$NEXS_FILE" "$JS_FILE" || {
+  zenity --error --text="Error during .nexs to .js conversion."
+  exit 1
+}
+
+# Run the selected script
+zenity --info --text="Running $RUN_FILE..."
+bash "$RUN_FILE" || {
+  zenity --error --text="Error running the selected script."
+  exit 1
+}
+
+zenity --info --text="Process completed successfully!"
