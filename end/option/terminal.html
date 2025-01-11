@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,20 +92,112 @@
         // Predefined commands
         const commands = {
             '/suicide-temp': () => {
-                // Automatically navigate to a specific HTML file
-                window.location.href = '../rest.html'; // Replace with your desired file
+                window.location.href = '../end/rest.html'; // Temporary shutdown
                 return 'Exiting terminal...';
             },
             '/suicide-perm': () => {
-                // Automatically navigate to a specific HTML file
-                window.location.href = '../shut.html'; // Replace with your desired file
+                window.location.href = '../end/shut.html'; // Permanent shutdown
                 return 'Exiting terminal...';
-            }
+            },
+            '/about-system': () => {
+                return `
+About DevOS
+Operating System: DevOS
+Version: 4.0.0
+Kernel: NexShell
+Build: 2024.12.15
+License: Open Source downloadable
+Developer: XPDevs
+                `;
+            },
+            '/help': () => {
+                return `
+Available Commands:
+- /suicide-temp - Exit to temporary shutdown
+- /suicide-perm - Exit to permanent shutdown
+- /about-system - Show system information
+- /clear - Clear the terminal screen
+- /date - Display the current date and time
+- /echo [text] - Echo back the provided text
+- /ls [directory] - List contents of a directory
+- /cat [file] - Show contents of a file
+- /shutdown - Simulate shutdown process
+- /reboot - Simulate reboot process
+- /build - Build the operating system (simulated)
+- /compile [file] - Compile a source file (simulated)
+- /run [program] - Run a program (simulated)
+- /start-boot - Simulate starting the boot process
+- /init-system - Run the system initialization (simulated)
+- /kernel-info - Show kernel info
+- /exit - Exit and navigate to dev.html
+                `;
+            },
+            '/clear': () => {
+                terminalOutput.innerHTML = '';  // Clears the terminal
+                return '';
+            },
+            '/date': () => {
+                return new Date().toString();
+            },
+            '/echo': (text) => {
+                return text ? text : 'Error: No text provided';
+            },
+            '/ls': (directory) => {
+                const fileStructure = {
+                    '/boot': ['init', 'bootloader', 'kernel.img'],
+                    '/dev': ['sda', 'tty1', 'null'],
+                    '/end': ['shut.html', 'rest.html'],
+                    '/kernel': ['nexshell.bin', 'kernel.config'],
+                };
 
-            '/reset-all': => {
-            localStorage.clear();
-            return "All user has been deleted."
-        }
+                return fileStructure[directory] ? fileStructure[directory].join('\n') : `Directory ${directory} not found.`;
+            },
+            '/cat': (fileName) => {
+                const fileContents = {
+                    'init': 'Boot initialization script...',
+                    'bootloader': 'Loading kernel...',
+                    'shut.html': 'Shutdown HTML content...',
+                    'rest.html': 'Temporary shutdown page...',
+                    'nexshell.bin': 'NexShell kernel binary...',
+                    'kernel.config': 'Kernel configuration...',
+                };
+
+                return fileContents[fileName] || `File ${fileName} not found.`;
+            },
+            '/shutdown': () => {
+                return 'Shutting down... (Simulated)';
+            },
+            '/reboot': () => {
+                return 'Rebooting system... (Simulated)';
+            },
+            '/build': () => {
+                return 'Building the operating system... (Simulated)';
+            },
+            '/compile': (fileName) => {
+                return `Compiling ${fileName}... (Simulated)`;
+            },
+            '/run': (program) => {
+                return `Running ${program}... (Simulated execution)`;
+            },
+            '/start-boot': () => {
+                return 'Starting the boot process... (Simulated)';
+            },
+            '/init-system': () => {
+                return 'Running system initialization... (Simulated)';
+            },
+            '/kernel-info': () => {
+                return `
+Kernel Info:
+Kernel Version: 4.0.0
+Kernel Name: NexShell
+Architecture: x86_64
+Boot Mode: UEFI
+                `;
+            },
+            '/exit': () => {
+                window.location.href = 'dev.html';  // Navigate to dev.html
+                return 'Exiting...';
+            }
         };
 
         // Process the input when user presses enter
