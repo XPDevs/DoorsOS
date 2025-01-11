@@ -380,7 +380,7 @@ button:hover {
       font-size: 18px;
     }
 
-            .battery-status {
+        .battery-status {
             display: flex;
             align-items: center;
         }
@@ -391,6 +391,67 @@ button:hover {
 
         .battery-text {
             font-size: 14px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: -100px; /* Start hidden off the screen at the bottom */
+            left: 50%;
+            transform: translateX(-50%); /* Center it horizontally */
+            width: 250px;
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            bottom: 20px; /* Move to the center bottom */
+        }
+
+        .charging-notification {
+            background-color: #4CAF50; /* Green for charging */
+        }
+
+        .battery-notification {
+            background-color: #f44336; /* Red for low battery */
+        }
+
+        .notification .close-btn,
+        .notification .ok-btn {
+            cursor: pointer;
+            font-size: 16px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin-left: 10px;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .notification .close-btn {
+            font-size: 18px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
   </style>
 </head>
@@ -409,9 +470,21 @@ button:hover {
   </div>
 </div>
 
-       <div class="notification" id="battery-notification">
-        Battery percentage is low (10%). Please consider charging.
+<div class="notification battery-notification" id="battery-notification">
+        <div class="notification-content">
+            Battery percentage is low (10%). Please consider charging.
+        </div>
+        <button class="close-btn" id="close-btn">✖</button>
     </div>
+
+    <div class="notification charging-notification" id="charging-notification">
+        <div class="notification-content">
+            Your device is charging.
+        </div>
+        <button class="ok-btn" id="ok-btn">OK</button>
+        <button class="close-btn" id="close-btn-charging">✖</button>
+    </div>
+
 
 
 <div class="context-menu" id="contextMenu">
@@ -543,6 +616,10 @@ button:hover {
             const batteryIcon = document.getElementById('battery-icon');
             const batteryText = document.getElementById('battery-text');
             const batteryNotification = document.getElementById('battery-notification');
+            const chargingNotification = document.getElementById('charging-notification');
+            const closeBtn = document.getElementById('close-btn');
+            const closeBtnCharging = document.getElementById('close-btn-charging');
+            const okBtnCharging = document.getElementById('ok-btn');
 
             batteryStatus.style.display = 'flex';
             const percentage = Math.round(battery.level * 100);
@@ -550,8 +627,10 @@ button:hover {
 
             if (battery.charging) {
                 batteryIcon.textContent = '⚡';
+                chargingNotification.classList.add('show');
             } else {
                 batteryIcon.textContent = '🔋';
+                chargingNotification.classList.remove('show');
             }
 
             // Show notification only when battery reaches 10%
@@ -560,6 +639,21 @@ button:hover {
             } else {
                 batteryNotification.classList.remove('show');
             }
+
+            // Close button for the battery notification
+            closeBtn.addEventListener('click', () => {
+                batteryNotification.classList.remove('show');
+            });
+
+            // Close button for the charging notification
+            closeBtnCharging.addEventListener('click', () => {
+                chargingNotification.classList.remove('show');
+            });
+
+            // OK button for charging notification
+            okBtnCharging.addEventListener('click', () => {
+                chargingNotification.classList.remove('show');
+            });
         }
 
         async function initializeBattery() {
