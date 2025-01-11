@@ -472,7 +472,7 @@ button:hover {
 
 <div class="notification battery-notification" id="battery-notification">
         <div class="notification-content">
-            Battery percentage is low (10%). Please consider charging.
+            Battery percentage is low (20%). Please consider charging.
         </div>
         <button class="close-btn" id="close-btn">✖</button>
     </div>
@@ -634,7 +634,7 @@ button:hover {
             }
 
             // Show notification only when battery reaches 10%
-            if (percentage === 10) {
+            if (percentage === 20) {
                 batteryNotification.classList.add('show');
             } else {
                 batteryNotification.classList.remove('show');
