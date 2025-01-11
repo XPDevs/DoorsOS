@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -378,6 +379,19 @@ button:hover {
       margin: 0;
       font-size: 18px;
     }
+
+            .battery-status {
+            display: flex;
+            align-items: center;
+        }
+
+        .battery-icon {
+            margin-right: 8px;
+        }
+
+        .battery-text {
+            font-size: 14px;
+        }
   </style>
 </head>
 <body>
@@ -395,6 +409,9 @@ button:hover {
   </div>
 </div>
 
+       <div class="notification" id="battery-notification">
+        Battery percentage is low (10%). Please consider charging.
+    </div>
 
 
 <div class="context-menu" id="contextMenu">
@@ -403,6 +420,10 @@ button:hover {
 </div>
 
   <div class="taskbar">
+        <div class="battery-status" id="battery-status" style="display: none;">
+            <span class="battery-icon" id="battery-icon">🔋</span>
+            <span class="battery-text" id="battery-text">100%</span>
+        </div>
     <button class="start-button" id="startButton">
       <img src="taskbar/eye.jpg" alt="Start">
     </button>
@@ -517,6 +538,42 @@ button:hover {
   </div>
 
   <script>
+        function updateBatteryStatus(battery) {
+            const batteryStatus = document.getElementById('battery-status');
+            const batteryIcon = document.getElementById('battery-icon');
+            const batteryText = document.getElementById('battery-text');
+            const batteryNotification = document.getElementById('battery-notification');
+
+            batteryStatus.style.display = 'flex';
+            const percentage = Math.round(battery.level * 100);
+            batteryText.textContent = `${percentage}%`;
+
+            if (battery.charging) {
+                batteryIcon.textContent = '⚡';
+            } else {
+                batteryIcon.textContent = '🔋';
+            }
+
+            // Show notification only when battery reaches 10%
+            if (percentage === 10) {
+                batteryNotification.classList.add('show');
+            } else {
+                batteryNotification.classList.remove('show');
+            }
+        }
+
+        async function initializeBattery() {
+            if ('getBattery' in navigator) {
+                const battery = await navigator.getBattery();
+                updateBatteryStatus(battery);
+
+                battery.addEventListener('levelchange', () => updateBatteryStatus(battery));
+                battery.addEventListener('chargingchange', () => updateBatteryStatus(battery));
+            }
+        }
+
+        initializeBattery();
+
        const timeButton = document.getElementById('timeButton');
     const calendarPopup = document.getElementById('calendarPopup');
     const calendarTable = document.getElementById('calendarTable').getElementsByTagName('tbody')[0];
