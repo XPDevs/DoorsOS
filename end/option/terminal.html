@@ -24,12 +24,11 @@
             cursor: none; /* Hide cursor globally */
         }
 
-        /* Custom cursor style */
         .cursor {
             position: absolute;
-            width: 32px; /* Customize the size of the cursor */
+            width: 32px;
             height: 32px;
-            background-image: url('../../ui/cursor/terminal.ico'); /* Custom cursor image (ICO file) */
+            background-image: url('../../ui/cursor/terminal.ico');
             background-size: contain;
             pointer-events: none;
             transform: translate(-50%, -50%);
@@ -44,8 +43,8 @@
             justify-content: flex-start;
             align-items: flex-start;
             padding: 10px;
-            white-space: pre-wrap; /* Ensures input wraps */
-            overflow: hidden; /* Remove scrolling inside terminal */
+            white-space: pre-wrap;
+            overflow: hidden;
         }
 
         .output {
@@ -57,7 +56,6 @@
             color: #00FF00;
         }
 
-        /* Input styling */
         input {
             color: #00FF00;
             background-color: black;
@@ -68,7 +66,6 @@
             padding: 5px;
         }
 
-        /* Make the input area look like the terminal prompt */
         #inputArea {
             display: flex;
             align-items: center;
@@ -76,15 +73,13 @@
         }
 
         span {
-            color: white; /* White prompt '>' */
+            color: white;
         }
 
-        /* Make the terminal grow as needed */
         #terminal {
             display: block;
-            overflow-y: auto; /* Allow content to grow without showing scroll */
+            overflow-y: auto;
         }
-
     </style>
 </head>
 <body>
@@ -97,7 +92,6 @@
     </div>
 
     <script>
-        // Terminal output and input handling
         const terminalOutput = document.getElementById('output');
         const commandInput = document.getElementById('commandInput');
 
@@ -110,6 +104,9 @@
             '/end-perm': () => {
                 window.location.href = '../../end/shut.html'; // Permanent shutdown
                 return 'Exiting terminal...';
+            },
+            '/reset-all': () => {
+                return 'Root password is required to perform this action.';
             },
             '/about-system': () => {
                 return `
@@ -127,24 +124,15 @@ Developer: XPDevs
 Available Commands:
 - /end-temp - Exit to temporary shutdown
 - /end-perm - Exit to permanent shutdown
+- /reset-all - Reset the system after password verification
 - /about-system - Show system information
 - /clear - Clear the terminal screen
 - /date - Display the current date and time
 - /echo [text] - Echo back the provided text
-- /ls [directory] - List contents of a directory
-- /cat [file] - Show contents of a file
-- /shutdown - Simulate shutdown process
-- /reboot - Simulate reboot process
-- /build - Build the operating system (simulated)
-- /compile [file] - Compile a source file (simulated)
-- /run [program] - Run a program (simulated)
-- /start-boot - Simulate starting the boot process
-- /init-system - Run the system initialization (simulated)
-- /kernel-info - Show kernel info
                 `;
             },
             '/clear': () => {
-                terminalOutput.innerHTML = '';  // Clears the terminal
+                terminalOutput.innerHTML = ''; // Clears the terminal
                 return '';
             },
             '/date': () => {
@@ -152,28 +140,6 @@ Available Commands:
             },
             '/echo': (text) => {
                 return text ? text : 'Error: No text provided';
-            },
-            '/ls': (directory) => {
-                const fileStructure = {
-                    '/boot': ['init', 'bootloader', 'kernel.img'],
-                    '/dev': ['sda', 'tty1', 'null'],
-                    '/end': ['shut.html', 'rest.html'],
-                    '/kernel': ['nexshell.bin', 'kernel.config'],
-                };
-
-                return fileStructure[directory] ? fileStructure[directory].join('\n') : `Directory ${directory} not found.`;
-            },
-            '/cat': (fileName) => {
-                const fileContents = {
-                    'init': 'Boot initialization script...',
-                    'bootloader': 'Loading kernel...',
-                    'shut.html': 'Shutdown HTML content...',
-                    'rest.html': 'Temporary shutdown page...',
-                    'nexshell.bin': 'NexShell kernel binary...',
-                    'kernel.config': 'Kernel configuration...',
-                };
-
-                return fileContents[fileName] || `File ${fileName} not found.`;
             },
             '/shutdown': () => {
                 return 'Shutting down... (Simulated)';
@@ -183,27 +149,6 @@ Available Commands:
             },
             '/build': () => {
                 return 'Building the operating system... (Simulated)';
-            },
-            '/compile': (fileName) => {
-                return `Compiling ${fileName}... (Simulated)`;
-            },
-            '/run': (program) => {
-                return `Running ${program}... (Simulated execution)`;
-            },
-            '/start-boot': () => {
-                return 'Starting the boot process... (Simulated)';
-            },
-            '/init-system': () => {
-                return 'Running system initialization... (Simulated)';
-            },
-            '/kernel-info': () => {
-                return `
-Kernel Info:
-Kernel Version: 4.0.0
-Kernel Name: NexShell
-Architecture: x86_64
-Boot Mode: UEFI
-                `;
             }
         };
 
@@ -244,6 +189,23 @@ Boot Mode: UEFI
             cursor.style.left = `${e.pageX}px`;
             cursor.style.top = `${e.pageY}px`;
         });
+
+        // Function to prompt the user for the root password
+        function askForPassword() {
+            const passwordPrompt = prompt("Enter the root password:");
+            if (passwordPrompt === "root") {
+                localStorage.clear(); // Clear local storage if the password is correct
+                appendToTerminal('/reset-all', 'Local storage cleared. Please restart to apply changes.');
+            } else {
+                appendToTerminal('/reset-all', 'Incorrect password. Access denied.');
+            }
+        }
+
+        // Modify the /reset-all command to trigger the password prompt
+        commands['/reset-all'] = () => {
+            askForPassword();
+            return '';  // Don't show any immediate output
+        };
     </script>
 
 </body>
