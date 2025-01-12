@@ -45,15 +45,18 @@
             padding: 10px;
             white-space: pre-wrap;
             overflow: hidden;
+            cursor: none;
         }
 
         .output {
             color: #FFFFFF;
             margin: 2px 0;
+            cursor: none;
         }
 
         .command {
             color: #00FF00;
+            cursor: none;
         }
 
         input {
@@ -64,21 +67,25 @@
             width: 100%;
             font-size: 18px;
             padding: 5px;
+            cursor: none;
         }
 
         #inputArea {
             display: flex;
             align-items: center;
             width: 100%;
+            cursor: none;
         }
 
         span {
             color: white;
+            cursor: none;
         }
 
         #terminal {
             display: block;
             overflow-y: auto;
+            cursor: none;
         }
     </style>
 </head>
@@ -94,6 +101,7 @@
     <script>
         const terminalOutput = document.getElementById('output');
         const commandInput = document.getElementById('commandInput');
+        let isAwaitingPassword = false; // To track if we're waiting for a password input
 
         // Predefined commands
         const commands = {
@@ -104,9 +112,6 @@
             '/end-perm': () => {
                 window.location.href = '../../end/shut.html'; // Permanent shutdown
                 return 'Exiting terminal...';
-            },
-            '/reset-all': () => {
-                return 'Root password is required to perform this action.';
             },
             '/about-system': () => {
                 return `
@@ -141,14 +146,10 @@ Available Commands:
             '/echo': (text) => {
                 return text ? text : 'Error: No text provided';
             },
-            '/shutdown': () => {
-                return 'Shutting down... (Simulated)';
-            },
-            '/reboot': () => {
-                return 'Rebooting system... (Simulated)';
-            },
-            '/build': () => {
-                return 'Building the operating system... (Simulated)';
+            '/reset-all': () => {
+                isAwaitingPassword = true;
+                appendToTerminal('/reset-all', 'Enter root password:');
+                return ''; // Await user input
             }
         };
 
@@ -157,9 +158,24 @@ Available Commands:
             if (event.key === 'Enter') {
                 const input = commandInput.value.trim();
                 commandInput.value = '';
-                processCommand(input);
+                if (isAwaitingPassword) {
+                    validatePassword(input); // Validate the password
+                } else {
+                    processCommand(input);
+                }
             }
         });
+
+        // Validate password for reset-all
+        function validatePassword(input) {
+            if (input === "root") {
+                localStorage.clear(); // Clear local storage
+                appendToTerminal('', 'Local storage cleared. Please restart to apply changes.');
+            } else {
+                appendToTerminal('', 'Incorrect password. Access denied.');
+            }
+            isAwaitingPassword = false; // Reset the flag
+        }
 
         // Process commands and show the output
         function processCommand(input) {
@@ -178,8 +194,8 @@ Available Commands:
 
         // Append the user's input and the output to the terminal
         function appendToTerminal(input, output) {
-            terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
-            terminalOutput.innerHTML += `<div class="output">${output}</div>`;
+            if (input) terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
+            if (output) terminalOutput.innerHTML += `<div class="output">${output}</div>`;
         }
 
         const cursor = document.getElementById('cursor');
@@ -189,23 +205,6 @@ Available Commands:
             cursor.style.left = `${e.pageX}px`;
             cursor.style.top = `${e.pageY}px`;
         });
-
-        // Function to prompt the user for the root password
-        function askForPassword() {
-            const passwordPrompt = prompt("Enter the root password:");
-            if (passwordPrompt === "root") {
-                localStorage.clear(); // Clear local storage if the password is correct
-                appendToTerminal('/reset-all', 'Local storage cleared. Please restart to apply changes.');
-            } else {
-                appendToTerminal('/reset-all', 'Incorrect password. Access denied.');
-            }
-        }
-
-        // Modify the /reset-all command to trigger the password prompt
-        commands['/reset-all'] = () => {
-            askForPassword();
-            return '';  // Don't show any immediate output
-        };
     </script>
 
 </body>
