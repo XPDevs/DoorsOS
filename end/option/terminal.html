@@ -22,7 +22,20 @@
             align-items: flex-start;
             font-size: 20px;
             overflow: hidden; /* Remove overall scrollbars */
-        }
+        cursor: none; /* Hide cursor globally */
+    }
+
+    /* Custom cursor style */
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../../ui/cursor/terminal.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
 
         #terminal {
             width: 100%;
@@ -76,7 +89,7 @@
     </style>
 </head>
 <body>
-
+<div class="cursor" id="cursor"></div>
     <div id="terminal">
         <div class="output" id="output"></div>
         <div id="inputArea">
@@ -229,7 +242,13 @@ Boot Mode: UEFI
             terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
             terminalOutput.innerHTML += `<div class="output">${output}</div>`;
         }
+    const cursor = document.getElementById('cursor');
 
+    // Track mouse movement and set the custom cursor position
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
     </script>
 
 </body>
