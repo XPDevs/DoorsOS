@@ -14,7 +14,19 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-        }
+             cursor: none; /* Hide cursor on body and form elements */
+    }
+
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
 
         .installer-window {
             background-color: white;
@@ -101,7 +113,7 @@
     </style>
 </head>
 <body>
-
+<div class="cursor" id="cursor"></div>
     <div class="modal" id="warning-modal">
         <div class="modal-content">
             <p>If you close the setup, the OS will shutdown.</p>
@@ -266,6 +278,12 @@ document.addEventListener("DOMContentLoaded", function () {
     showQuestion();
 });
 
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
 </script>
     
 </body>
