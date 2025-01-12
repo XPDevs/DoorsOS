@@ -611,6 +611,16 @@ button:hover {
   </div>
 
   <script>
+               let soundEnabled = true; // Sound is enabled by default
+        const notificationSound = document.getElementById('notification-sound');
+
+        // Play the sound function
+        function playSound() {
+            if (soundEnabled) {
+                notificationSound.play();
+            }
+        }
+
         function updateBatteryStatus(battery) {
             const batteryStatus = document.getElementById('battery-status');
             const batteryIcon = document.getElementById('battery-icon');
@@ -628,14 +638,18 @@ button:hover {
             if (battery.charging) {
                 batteryIcon.textContent = '⚡';
                 chargingNotification.classList.add('show');
+                // Play sound only when charging notification shows
+                playSound();
             } else {
                 batteryIcon.textContent = '🔋';
                 chargingNotification.classList.remove('show');
             }
 
-            // Show notification only when battery reaches 10%
+            // Show notification only when battery reaches 20%
             if (percentage === 20) {
                 batteryNotification.classList.add('show');
+                // Play sound only when low battery notification shows
+                playSound();
             } else {
                 batteryNotification.classList.remove('show');
             }
@@ -666,8 +680,11 @@ button:hover {
             }
         }
 
-        initializeBattery();
+        // Add an event listener to detect the user's first interaction
+        window.addEventListener('click', playSound);
+        window.addEventListener('keydown', playSound);
 
+        initializeBattery();
        const timeButton = document.getElementById('timeButton');
     const calendarPopup = document.getElementById('calendarPopup');
     const calendarTable = document.getElementById('calendarTable').getElementsByTagName('tbody')[0];
