@@ -104,12 +104,12 @@
 
         // Predefined commands
         const commands = {
-            '/suicide-temp': () => {
-                window.location.href = '../end/rest.html'; // Temporary shutdown
+            '/end-temp': () => {
+                window.location.href = '../../end/rest.html'; // Temporary shutdown
                 return 'Exiting terminal...';
             },
-            '/suicide-perm': () => {
-                window.location.href = '../end/shut.html'; // Permanent shutdown
+            '/end-perm': () => {
+                window.location.href = '../../end/shut.html'; // Permanent shutdown
                 return 'Exiting terminal...';
             },
             '/about-system': () => {
@@ -126,8 +126,8 @@ Developer: XPDevs
             '/help': () => {
                 return `
 Available Commands:
-- /suicide-temp - Exit to temporary shutdown
-- /suicide-perm - Exit to permanent shutdown
+- /end-temp - Exit to temporary shutdown
+- /end-perm - Exit to permanent shutdown
 - /about-system - Show system information
 - /clear - Clear the terminal screen
 - /date - Display the current date and time
@@ -142,7 +142,6 @@ Available Commands:
 - /start-boot - Simulate starting the boot process
 - /init-system - Run the system initialization (simulated)
 - /kernel-info - Show kernel info
-- /exit - Exit and navigate to dev.html
                 `;
             },
             '/clear': () => {
@@ -207,11 +206,6 @@ Architecture: x86_64
 Boot Mode: UEFI
                 `;
             },
-            '/exit': () => {
-                window.location.href = 'dev.html';  // Navigate to dev.html
-                return 'Exiting...';
-            }
-        };
 
         // Process the input when user presses enter
         commandInput.addEventListener('keydown', function(event) {
