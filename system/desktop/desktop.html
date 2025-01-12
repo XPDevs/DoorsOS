@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,24 +42,108 @@
   margin-right: 15px;
 }
 
-.battery-status {
-  display: flex;
-  align-items: center;
-  margin-left: auto; /* Pushes the battery status to the right */
-}
+        .battery-status {
+            display: flex;
+            align-items: center;
+        }
 
-.battery-icon {
-  margin-right: 8px;
-}
+        .battery-icon {
+            margin-right: 8px;
+        }
 
-.battery-text {
-  font-size: 14px;
-}
+        .battery-text {
+            font-size: 14px;
+        }
 
-/* Optional: Add spacing between battery status and edge */
-.battery-status {
-  margin-right: 10px;
-}
+        .battery-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .battery-popout {
+            position: absolute;
+            bottom: 60px; /* Move it above the battery */
+            right: 0; /* Align with the right of the taskbar */
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .battery-popout.show {
+            display: block;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: -100px; /* Start hidden off the screen at the bottom */
+            left: 50%;
+            transform: translateX(-50%); /* Center it horizontally */
+            width: 250px;
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            bottom: 60px; /* Adjusted to make the notification appear higher */
+        }
+
+        .charging-notification {
+            background-color: #4CAF50; /* Green for charging */
+        }
+
+        .battery-notification {
+            background-color: #f44336; /* Red for low battery */
+        }
+
+        .notification .close-btn,
+        .notification .ok-btn {
+            cursor: pointer;
+            font-size: 16px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin-left: 10px;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .notification .close-btn {
+            font-size: 18px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
 
     .taskbar > *:not(.taskbar-time) {
@@ -481,11 +566,14 @@ button:hover {
   </div>
 </div>
 
-<div class="notification battery-notification" id="battery-notification">
+    <div class="battery-popout" id="battery-popout">
+        <p id="battery-time"></p>
+    </div>
+
+    <div class="notification battery-notification" id="battery-notification">
         <div class="notification-content">
             Battery percentage is low (20%). Please consider charging.
         </div>
-        <button class="close-btn" id="close-btn">✖</button>
     </div>
 
     <div class="notification charging-notification" id="charging-notification">
@@ -493,7 +581,6 @@ button:hover {
             Your device is charging.
         </div>
         <button class="ok-btn" id="ok-btn">OK</button>
-        <button class="close-btn" id="close-btn-charging">✖</button>
     </div>
 
 
@@ -519,10 +606,10 @@ button:hover {
     <div class="taskbar-icon" id="app4Icon">
       <img src="taskbar/gear.jpg" alt="Settings">
     </div>
-            <div class="battery-status" id="battery-status" style="display: none;">
+        <button class="battery-button" id="battery-button">
             <span class="battery-icon" id="battery-icon">🔋</span>
             <span class="battery-text" id="battery-text">100%</span>
-        </div>
+        </button>
     <div class="taskbar-time">
     <button id="timeButton">12:34 | 01/11/2025</button>
     <div id="calendarPopup" class="calendar-popup">
@@ -623,18 +710,12 @@ button:hover {
 
   <script>
         function updateBatteryStatus(battery) {
-            const batteryStatus = document.getElementById('battery-status');
             const batteryIcon = document.getElementById('battery-icon');
             const batteryText = document.getElementById('battery-text');
             const batteryNotification = document.getElementById('battery-notification');
             const chargingNotification = document.getElementById('charging-notification');
-            const closeBtn = document.getElementById('close-btn');
-            const closeBtnCharging = document.getElementById('close-btn-charging');
-            const okBtnCharging = document.getElementById('ok-btn');
 
-            batteryStatus.style.display = 'flex';
-            const percentage = Math.round(battery.level * 100);
-            batteryText.textContent = `${percentage}%`;
+            batteryText.textContent = `${Math.round(battery.level * 100)}%`;
 
             if (battery.charging) {
                 batteryIcon.textContent = '⚡';
@@ -644,27 +725,26 @@ button:hover {
                 chargingNotification.classList.remove('show');
             }
 
-            // Show notification only when battery reaches 10%
-            if (percentage === 20) {
+            // Show notification only when battery reaches 20%
+            if (battery.level <= 0.2) {
                 batteryNotification.classList.add('show');
             } else {
                 batteryNotification.classList.remove('show');
             }
 
-            // Close button for the battery notification
-            closeBtn.addEventListener('click', () => {
-                batteryNotification.classList.remove('show');
-            });
-
-            // Close button for the charging notification
-            closeBtnCharging.addEventListener('click', () => {
-                chargingNotification.classList.remove('show');
-            });
-
-            // OK button for charging notification
-            okBtnCharging.addEventListener('click', () => {
-                chargingNotification.classList.remove('show');
-            });
+            // Calculate battery time remaining if not charging
+            if (!battery.charging) {
+                const remainingTime = battery.dischargingTime; // Time in seconds
+                if (remainingTime !== Infinity) {
+                    const hours = Math.floor(remainingTime / 3600);
+                    const minutes = Math.floor((remainingTime % 3600) / 60);
+                    document.getElementById('battery-time').textContent = `Time remaining: ${hours} hours ${minutes} minutes`;
+                } else {
+                    document.getElementById('battery-time').textContent = 'Unable to estimate time remaining';
+                }
+            } else {
+                document.getElementById('battery-time').textContent = 'Charging...';
+            }
         }
 
         async function initializeBattery() {
@@ -674,8 +754,23 @@ button:hover {
 
                 battery.addEventListener('levelchange', () => updateBatteryStatus(battery));
                 battery.addEventListener('chargingchange', () => updateBatteryStatus(battery));
+                battery.addEventListener('dischargingtimechange', () => updateBatteryStatus(battery));
             }
         }
+
+        // Toggle the battery popout when the battery icon is clicked
+        document.getElementById('battery-button').addEventListener('click', () => {
+            document.getElementById('battery-popout').classList.toggle('show');
+        });
+
+        // Close the battery popout when clicked outside or on the battery button again
+        window.addEventListener('click', (event) => {
+            const batteryButton = document.getElementById('battery-button');
+            const batteryPopout = document.getElementById('battery-popout');
+            if (!batteryButton.contains(event.target) && !batteryPopout.contains(event.target)) {
+                batteryPopout.classList.remove('show');
+            }
+        });
 
         initializeBattery();
 
