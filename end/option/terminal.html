@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,20 +21,20 @@
             align-items: flex-start;
             font-size: 20px;
             overflow: hidden; /* Remove overall scrollbars */
-        cursor: none; /* Hide cursor globally */
-    }
+            cursor: none; /* Hide cursor globally */
+        }
 
-    /* Custom cursor style */
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../../ui/cursor/terminal.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
+        /* Custom cursor style */
+        .cursor {
+            position: absolute;
+            width: 32px; /* Customize the size of the cursor */
+            height: 32px;
+            background-image: url('../../ui/cursor/terminal.ico'); /* Custom cursor image (ICO file) */
+            background-size: contain;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
 
         #terminal {
             width: 100%;
@@ -205,7 +204,8 @@ Kernel Name: NexShell
 Architecture: x86_64
 Boot Mode: UEFI
                 `;
-            },
+            }
+        };
 
         // Process the input when user presses enter
         commandInput.addEventListener('keydown', function(event) {
@@ -236,13 +236,14 @@ Boot Mode: UEFI
             terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
             terminalOutput.innerHTML += `<div class="output">${output}</div>`;
         }
-    const cursor = document.getElementById('cursor');
 
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
+        const cursor = document.getElementById('cursor');
+
+        // Track mouse movement and set the custom cursor position
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.pageX}px`;
+            cursor.style.top = `${e.pageY}px`;
+        });
     </script>
 
 </body>
