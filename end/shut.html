@@ -15,6 +15,19 @@
       font-family: Arial, sans-serif;
       color: #fff; /* Ensure text is visible if needed */
       overflow: hidden;
+    cursor: none; /* Hide cursor globally */
+    }
+
+    /* Custom cursor style */
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
     }
     .container {
       text-align: center;
