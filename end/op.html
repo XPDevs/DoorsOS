@@ -20,6 +20,19 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+          cursor: none; /* Hide cursor globally */
+    }
+
+    /* Custom cursor style */
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
     }
 
     .container {
@@ -106,6 +119,8 @@
 </head>
 <body>
 
+<div class="cursor" id="cursor"></div>
+  
   <div class="container">
     <div class="title">Choose an Option</div>
     <div class="subtitle">Your computer will restart to the chosen mode</div>
@@ -115,5 +130,15 @@
     <a href="rest.html" class="btn default">Cancel</a>
   </div>
 
+<script>
+    const cursor = document.getElementById('cursor');
+
+    // Track mouse movement and set the custom cursor position
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
+  </script>
+  
 </body>
 </html>
