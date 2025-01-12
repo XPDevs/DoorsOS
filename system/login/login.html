@@ -31,11 +31,13 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 1s, visibility 1s;
+            cursor: none;
         }
 
         .screen.active {
             opacity: 1;
             visibility: visible;
+            cursor: none;
         }
 
         .time-date-box {
@@ -45,15 +47,18 @@
             text-align: center;
             color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: none;
         }
 
         .time-date-box .time {
             font-size: 64px;
             margin-bottom: 20px;
+            cursor: none;
         }
 
         .time-date-box .date {
             font-size: 32px;
+            cursor: none;
         }
 
         .login-window {
@@ -63,11 +68,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: center;
+            cursor: none;
         }
 
         .login-window h2 {
             margin-bottom: 20px;
             color: #333;
+            cursor: none;
         }
 
         .login-window input {
@@ -76,6 +83,7 @@
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+            cursor: none;
         }
 
         .login-window button {
@@ -84,19 +92,21 @@
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: pointer;
+            cursor: none;
             font-size: 16px;
             border-radius: 5px;
         }
 
         .login-window button:hover {
             background-color: #45a049;
+            cursor: none;
         }
 
         .power-btn-container {
             position: absolute;
             bottom: 20px;
             left: 20px;
+            cursor: none;
         }
 
         .power-btn {
@@ -105,13 +115,14 @@
             color: white;
             border: none;
             font-size: 18px;
-            cursor: pointer;
+            cursor: none;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .power-btn:hover {
             background-color: #e53935;
+            cursor: none;
         }
 
         .modal {
@@ -125,6 +136,7 @@
             justify-content: center;
             align-items: center;
             z-index: 200;
+            cursor: none;
         }
 
         .modal-content {
@@ -133,26 +145,30 @@
             text-align: center;
             border-radius: 5px;
             width: 300px;
+            cursor: none;
         }
 
         button {
             padding: 10px 20px;
             margin: 10px;
-            cursor: pointer;
+            cursor: none;
             border-radius: 5px;
         }
 
         button:hover {
             background-color: #ddd;
+            cursor: none;
         }
 
         /* Spinner Animation */
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
+                cursor: none;
             }
             100% {
                 transform: rotate(360deg);
+                cursor: none;
             }
         }
 
@@ -163,6 +179,7 @@
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite; /* Continuous spin */
+            cursor: none;
         }
 
         .welcome-message {
@@ -172,17 +189,19 @@
             margin-top: 10px;
             color: green;
             font-size: 18px;
+            cursor: none;
         }
             .cursor {
       position: absolute;
       width: 32px; /* Customize the size of the cursor */
       height: 32px;
-      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD2ElEQVR4nO2Yb2iVZRjGn/5BfakvQR86vM91PedtNCqaLEpossh9CE2iwoqS5TY1Mqc7uJpNbEpap/pQGOsPs3RkCTWQtERLTItZ6OzfahkNNetkEFkRRNCfO957e9xpphzne87eQ7vg5ny9f+e67+e9nseYCU1oQmOStfbcMAzPN+UokjMA/EzyLwBd1dXV55hyEoAvSQrToUS/ADZFjphyEYBfosaD5s2CykkKQXJX2YwUyaMKsGK/BEt2Cy6/2jvRV1FRcaFJugD8EDVslw9IkM1JsHSfoGqKd2IglUpdbJIsAN+rAx39QwBRdfQLrqrzEAfT6XRokiqSOQVY9skIQFQr9gsnz/AQR5xzV5gkCsBhHaFlH/0bIKqHBwVTbvMQR621k03SRPKgOrC073iAqFYdElw/2y/2ryTrTJIEYFAdaN/73wBRPXJYcMN9HuJ3a+3NJmkfMvvgBycGiOrRbwU3LfEQfwC42yRBJAd0hNp6Tw4wXPaOx/xO/A1gYRIc6FcH2t4rCGAEwnmIB8YVgOTH6sD9uwoGUIj6TqFLezey4wmwTwEW7zglAIWY0y10QyGQ5LPGmDNLDgBgj47Q4u2nDKAQ83uEl1zql/uVksdxku+rA5m3xgSgEIveFFZc5iE2p1Kp80oGAKBXHchsHTOAQrTuEFRW+XHaWbI4DuBdBVi05bQAgqjaevPj+N6SxHGS7+gILXzj9AGyURzvE1xZ4534vOhxHMB2daB5UzwA2ZwED32aH8cPhGGYLhoAyW0KsGBjfABZH8dv9BDfFS2Ok9yiIzS/J16AbE7sykFBzUwP8SOAa2IHiI49deDe12IHCKJadUiYF8edc1NjBSC5UQHu2VAcgOxQHLd1c70Tv8V6pwDQMwTwcvEAslEc/0YwveXYYscGQPJVBZj7UuHNrDwgQfseCVp3is1sE9v8uth568U2rBHUd2patbd26P0B01oEUxsFtXcKr73l2D7ECbBBAeZ0F7aYma35D2BjqT9JLogNAMB6BWhaW2Bwq/SN5Iaj+G4Abw87uQ7AM1G8JtlurW0BMI/kTOfcNGvtdWEYpkycItmtAI0vnLz5prX50XldbW3t2SYJAvCiHnENXSduftbq0ZeXM0xSBKBLHZj9XCF34FaTNJF8XgHqO487u/OOvWjxGk0ShaGl0+NvpPmvBXVNyXwHGi0AT6sDs1bnPSfe7v/5n5xzNSbJIvmUAtz1pATLv8hPkEestVUm6SL5hAJMzwgn1fqx+SoIAppykHOuYdSX8kOSF5ky0lkkHwfwGYA1zrkLxruhCU3o/6p/AFhtDn6+kURkAAAAAElFTkSuQmCC'); /* Custom cursor image */
+      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image */
       background-size: contain;
       pointer-events: none;
       transform: translate(-50%, -50%);
       z-index: 9999;
     }
+
     </style>
 </head>
 <body>
