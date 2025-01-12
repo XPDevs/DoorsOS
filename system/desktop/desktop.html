@@ -35,23 +35,28 @@
   bottom: 0; /* Ensures the taskbar stays at the bottom */
   left: 0; /* Keeps the taskbar full width */
   z-index: 1000; /* Ensures the taskbar stays on top of other content */
+  cursor: none;
 }
 
 .taskbar > *:not(.battery-status) {
   margin-right: 15px;
+  cursor: none;
 }
 
         .battery-status {
             display: flex;
             align-items: center;
+            cursor: none;
         }
 
         .battery-icon {
             margin-right: 8px;
+            cursor: none;
         }
 
         .battery-text {
             font-size: 14px;
+            cursor: none;
         }
 
         .battery-button {
@@ -59,7 +64,7 @@
             border: none;
             color: #fff;
             font-size: 18px;
-            cursor: pointer;
+            cursor: none;
             display: flex;
             align-items: center;
             padding: 5px;
@@ -77,10 +82,12 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             display: none;
+            cursor: none;
         }
 
         .battery-popout.show {
             display: block;
+            cursor: none;
         }
 
         .notification {
@@ -99,23 +106,26 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: bottom 0.5s ease-in-out;
             z-index: 1000;
+            cursor: none;
         }
 
         .notification.show {
             bottom: 60px; /* Adjusted to make the notification appear higher */
+            cursor: none;
         }
 
         .charging-notification {
             background-color: #4CAF50; /* Green for charging */
+            cursor: none;
         }
 
         .battery-notification {
             background-color: #f44336; /* Red for low battery */
+            cursor: none;
         }
 
         .notification .close-btn,
         .notification .ok-btn {
-            cursor: pointer;
             font-size: 16px;
             background: none;
             border: none;
@@ -123,30 +133,36 @@
             margin-left: 10px;
             padding: 0;
             font-weight: bold;
+            cursor: none;
         }
 
         .notification .close-btn {
             font-size: 18px;
+            cursor: none;
         }
 
         .notification-content {
             flex: 1;
+            cursor: none;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
+                cursor: none;
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
+                cursor: none;
             }
         }
 
 
     .taskbar > *:not(.taskbar-time) {
       margin-right: 15px;
+      cursor: none;
     }
     .taskbar-icon {
       width: 30px;
@@ -157,31 +173,36 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
+      cursor: none;
       transition: background 0.3s;
     }
     .taskbar-icon:hover {
       background-color: #555;
+      cursor: none;
     }
     .taskbar-icon img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      cursor: none;
     }
     .taskbar-time {
       font-size: 14px;
       color: #fff;
       margin-left: auto;
+      cursor: none;
     }
     .start-button {
       background: none;
       border: none;
       padding: 0;
       cursor: pointer;
+      cursor: none;
     }
     .start-button img {
       height: 30px;
       width: 30px;
+      cursor: none;
     }
     .start-menu {
       display: none;
@@ -194,6 +215,7 @@
       padding: 10px;
       z-index: 1000;
       border-radius: 4px;
+      cursor: none;
     }
     .start-menu a {
       display: block;
@@ -202,9 +224,11 @@
       padding: 8px 12px;
       border-radius: 3px;
       margin-bottom: 5px;
+      cursor: none;
     }
     .start-menu a:hover {
       background: #555;
+      cursor: none;
     }
     .window {
       width: 300px;
@@ -217,6 +241,7 @@
       border-radius: 5px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
       display: none;
+      cursor: none;
     }
     .window-header {
       background: #333;
@@ -225,36 +250,42 @@
       border-radius: 5px 5px 0 0;
       display: flex;
       align-items: center;
-      cursor: move;
+      cursor: none;
     }
     .window-buttons {
       display: flex;
       margin-left: auto;
+      cursor: none;
     }
     .window-button {
       width: 12px;
       height: 12px;
       margin-left: 5px;
       border-radius: 50%;
-      cursor: pointer;
+      cursor: none;
     }
     .window-button:nth-child(1) {
       background-color: #1e90ff;
+      cursor: none;
     }
     .window-button:nth-child(2) {
       background-color: #00ff00;
+      cursor: none;
     }
     .window-button:nth-child(3) {
       background-color: #ff0000;
+      cursor: none;
     }
     .window-content {
       width: 100%;
       height: calc(100% - 40px); /* Adjusted to exclude the header height */
+      cursor: none;
     }
     .window-content iframe {
       width: 100%;
       height: 100%;
       border: none;
+      cursor: none;
     }
 
   .desktop {
@@ -265,6 +296,7 @@
   align-content: flex-start;
   position: relative;
   background: url('bg.jpg') no-repeat center center/cover;
+  cursor: none;
 }
 
 .context-menu {
@@ -276,15 +308,17 @@
   display: none;
   z-index: 2000;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: none;
 }
 
 .context-menu-item {
   padding: 8px 12px;
-  cursor: pointer;
+  cursor: none;
 }
 
 .context-menu-item:hover {
   background: #555;
+  cursor: none;
 }
 
 .desktop-item {
@@ -295,13 +329,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  cursor: pointer;
+  cursor: none;
 }
 
 .desktop-item img {
   width: 50px;
   height: 50px;
   margin-bottom: 5px;
+  cursor: none;
 }
 
 .modal {
@@ -315,6 +350,7 @@
   justify-content: center;
   align-items: center;
   z-index: 3000;
+  cursor: none;
 }
 
 .modal-content {
@@ -323,6 +359,7 @@
   border-radius: 5px;
   text-align: center;
   width: 300px;
+  cursor: none;
 }
 
 .modal-content input {
@@ -331,6 +368,7 @@
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
+  cursor: none;
 }
 
 .modal-buttons button {
@@ -338,17 +376,19 @@
   padding: 8px 12px;
   border: none;
   border-radius: 3px;
-  cursor: pointer;
+  cursor: none;
 }
 
 .modal-buttons button#confirmName {
   background: #4caf50;
   color: white;
+  cursor: none;
 }
 
 .modal-buttons button#cancelName {
   background: #f44336;
   color: white;
+  cursor: none;
 }
 
 /* Modal Styles */
@@ -371,23 +411,26 @@
   border-radius: 5px;
   text-align: center;
   width: 300px;
+  cursor: none;
 }
 
 input[type="text"] {
   width: 80%;
   padding: 10px;
   margin: 10px 0;
+  cursor: none;
 }
 
 button {
   padding: 8px 16px;
   margin: 5px;
-  cursor: pointer;
+  cursor: none;
 }
 
 button:hover {
   background-color: #444;
   color: white;
+  cursor: none;
 }
 
     .taskbar-time {
@@ -398,6 +441,7 @@ button:hover {
       padding: 5px 10px;
       border-radius: 5px;
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+      cursor: none;
     }
 
     .taskbar-time button {
@@ -407,10 +451,12 @@ button:hover {
       font-size: 14px;
       cursor: pointer;
       padding: 0;
+      cursor: none;
     }
 
     .taskbar-time button:focus {
       outline: none;
+      cursor: none;
     }
 
     .calendar-popup {
@@ -427,11 +473,13 @@ button:hover {
       z-index: 1001;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
       overflow: hidden;
+      cursor: none;
     }
 
     .calendar-popup .popup-content {
       padding: 10px;
       overflow-y: auto;
+      cursor: none;
     }
 
     .calendar {
@@ -440,6 +488,7 @@ button:hover {
       border-collapse: collapse;
       border-radius: 10px;
       overflow: hidden;
+      cursor: none;
     }
 
     .calendar th, .calendar td {
@@ -447,26 +496,30 @@ button:hover {
       width: 30px;
       height: 30px;
       text-align: center;
-      cursor: pointer;
+      cursor: none;
     }
 
     .calendar th {
       background-color: #444;
       border-radius: 10px 10px 0 0;
+      cursor: none;
     }
 
     .calendar td {
       background-color: #555;
       border-radius: 5px;
+      cursor: none;
     }
 
     .calendar td:hover {
       background-color: #666;
+      cursor: none;
     }
 
     .highlight {
       background-color: #2196F3;
       color: white;
+      cursor: none;
     }
 
     .calendar-header {
@@ -474,6 +527,7 @@ button:hover {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      cursor: none;
     }
 
     .calendar-header button {
@@ -481,12 +535,13 @@ button:hover {
       border: none;
       color: white;
       font-size: 20px;
-      cursor: pointer;
+      cursor: none;
     }
 
     .calendar-header h3 {
       margin: 0;
       font-size: 18px;
+      cursor: none;
     }
 
         .notification {
@@ -505,18 +560,22 @@ button:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: bottom 0.5s ease-in-out;
             z-index: 1000;
+            cursor: none;
         }
 
         .notification.show {
             bottom: 60px; /* Move to the center bottom */
+            cursor: none;
         }
 
         .charging-notification {
             background-color: #4CAF50; /* Green for charging */
+            cursor: none;
         }
 
         .battery-notification {
             background-color: #f44336; /* Red for low battery */
+            cursor: none;
         }
 
         .notification .close-btn,
@@ -529,24 +588,29 @@ button:hover {
             margin-left: 10px;
             padding: 0;
             font-weight: bold;
+            cursor: none;
         }
 
         .notification .close-btn {
             font-size: 18px;
+            cursor: none;
         }
 
         .notification-content {
             flex: 1;
+            cursor: none;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
+                cursor: none;
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
+                cursor: none;
             }
         }
 
