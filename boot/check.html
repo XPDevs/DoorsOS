@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image with Spinner</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #000; /* Start with black background */
+      font-family: Arial, sans-serif;
+      color: #fff;
+      cursor: none;
+      transition: background-color 2s ease; /* Fade effect */
+    }
+
+    /* Change background color to Windows 10 blue */
+    body.fade {
+      background-color: #0078d4; /* Windows 10 blue */
+    }
+
+    .container {
+      text-align: center;
+      cursor: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      cursor: none;
+    }
+
+    .spinner {
+      margin: 20px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid transparent;
+      border-top: 4px solid #ffffff; /* White spinner */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      cursor: none;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+        cursor: none;
+      }
+      to {
+        transform: rotate(360deg);
+        cursor: none;
+      }
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #fff;
+      font-weight: bold;
+      display: block; /* Always display the message */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="spinner"></div>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    // Fade the background to Windows 10 blue after 2 seconds
+    setTimeout(() => {
+      document.body.classList.add('fade');
+    }, 2000);
+
+    // Display messages one by one, replacing the last message
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Loading, please wait...";
+    }, 2000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Initializing the process...";
+    }, 4000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Preparing resources...";
+    }, 6000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Checking configurations...";
+    }, 8000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Verifying system status...";
+    }, 10000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Connecting to the server...";
+    }, 12000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Loading modules...";
+    }, 14000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Starting the application...";
+    }, 16000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "Almost done...";
+    }, 18000);
+
+    setTimeout(() => {
+      document.getElementById("message").innerHTML = "You will be redirected shortly.";
+    }, 20000);
+
+    // Check if the application is installed and handle redirection
+    setTimeout(() => {
+      // 1 in 5 chance of redirecting to error.html
+      const redirectToError = Math.random() < 0.2; // 0.2 is a 1 in 5 chance
+
+      if (redirectToError) {
+        console.log('Redirecting to error.html...');
+        window.location.href = "../error/error.html"; // Redirect to error.html if there's a random error
+      } else {
+        console.log('Checking installation status...');
+        
+        // Check installation status from localStorage
+        const isInstalled = localStorage.getItem("isInstalled");
+
+        if (isInstalled === "true") {
+          window.location.href = "../system/login/login.html"; // Redirect to apply.html if installed
+        } else {
+          window.location.href = "../setup/install.html"; // Redirect to install.html if not installed
+        }
+      }
+    }, 20000); // Wait 20 seconds before checking installation status and redirecting
+  </script>
+</body>
+</html>
