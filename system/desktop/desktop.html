@@ -624,6 +624,50 @@ button:hover {
       transform: translate(-50%, -50%);
       z-index: 9999;
     }
+    /* Taskbar button style */
+    .taskbar-button {
+      background-color: #333;
+      color: white;
+      padding: 4px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+align-items: center;
+      align-items: center;
+      justify-content: center;
+    }
+    .taskbar-button img {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Popout style */
+    .popout {
+      display: none;
+      position: fixed;
+      background-color: #333;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      width: 300px;
+      border-radius: 8px;
+      z-index: 1000;
+    }
+    .popout h2 {
+      margin-top: 0;
+    }
+    .status {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    .online {
+      color: green;
+    }
+    .offline {
+      color: red;
+    }
+    .connection-type {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -717,8 +761,15 @@ button:hover {
       </div>
     </div>
   </div>
-
+    <div class="taskbar-button" id="taskbarButton">
+      <img id="connectionIcon" src="" alt="Connection Icon">
+    </div>
   </div>
+  </div>
+  <div class="popout" id="popout">
+    <h2>Network Connection Status</h2>
+    <div class="status" id="connectionStatus"></div>
+    <div class="status" id="connectionType"></div>
   </div>
 
   <!-- Window 1: Text Editor -->
@@ -1322,6 +1373,73 @@ window.addEventListener('click', () => {
       cursor.style.left = `${e.pageX}px`;
       cursor.style.top = `${e.pageY}px`;
     });
+function updateConnectionStatus() {
+      const connectionStatusElement = document.getElementById('connectionStatus');
+      const connectionTypeElement = document.getElementById('connectionType');
+      const connectionIcon = document.getElementById('connectionIcon');
+
+      // Check if the device is connected to the internet
+      if (navigator.onLine) {
+        connectionStatusElement.textContent = 'You are connected to the internet.';
+        connectionStatusElement.classList.remove('offline');
+        connectionStatusElement.classList.add('online');
+
+        // For simplicity, we assume Wi-Fi unless Ethernet is detected by an external source
+        const connectionType = "Wi-Fi";  // Change this as needed based on the environment (requires external API or system access)
+        
+        connectionTypeElement.textContent = `Connection Type: ${connectionType}`;
+        connectionIcon.src = "../../ui/network/wifi.ico";  // Wi-Fi icon
+      } else {
+        connectionStatusElement.textContent = 'You are not connected to the internet.';
+        connectionStatusElement.classList.remove('online');
+        connectionStatusElement.classList.add('offline');
+        connectionTypeElement.textContent = '';
+        connectionIcon.src = "../../ui/network/nonwifi.ico";  // nonconnection icon for offline
+      }
+    }
+
+    // Function to adjust the position of the popout
+    function positionPopout() {
+      const button = document.getElementById('taskbarButton');
+      const popout = document.getElementById('popout');
+
+      // Get button position and dimensions
+      const buttonRect = button.getBoundingClientRect();
+
+      // Calculate available space above and below the button
+      const spaceAbove = buttonRect.top;
+      const spaceBelow = window.innerHeight - buttonRect.bottom;
+
+      // Check if there's enough space above or below for the popout
+      if (spaceAbove > popout.offsetHeight) {
+        // Position the popout above the button if enough space
+        popout.style.left = `${buttonRect.left + (buttonRect.width / 2) - (popout.offsetWidth / 2)}px`;
+        popout.style.bottom = `${window.innerHeight - buttonRect.top + 10}px`;  // 10px for a small gap
+      } else {
+        // Position the popout below the button if not enough space above
+        popout.style.left = `${buttonRect.left + (buttonRect.width / 2) - (popout.offsetWidth / 2)}px`;
+        popout.style.bottom = `${window.innerHeight - buttonRect.bottom + 10}px`;
+      }
+    }
+
+    // Toggle the popout visibility when the taskbar button is clicked
+    document.getElementById('taskbarButton').addEventListener('click', function() {
+      const popout = document.getElementById('popout');
+      if (popout.style.display === 'block') {
+        popout.style.display = 'none';
+      } else {
+        popout.style.display = 'block';
+        positionPopout();  // Adjust the position of the popout
+      }
+    });
+
+    // Check connection status when the page loads
+    window.addEventListener('load', updateConnectionStatus);
+
+    // Re-check connection when going online/offline
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+
   </script>
 </body>
 </html>
