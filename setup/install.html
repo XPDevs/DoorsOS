@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Installer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ADD8E6;  /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            cursor: none; /* Hide cursor on body and form elements */
+        }
+
+        .cursor {
+            position: absolute;
+            width: 32px; /* Customize the size of the cursor */
+            height: 32px;
+            background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+            background-size: contain;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            cursor: none;
+        }
+
+        .installer-window {
+            background-color: white;
+            border: 2px solid #ccc;
+            padding: 20px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            cursor: none;
+        }
+
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            padding-bottom: 10px;
+            cursor: none;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: none;
+        }
+
+        .question {
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: none;
+        }
+
+        .install-btn, .next-btn, .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: none;
+            font-size: 16px;
+        }
+
+        .install-btn:hover, .next-btn:hover, .submit-btn:hover {
+            background-color: #45a049;
+            cursor: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            cursor: none;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: none;
+        }
+
+        button:hover {
+            background-color: #ddd;
+            cursor: none;
+        }
+
+        /* EULA Section */
+        .eula-container {
+            max-height: 300px; /* Adjust based on how much of the EULA text you want visible */
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: none;
+        }
+
+        .eula-text {
+            white-space: pre-wrap; /* Preserve newlines and spaces */
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-label input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+    <div class="modal" id="warning-modal">
+        <div class="modal-content">
+            <p>If you close the setup, the OS will shutdown.</p>
+            <button id="close-setup-btn">Close Setup</button>
+            <button id="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div class="installer-window" id="installer-window">
+        <div class="window-header" id="window-header">
+            <span>Operating System Installer</span>
+            <button id="close-btn" class="close-btn">X</button>
+        </div>
+        <div id="installation-status" class="status">
+            <p>Preparing installation...</p>
+        </div>
+        <div class="question" id="question-container">
+            <!-- The question content will go here -->
+        </div>
+        <button id="next-btn" class="next-btn">Next</button>
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const closeBtn = document.getElementById("close-btn");
+    const warningModal = document.getElementById("warning-modal");
+    const closeSetupBtn = document.getElementById("close-setup-btn");
+    const cancelBtn = document.getElementById("cancel-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const questionContainer = document.getElementById("question-container");
+
+    let currentStep = 0;
+    let userData = {};
+
+    const questions = [
+        { question: "What language do you want to use for this installation?", type: "select", options: ["English", "Spanish", "French", "German"], key: "language" },
+        { question: "Do you accept the terms and conditions?", type: "checkbox", key: "terms", isEULA: true },
+        { question: "What is your username?", type: "text", key: "username" },
+        { question: "What would you like your password to be?", type: "password", key: "password" },
+        { question: "Choose the type of installation: Typical or Custom", type: "select", options: ["Typical", "Custom"], key: "installationType" },
+        { question: "Where would you like to install the OS? (Enter installation path)", type: "text", key: "installPath" }
+    ];
+
+    function showQuestion() {
+        const q = questions[currentStep];
+        let inputField = "";
+
+        if (q.type === "text" || q.type === "password") {
+            inputField = `<input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>`;
+        } else if (q.type === "select") {
+            inputField = `
+                <select id="user-input">
+                    ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                </select>
+            `;
+        } else if (q.type === "checkbox") {
+            inputField = `
+                <div class="checkbox-label">
+                    <input type="checkbox" id="user-input">
+                    I agree to the terms and conditions
+                </div>
+            `;
+        }
+
+        questionContainer.innerHTML = `
+            <p>${q.question}</p>
+            ${q.isEULA ? `<div class="eula-container"><div class="eula-text">END USER LICENSE AGREEMENT (EULA)
+
+Last Updated: [Date]
+
+This End User License Agreement ("Agreement") is a legal agreement between you ("Licensee" or "you") and XPDevs, the creator and owner of TestOS ("Licensor" or "we") regarding your use of the web-based operating system TestOS ("Software").
+
+By installing, accessing, or using the Software, you agree to be bound by the terms of this Agreement. If you do not agree to these terms, do not install or use the Software.
+
+License Grant
+Licensor grants you a limited, non-exclusive, non-transferable, revocable license to install and use the Software solely for personal or internal business use, subject to the terms of this Agreement. This license does not allow you to distribute, rent, lease, or sublicense the Software to third parties.
+
+Modifications to the Software
+Licensor reserves the right to modify, update, or discontinue the Software or any of its features at any time without notice. The Licensor is not obligated to provide any maintenance, updates, or support for the Software unless otherwise agreed. Please note that the Software is still in development and may not be fully complete or stable.
+
+Personal Information and Data Security
+The Software may collect certain personal information as part of its functionality. By using the Software, you acknowledge and agree that your personal data may be collected, stored, and used as described in our Privacy Policy. Please note that while we strive to protect your data, the Software may not be fully secure, and we cannot guarantee the complete safety of your personal information. You are responsible for any risks associated with the transmission of personal data through the Software.
+
+Intellectual Property
+All rights, title, and interest in and to the Software, including but not limited to any trademarks, logos, copyrights, and proprietary information, are owned by the Licensor. The Software is licensed, not sold, to you.
+
+Restrictions
+You agree not to:
+
+Copy, modify, or create derivative works based on the Software.
+Reverse-engineer, decompile, or disassemble the Software, except as permitted by law.
+Remove or alter any proprietary notices, labels, or marks from the Software.
+Use the Software for any unlawful purposes.
+Termination
+This license is effective until terminated. Your rights under this license will terminate automatically without notice if you fail to comply with any terms of this Agreement. Upon termination, you must cease all use of the Software and destroy any copies of it.
+
+Disclaimer of Warranties
+The Software is provided "AS IS" without any warranties of any kind. To the maximum extent permitted by applicable law, Licensor disclaims all warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
+
+Limitation of Liability
+To the fullest extent permitted by law, in no event shall Licensor be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, arising out of or in connection with your use or inability to use the Software.
+
+Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of the United Kingdom and Wales, without regard to its conflict of law provisions. Any disputes arising under or in connection with this Agreement shall be subject to the exclusive jurisdiction of the courts of England and Wales.
+
+Amendments to this Agreement
+Licensor reserves the right to modify this Agreement at any time. Your continued use of the Software following any changes constitutes your acceptance of the new terms.
+
+Software Specific Terms
+This section applies to the following software: TestOS, version 2.7. This Agreement is issued by XPDevs, covering any updates or upgrades to TestOS, unless expressly excluded by XPDevs.</div></div>` : ''}
+            ${inputField}
+        `;
+    }
+
+    nextBtn.addEventListener("click", function () {
+        const userInput = document.getElementById("user-input");
+
+        if (!userInput) return; // Prevent errors if input is missing.
+
+        // Validate input
+        if (questions[currentStep].type === "checkbox" && !userInput.checked) {
+            alert("You must agree to the terms and conditions.");
+            return;
+        }
+
+        // Store data
+        userData[questions[currentStep].key] = questions[currentStep].type === "checkbox"
+            ? userInput.checked
+            : userInput.value;
+
+        // Move to the next step
+        currentStep++;
+
+        if (currentStep < questions.length) {
+            showQuestion();
+        } else {
+            showReviewInfo();
+        }
+    });
+
+    function showReviewInfo() {
+        questionContainer.innerHTML = `
+            <p><strong>Review your information:</strong></p>
+            <p>Language: ${userData.language}</p>
+            <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
+            <p>Username: ${userData.username}</p>
+            <p>Password: ${userData.password ? "********" : "No password set"}</p>
+            <p>Installation Type: ${userData.installationType}</p>
+            <p>Install Path: ${userData.installPath}</p>
+            <p>Do you agree with this information?</p>
+            <button id="agree-btn" class="submit-btn">Yes, Install</button>
+            <button id="disagree-btn" class="submit-btn">No, Restart</button>
+        `;
+
+        document.getElementById("agree-btn").addEventListener("click", startInstallation);
+        document.getElementById("disagree-btn").addEventListener("click", function () {
+            currentStep = 0;
+            userData = {};
+            showQuestion();
+        });
+    }
+
+    function startInstallation() {
+        localStorage.setItem("username", userData.username);
+        localStorage.setItem("password", userData.password);
+        localStorage.setItem("isInstalled", "true");
+
+        questionContainer.innerHTML = `
+            <p>Installing your operating system...</p>
+            <p>Progress: <span id="install-progress">0%</span></p>
+            <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+        `;
+
+        let progress = 0;
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("install-progress");
+
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.value = progress;
+            progressText.innerText = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                questionContainer.innerHTML = `
+                    <p>Installation Complete!</p>
+                    <p>Your OS has been successfully installed.</p>
+                    <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
+                `;
+            }
+        }, 100);
+    }
+
+    closeBtn.addEventListener("click", function () {
+        warningModal.style.display = "flex";
+    });
+
+    closeSetupBtn.addEventListener("click", function () {
+        window.location.href = "../end/rest.html";
+    });
+
+    cancelBtn.addEventListener("click", function () {
+        warningModal.style.display = "none";
+    });
+
+    showQuestion();
+});
+
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
+</script>
+</body>
+</html>
