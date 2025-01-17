@@ -10,21 +10,20 @@
             font-family: Arial, sans-serif;
             display: flex;
             height: 100vh;
-          cursor: none; /* Hide cursor globally */
-    }
+            cursor: none; /* Hide cursor globally */
+        }
 
-    /* Custom cursor style */
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../../../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
-
+        /* Custom cursor style */
+        .cursor {
+            position: absolute;
+            width: 32px; /* Customize the size of the cursor */
+            height: 32px;
+            background-image: url('../../../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+            background-size: contain;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
 
         .sidebar {
             width: 250px;
@@ -153,9 +152,8 @@
     </style>
 </head>
 <body>
+    <div class="cursor" id="cursor"></div>
 
-      <div class="cursor" id="cursor"></div>
-    
     <div class="sidebar">
         <h2>Settings</h2>
         <ul>
@@ -198,11 +196,10 @@
     <script>
         const taskbarOverlayCheckbox = document.getElementById('taskbar-overlay');
         const restartModal = document.getElementById('restart-modal');
-        const restartNowButton = document.querySelector('.restart-now');
-
         const personalizationSection = document.getElementById('personalization-section');
         const factoryResetSection = document.getElementById('factory-reset-section');
         const factoryResetButton = document.querySelector('[data-section="factory-reset"]');
+        const cursor = document.getElementById('cursor');
 
         // Show modal when the checkbox is toggled
         taskbarOverlayCheckbox.addEventListener('change', () => {
@@ -224,23 +221,15 @@
             restartModal.style.display = 'flex';
         });
 
-        // Prevent any actions until restart is complete
-        restartNowButton.addEventListener('click', function() {
-            // Here you can trigger the restart operation or show a message
-            
-        });
-
-        // Close the operation (cancel)
         document.getElementById('exit-btn').addEventListener('click', function() {
             window.location.href = "settings.html"; // Example redirection to the main page
         });
-         const cursor = document.getElementById('cursor');
 
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
+        // Track mouse movement and set the custom cursor position
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
     </script>
 </body>
 </html>
