@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desktop</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100vh;
+      background: url('bg.jpg') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      cursor: none;
+    }
+    .taskbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #333;
+  height: 40px;
+  padding: 0 10px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  position: fixed; /* Keeps the taskbar fixed at the bottom */
+  bottom: 0; /* Ensures the taskbar stays at the bottom */
+  left: 0; /* Keeps the taskbar full width */
+  z-index: 1000; /* Ensures the taskbar stays on top of other content */
+  cursor: none;
+}
+
+.taskbar > *:not(.battery-status) {
+  margin-right: 15px;
+  cursor: none;
+}
+
+        .battery-status {
+            display: flex;
+            align-items: center;
+            cursor: none;
+        }
+
+        .battery-icon {
+            margin-right: 8px;
+            cursor: none;
+        }
+
+        .battery-text {
+            font-size: 14px;
+            cursor: none;
+        }
+
+        .battery-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: none;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .battery-popout {
+            position: absolute;
+            bottom: 60px; /* Move it above the battery */
+            right: 0; /* Align with the right of the taskbar */
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            cursor: none;
+        }
+
+        .battery-popout.show {
+            display: block;
+            cursor: none;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: -100px; /* Start hidden off the screen at the bottom */
+            left: 50%;
+            transform: translateX(-50%); /* Center it horizontally */
+            width: 250px;
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+            cursor: none;
+        }
+
+        .notification.show {
+            bottom: 60px; /* Adjusted to make the notification appear higher */
+            cursor: none;
+        }
+
+        .charging-notification {
+            background-color: #4CAF50; /* Green for charging */
+            cursor: none;
+        }
+
+        .battery-notification {
+            background-color: #f44336; /* Red for low battery */
+            cursor: none;
+        }
+
+        .notification .close-btn,
+        .notification .ok-btn {
+            font-size: 16px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin-left: 10px;
+            padding: 0;
+            font-weight: bold;
+            cursor: none;
+        }
+
+        .notification .close-btn {
+            font-size: 18px;
+            cursor: none;
+        }
+
+        .notification-content {
+            flex: 1;
+            cursor: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                cursor: none;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                cursor: none;
+            }
+        }
+
+
+    .taskbar > *:not(.taskbar-time) {
+      margin-right: 15px;
+      cursor: none;
+    }
+    .taskbar-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #444;
+      border-radius: 5px;
+      margin-right: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: none;
+      transition: background 0.3s;
+    }
+    .taskbar-icon:hover {
+      background-color: #555;
+      cursor: none;
+    }
+    .taskbar-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: none;
+    }
+    .taskbar-time {
+      font-size: 14px;
+      color: #fff;
+      margin-left: auto;
+      cursor: none;
+    }
+    .start-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      cursor: none;
+    }
+    .start-button img {
+      height: 30px;
+      width: 30px;
+      cursor: none;
+    }
+    .start-menu {
+      display: none;
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      background: #444;
+      border: 1px solid #555;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      z-index: 1000;
+      border-radius: 4px;
+      cursor: none;
+    }
+    .start-menu a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 3px;
+      margin-bottom: 5px;
+      cursor: none;
+    }
+    .start-menu a:hover {
+      background: #555;
+      cursor: none;
+    }
+    .window {
+      width: 300px;
+      height: 400px;
+      background: #fff;
+      color: #000;
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      display: none;
+      cursor: none;
+    }
+    .window-header {
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px 5px 0 0;
+      display: flex;
+      align-items: center;
+      cursor: none;
+    }
+    .window-buttons {
+      display: flex;
+      margin-left: auto;
+      cursor: none;
+    }
+    .window-button {
+      width: 12px;
+      height: 12px;
+      margin-left: 5px;
+      border-radius: 50%;
+      cursor: none;
+    }
+    .window-button:nth-child(1) {
+      background-color: #1e90ff;
+      cursor: none;
+    }
+    .window-button:nth-child(2) {
+      background-color: #00ff00;
+      cursor: none;
+    }
+    .window-button:nth-child(3) {
+      background-color: #ff0000;
+      cursor: none;
+    }
+    .window-content {
+      width: 100%;
+      height: calc(100% - 40px); /* Adjusted to exclude the header height */
+      cursor: none;
+    }
+    .window-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      cursor: none;
+    }
+
+  .desktop {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  position: relative;
+  background: url('bg.jpg') no-repeat center center/cover;
+  cursor: none;
+}
+
+.context-menu {
+  position: absolute;
+  background: #333;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 5px;
+  display: none;
+  z-index: 2000;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: none;
+}
+
+.context-menu-item {
+  padding: 8px 12px;
+  cursor: none;
+}
+
+.context-menu-item:hover {
+  background: #555;
+  cursor: none;
+}
+
+.desktop-item {
+  width: 80px;
+  height: 100px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: none;
+}
+
+.desktop-item img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 5px;
+  cursor: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  cursor: none;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 300px;
+  cursor: none;
+}
+
+.modal-content input {
+  width: 80%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: none;
+}
+
+.modal-buttons button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: none;
+}
+
+.modal-buttons button#confirmName {
+  background: #4caf50;
+  color: white;
+  cursor: none;
+}
+
+.modal-buttons button#cancelName {
+  background: #f44336;
+  color: white;
+  cursor: none;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: none;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 300px;
+  cursor: none;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: none;
+}
+
+button {
+  padding: 8px 16px;
+  margin: 5px;
+  cursor: none;
+}
+
+button:hover {
+  background-color: #444;
+  color: white;
+  cursor: none;
+}
+
+    .taskbar-time {
+      position: fixed;
+      bottom: 0px;
+      right: 1px;
+      background: #333;
+      padding: 5px 10px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+      cursor: none;
+    }
+
+    .taskbar-time button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      cursor: none;
+    }
+
+    .taskbar-time button:focus {
+      outline: none;
+      cursor: none;
+    }
+
+    .calendar-popup {
+      position: fixed;
+      bottom: 50px;
+      right: 10px;
+      width: 300px;
+      height: 300px;
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 10px;
+      display: none;
+      z-index: 1001;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .calendar-popup .popup-content {
+      padding: 10px;
+      overflow-y: auto;
+      cursor: none;
+    }
+
+    .calendar {
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .calendar th, .calendar td {
+      padding: 5px;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      cursor: none;
+    }
+
+    .calendar th {
+      background-color: #444;
+      border-radius: 10px 10px 0 0;
+      cursor: none;
+    }
+
+    .calendar td {
+      background-color: #555;
+      border-radius: 5px;
+      cursor: none;
+    }
+
+    .calendar td:hover {
+      background-color: #666;
+      cursor: none;
+    }
+
+    .highlight {
+      background-color: #2196F3;
+      color: white;
+      cursor: none;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: none;
+    }
+
+    .calendar-header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: none;
+    }
+
+    .calendar-header h3 {
+      margin: 0;
+      font-size: 18px;
+      cursor: none;
+    }
+
+        .notification {
+            position: fixed;
+            bottom: -100px; /* Start hidden off the screen at the bottom */
+            left: 50%;
+            transform: translateX(-50%); /* Center it horizontally */
+            width: 250px;
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+            cursor: none;
+        }
+
+        .notification.show {
+            bottom: 60px; /* Move to the center bottom */
+            cursor: none;
+        }
+
+        .charging-notification {
+            background-color: #4CAF50; /* Green for charging */
+            cursor: none;
+        }
+
+        .battery-notification {
+            background-color: #f44336; /* Red for low battery */
+            cursor: none;
+        }
+
+        .notification .close-btn,
+        .notification .ok-btn {
+            cursor: pointer;
+            font-size: 16px;
+            background: none;
+            border: none;
+            color: #fff;
+            margin-left: 10px;
+            padding: 0;
+            font-weight: bold;
+            cursor: none;
+        }
+
+        .notification .close-btn {
+            font-size: 18px;
+            cursor: none;
+        }
+
+        .notification-content {
+            flex: 1;
+            cursor: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                cursor: none;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                cursor: none;
+            }
+        }
+
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD2ElEQVR4nO2Yb2iVZRjGn/5BfakvQR86vM91PedtNCqaLEpossh9CE2iwoqS5TY1Mqc7uJpNbEpap/pQGOsPs3RkCTWQtERLTItZ6OzfahkNNetkEFkRRNCfO957e9xpphzne87eQ7vg5ny9f+e67+e9nseYCU1oQmOStfbcMAzPN+UokjMA/EzyLwBd1dXV55hyEoAvSQrToUS/ADZFjphyEYBfosaD5s2CykkKQXJX2YwUyaMKsGK/BEt2Cy6/2jvRV1FRcaFJugD8EDVslw9IkM1JsHSfoGqKd2IglUpdbJIsAN+rAx39QwBRdfQLrqrzEAfT6XRokiqSOQVY9skIQFQr9gsnz/AQR5xzV5gkCsBhHaFlH/0bIKqHBwVTbvMQR621k03SRPKgOrC073iAqFYdElw/2y/2ryTrTJIEYFAdaN/73wBRPXJYcMN9HuJ3a+3NJmkfMvvgBycGiOrRbwU3LfEQfwC42yRBJAd0hNp6Tw4wXPaOx/xO/A1gYRIc6FcH2t4rCGAEwnmIB8YVgOTH6sD9uwoGUIj6TqFLezey4wmwTwEW7zglAIWY0y10QyGQ5LPGmDNLDgBgj47Q4u2nDKAQ83uEl1zql/uVksdxku+rA5m3xgSgEIveFFZc5iE2p1Kp80oGAKBXHchsHTOAQrTuEFRW+XHaWbI4DuBdBVi05bQAgqjaevPj+N6SxHGS7+gILXzj9AGyURzvE1xZ4534vOhxHMB2daB5UzwA2ZwED32aH8cPhGGYLhoAyW0KsGBjfABZH8dv9BDfFS2Ok9yiIzS/J16AbE7sykFBzUwP8SOAa2IHiI49deDe12IHCKJadUiYF8edc1NjBSC5UQHu2VAcgOxQHLd1c70Tv8V6pwDQMwTwcvEAslEc/0YwveXYYscGQPJVBZj7UuHNrDwgQfseCVp3is1sE9v8uth568U2rBHUd2patbd26P0B01oEUxsFtXcKr73l2D7ECbBBAeZ0F7aYma35D2BjqT9JLogNAMB6BWhaW2Bwq/SN5Iaj+G4Abw87uQ7AM1G8JtlurW0BMI/kTOfcNGvtdWEYpkycItmtAI0vnLz5prX50XldbW3t2SYJAvCiHnENXSduftbq0ZeXM0xSBKBLHZj9XCF34FaTNJF8XgHqO487u/OOvWjxGk0ShaGl0+NvpPmvBXVNyXwHGi0AT6sDs1bnPSfe7v/5n5xzNSbJIvmUAtz1pATLv8hPkEestVUm6SL5hAJMzwgn1fqx+SoIAppykHOuYdSX8kOSF5ky0lkkHwfwGYA1zrkLxruhCU3o/6p/AFhtDn6+kURkAAAAAElFTkSuQmCC'); /* Custom cursor image */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+
+
+  <div class="desktop" id="desktop">
+  <!-- New files and folders will appear here -->
+</div>
+
+<!-- Modal for Renaming Folder/File -->
+<div id="nameModal" class="modal">
+  <div class="modal-content">
+    <label for="itemName">Enter Name:</label>
+    <input type="text" id="itemName" placeholder="Name your folder/file">
+    <button id="saveNameButton">Save</button>
+    <button id="cancelNameButton">Cancel</button>
+  </div>
+</div>
+
+    <div class="battery-popout" id="battery-popout">
+        <p id="battery-time"></p>
+    </div>
+
+    <div class="notification battery-notification" id="battery-notification">
+        <div class="notification-content">
+            Battery percentage is low (20%). Please consider charging.
+        </div>
+    </div>
+
+    <div class="notification charging-notification" id="charging-notification">
+        <div class="notification-content">
+            Your device is charging.
+        </div>
+        <button class="ok-btn" id="ok-btn">OK</button>
+    </div>
+
+
+
+<div class="context-menu" id="contextMenu">
+  <div class="context-menu-item" id="newFolder">New Folder</div>
+  <div class="context-menu-item" id="newFile">New File</div>
+</div>
+
+  <div class="taskbar">
+    <button class="start-button" id="startButton">
+      <img src="taskbar/eye.jpg" alt="Start">
+    </button>
+    <div class="taskbar-icon" id="app1Icon">
+      <img src="taskbar/text.jpg" alt="Text Editor Icon">
+    </div>
+    <div class="taskbar-icon" id="app2Icon">
+      <img src="taskbar/fe.jpg" alt="File Explorer Icon">
+    </div>
+    <div class="taskbar-icon" id="app3Icon">
+      <img src="taskbar/ht.jpg" alt="HTML Editor Icon">
+    </div>
+    <div class="taskbar-icon" id="app4Icon">
+      <img src="taskbar/gear.jpg" alt="Settings">
+    </div>
+        <button class="battery-button" id="battery-button">
+            <span class="battery-icon" id="battery-icon">🔋</span>
+            <span class="battery-text" id="battery-text">000%</span>
+        </button>
+    <div class="taskbar-time">
+    <button id="timeButton">00:00 | 00/0/0000</button>
+    <div id="calendarPopup" class="calendar-popup">
+      <div class="popup-content">
+        <div class="calendar-header">
+          <button id="prevMonth">&lt;</button>
+          <h3 id="monthYear">January 2025</h3>
+          <button id="nextMonth">&gt;</button>
+        </div>
+        <table class="calendar" id="calendarTable">
+          <thead>
+            <tr>
+              <th>Sun</th>
+              <th>Mon</th>
+              <th>Tue</th>
+              <th>Wed</th>
+              <th>Thu</th>
+              <th>Fri</th>
+              <th>Sat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Calendar days will be dynamically inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <!-- Window 1: Text Editor -->
+  <div class="window" id="window1">
+    <div class="window-header" id="window1Header">
+      <span>Text Editor</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window1Minimize"></div>
+        <div class="window-button" id="window1Maximize"></div>
+        <div class="window-button" id="window1Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/text/text.html"></iframe>
+    </div>
+  </div>
+
+  <!-- Window 2: File Explorer -->
+  <div class="window" id="window2">
+    <div class="window-header" id="window2Header">
+      <span>File Explorer</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window2Minimize"></div>
+        <div class="window-button" id="window2Maximize"></div>
+        <div class="window-button" id="window2Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/file-explorer/file.html"></iframe>
+    </div>
+  </div>
+
+  <!-- Window 3: HTML Editor -->
+  <div class="window" id="window3">
+    <div class="window-header" id="window3Header">
+      <span>HTML Editor</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window3Minimize"></div>
+        <div class="window-button" id="window3Maximize"></div>
+        <div class="window-button" id="window3Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/html/ed.html"></iframe>
+    </div>
+  </div>
+
+  <!-- Window 4: settings -->
+  <div class="window" id="window4">
+    <div class="window-header" id="window4Header">
+      <span>Settings</span>
+      <div class="window-buttons">
+        <div class="window-button" id="window4Minimize"></div>
+        <div class="window-button" id="window4Maximize"></div>
+        <div class="window-button" id="window4Close"></div>
+      </div>
+    </div>
+    <div class="window-content">
+      <iframe src="../apps/settings/settings.html"></iframe>
+    </div>
+  </div>
+
+  <div class="start-menu" id="startMenu">
+    <a href="../../end/shut.html">Shutdown</a>
+    <a href="../../end/rest.html">Restart</a>
+    <a href="../login/login.html">Lock</a>
+  </div>
+
+  <script>
+        function updateBatteryStatus(battery) {
+            const batteryIcon = document.getElementById('battery-icon');
+            const batteryText = document.getElementById('battery-text');
+            const batteryNotification = document.getElementById('battery-notification');
+            const chargingNotification = document.getElementById('charging-notification');
+
+            batteryText.textContent = `${Math.round(battery.level * 100)}%`;
+
+            if (battery.charging) {
+                batteryIcon.textContent = '⚡';
+                chargingNotification.classList.add('show');
+            } else {
+                batteryIcon.textContent = '🔋';
+                chargingNotification.classList.remove('show');
+            }
+
+            // Show notification only when battery reaches 20%
+            if (battery.level <= 0.2) {
+                batteryNotification.classList.add('show');
+            } else {
+                batteryNotification.classList.remove('show');
+            }
+
+            // Calculate battery time remaining if not charging
+            if (!battery.charging) {
+                const remainingTime = battery.dischargingTime; // Time in seconds
+                if (remainingTime !== Infinity) {
+                    const hours = Math.floor(remainingTime / 3600);
+                    const minutes = Math.floor((remainingTime % 3600) / 60);
+                    document.getElementById('battery-time').textContent = `Time remaining: ${hours} hours ${minutes} minutes`;
+                } else {
+                    document.getElementById('battery-time').textContent = 'Unable to estimate time remaining';
+                }
+            } else {
+                document.getElementById('battery-time').textContent = 'Charging...';
+            }
+        }
+
+        async function initializeBattery() {
+            if ('getBattery' in navigator) {
+                const battery = await navigator.getBattery();
+                updateBatteryStatus(battery);
+
+                battery.addEventListener('levelchange', () => updateBatteryStatus(battery));
+                battery.addEventListener('chargingchange', () => updateBatteryStatus(battery));
+                battery.addEventListener('dischargingtimechange', () => updateBatteryStatus(battery));
+            }
+        }
+
+        // Toggle the battery popout when the battery icon is clicked
+        document.getElementById('battery-button').addEventListener('click', () => {
+            document.getElementById('battery-popout').classList.toggle('show');
+        });
+
+        // Close the battery popout when clicked outside or on the battery button again
+        window.addEventListener('click', (event) => {
+            const batteryButton = document.getElementById('battery-button');
+            const batteryPopout = document.getElementById('battery-popout');
+            if (!batteryButton.contains(event.target) && !batteryPopout.contains(event.target)) {
+                batteryPopout.classList.remove('show');
+            }
+        });
+
+        initializeBattery();
+
+       const timeButton = document.getElementById('timeButton');
+    const calendarPopup = document.getElementById('calendarPopup');
+    const calendarTable = document.getElementById('calendarTable').getElementsByTagName('tbody')[0];
+    const monthYearElement = document.getElementById('monthYear');
+    const prevMonthButton = document.getElementById('prevMonth');
+    const nextMonthButton = document.getElementById('nextMonth');
+
+    // Start date (January 2025)
+    let currentDate = new Date(2025, 0, 1); // January 1, 2025
+
+    // Toggle calendar popup visibility
+    timeButton.addEventListener('click', () => {
+      const isVisible = calendarPopup.style.display === 'block';
+      calendarPopup.style.display = isVisible ? 'none' : 'block';
+    });
+
+    // Close the calendar popup if clicked outside
+    window.addEventListener('click', (e) => {
+      if (!timeButton.contains(e.target) && !calendarPopup.contains(e.target)) {
+        calendarPopup.style.display = 'none';
+      }
+    });
+
+    // Update time on button
+    function updateTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const date = now.toLocaleDateString();
+      timeButton.textContent = `${hours}:${minutes} | ${date}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Create a basic calendar for the current month
+    function generateCalendar() {
+      const month = currentDate.getMonth();
+      const year = currentDate.getFullYear();
+
+      // Set the header text
+      monthYearElement.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+
+      // Get the first day of the month
+      const firstDay = new Date(year, month, 1).getDay();
+      // Get the number of days in the month
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      let day = 1;
+      let rows = '';
+
+      // Create each row of the calendar
+      for (let i = 0; i < 6; i++) {
+        let row = '<tr>';
+        for (let j = 0; j < 7; j++) {
+          if (i === 0 && j < firstDay) {
+            row += '<td></td>'; // Empty cells before the first day
+          } else if (day > daysInMonth) {
+            row += '<td></td>'; // Empty cells after the last day of the month
+          } else {
+            row += `<td data-day="${day}" onclick="highlightDate(this)">${day}</td>`;
+            day++;
+          }
+        }
+        row += '</tr>';
+        rows += row;
+        if (day > daysInMonth) break;
+      }
+
+      calendarTable.innerHTML = rows;
+    }
+
+    // Highlight the selected date
+    function highlightDate(cell) {
+      const selected = document.querySelector('.highlight');
+      if (selected) {
+        selected.classList.remove('highlight');
+      }
+      cell.classList.add('highlight');
+    }
+
+    // Change the month
+    function changeMonth(offset) {
+      currentDate.setMonth(currentDate.getMonth() + offset);
+
+      // Prevent going past January 2027
+      if (currentDate.getFullYear() > 2027 || (currentDate.getFullYear() === 2027 && currentDate.getMonth() > 0)) {
+        currentDate = new Date(2027, 0, 1); // Set to January 1, 2027
+      }
+
+      generateCalendar();
+    }
+
+    // Event listeners for the navigation buttons
+    prevMonthButton.addEventListener('click', () => changeMonth(-1));
+    nextMonthButton.addEventListener('click', () => changeMonth(1));
+
+    generateCalendar(); // Initial calendar generation
+const startButton = document.getElementById('startButton');
+const startMenu = document.getElementById('startMenu');
+const taskbarTime = document.getElementById('taskbarTime');
+
+const appIcons = [
+  { id: 'app1Icon', windowId: 'window1' },
+  { id: 'app2Icon', windowId: 'window2' },
+  { id: 'app3Icon', windowId: 'window3' },
+  { id: 'app4Icon', windowId: 'window4' },
+];
+
+// Set up draggable windows
+const draggableWindows = [
+  { windowId: 'window1', headerId: 'window1Header' },
+  { windowId: 'window2', headerId: 'window2Header' },
+  { windowId: 'window3', headerId: 'window3Header' },
+  { windowId: 'window4', headerId: 'window4Header' },
+];
+
+let isDragging = false;
+let offsetX, offsetY;
+
+
+startButton.addEventListener('click', () => {
+  startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+window.addEventListener('click', (e) => {
+  if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+    startMenu.style.display = 'none';
+  }
+});
+
+// Window controls and draggable functionality
+function makeDraggable(windowElement, headerElement) {
+  headerElement.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - windowElement.offsetLeft;
+    offsetY = e.clientY - windowElement.offsetTop;
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  function onMouseMove(e) {
+    if (isDragging) {
+      const windowTop = e.clientY - offsetY;
+      const windowLeft = e.clientX - offsetX;
+
+      windowElement.style.left = `${windowLeft}px`;
+      windowElement.style.top = `${windowTop}px`;
+
+      if (windowTop <= 0) {
+        windowElement.classList.add('fullscreen');
+        windowElement.style.left = '0';
+        windowElement.style.top = '0';
+        windowElement.style.width = '100vw';
+        windowElement.style.height = '100vh';
+      } else if (windowElement.classList.contains('fullscreen')) {
+        windowElement.classList.remove('fullscreen');
+        windowElement.style.width = '300px';
+        windowElement.style.height = '400px';
+        windowElement.style.left = '50px';
+        windowElement.style.top = '50px';
+      }
+    }
+  }
+
+  function onMouseUp() {
+    isDragging = false;
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+}
+
+draggableWindows.forEach(({ windowId, headerId }) => {
+  const windowElement = document.getElementById(windowId);
+  const headerElement = document.getElementById(headerId);
+  makeDraggable(windowElement, headerElement);
+});
+
+appIcons.forEach(({ id, windowId }) => {
+  const icon = document.getElementById(id);
+  const windowElement = document.getElementById(windowId);
+
+  icon.addEventListener('click', () => {
+    windowElement.style.display = 'block';
+  });
+
+  const closeButton = windowElement.querySelector('.window-button:nth-child(3)');
+  const maximizeButton = windowElement.querySelector('.window-button:nth-child(2)');
+  const minimizeButton = windowElement.querySelector('.window-button:nth-child(1)');
+
+  closeButton.addEventListener('click', () => {
+    windowElement.style.display = 'none';
+  });
+
+  maximizeButton.addEventListener('click', () => {
+    const isFullScreen = windowElement.classList.toggle('fullscreen');
+    if (isFullScreen) {
+      windowElement.style.left = '0';
+      windowElement.style.top = '0';
+      windowElement.style.width = '100vw';
+      windowElement.style.height = '100vh';
+    } else {
+      windowElement.style.left = '50px';
+      windowElement.style.top = '50px';
+      windowElement.style.width = '300px';
+      windowElement.style.height = '400px';
+    }
+  });
+
+  minimizeButton.addEventListener('click', () => {
+    windowElement.style.display = 'none';
+  });
+});
+
+const desktop = document.getElementById('desktop');
+const contextMenu = document.getElementById('contextMenu');
+const newFolderButton = document.getElementById('newFolder');
+const newFileButton = document.getElementById('newFile');
+const nameModal = document.getElementById('nameModal');
+const itemNameInput = document.getElementById('itemName');
+const saveNameButton = document.getElementById('saveNameButton');
+const cancelNameButton = document.getElementById('cancelNameButton');
+let currentItem = null;
+
+const gridSpacing = 100;
+let occupiedCells = [];
+let itemElements = [];
+
+desktop.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+
+  const { clientX: mouseX, clientY: mouseY } = e;
+  const x = Math.round(mouseX / gridSpacing) * gridSpacing;
+  const y = Math.round(mouseY / gridSpacing) * gridSpacing;
+
+  const existingItem = itemElements.find(item =>
+    Math.round(item.offsetLeft / gridSpacing) * gridSpacing === x &&
+    Math.round(item.offsetTop / gridSpacing) * gridSpacing === y
+  );
+
+  if (existingItem) {
+    // If an item exists in this square, show the "Open" and "Delete" options
+    openItemContextMenu(existingItem, mouseX, mouseY);
+  } else {
+    // If no item exists, show the "New Folder" and "New File" options
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+    contextMenu.style.display = 'block';
+
+    const newFolderOption = document.createElement('div');
+    newFolderOption.classList.add('context-menu-item');
+    newFolderOption.textContent = 'New Folder';
+    newFolderOption.addEventListener('click', () => {
+      createNewItem('folder');
+    });
+
+    const newFileOption = document.createElement('div');
+    newFileOption.classList.add('context-menu-item');
+    newFileOption.textContent = 'New File';
+    newFileOption.addEventListener('click', () => {
+      createNewItem('file');
+    });
+
+    contextMenu.innerHTML = ''; // Clear existing options
+    contextMenu.appendChild(newFolderOption);
+    contextMenu.appendChild(newFileOption);
+  }
+});
+function createNewItem(type) {
+  const item = document.createElement('div');
+  item.classList.add('desktop-item');
+
+  if (type === 'file' || type === 'folder') {
+    // Show modal for naming the item
+    nameModal.style.display = 'flex';
+    itemNameInput.value = '';
+    currentItem = item;
+
+    // Set the context for file or folder creation
+    if (type === 'file') {
+      item.innerHTML = `
+        <img src="taskbar/textf.png" alt="file">
+        <span>New File</span>
+      `;
+    } else {
+      item.innerHTML = `
+        <img src="taskbar/fe.jpg" alt="folder">
+        <span>New Folder</span>
+      `;
+    }
+
+    // Add event listener to the Save button
+    saveNameButton.onclick = () => {
+      const newName = itemNameInput.value.trim();
+      if (newName) {
+        if (type === 'file' && newName.endsWith('.nexs')) {
+          // Special handling for .nexs files
+          item.innerHTML = `
+            <img src="taskbar/nexs.jpg" alt="file">
+            <span>${newName}</span>
+          `;
+        } else if (type === 'file') {
+          // Handle normal file creation
+          item.innerHTML = `
+            <img src="taskbar/textf.png" alt="file">
+            <span>${newName}</span>
+          `;
+        } else if (type === 'folder') {
+          // Handle folder creation
+          item.innerHTML = `
+            <img src="taskbar/fe.jpg" alt="folder">
+            <span>${newName}</span>
+          `;
+        }
+        desktop.appendChild(item);
+        makeDraggable(item);
+
+        itemElements.push(item);  // Track the item
+        currentItem = null;
+        nameModal.style.display = 'none'; // Hide modal after saving name
+        contextMenu.style.display = 'none'; // Hide context menu
+      } else {
+        alert('Please enter a valid name for the item.');
+      }
+    };
+
+    cancelNameButton.onclick = () => {
+      nameModal.style.display = 'none'; // Close modal without saving
+      currentItem = null;
+    };
+  }
+}
+
+
+saveNameButton.addEventListener('click', () => {
+  const newName = itemNameInput.value.trim();
+  if (newName) {
+    if (!currentItem) {
+      const type = contextMenu.style.display === 'none' ? 'file' : 'folder';
+      createNewItem(type);
+    } else {
+      currentItem.querySelector('span').textContent = newName;
+    }
+    nameModal.style.display = 'none';
+    currentItem = null;
+  } else {
+    alert('Please enter a valid name for the item.');
+  }
+});
+
+cancelNameButton.addEventListener('click', () => {
+  nameModal.style.display = 'none';
+  currentItem = null;
+});
+
+function makeDraggable(item) {
+  let offsetX, offsetY;
+  let isDragging = false;
+
+  item.addEventListener('mousedown', (e) => {
+    if (e.button === 0) {  // Left mouse button (0)
+      e.preventDefault();
+
+      isDragging = true;
+
+      offsetX = e.clientX - item.getBoundingClientRect().left;
+      offsetY = e.clientY - item.getBoundingClientRect().top;
+
+      window.addEventListener('mousemove', moveItem);
+      window.addEventListener('mouseup', dropItem);
+    }
+  });
+
+  function moveItem(e) {
+    if (isDragging) {
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+
+      x = Math.round(x / gridSpacing) * gridSpacing;
+      y = Math.round(y / gridSpacing) * gridSpacing;
+
+      if (!isPositionOccupied(x, y)) {
+        item.style.position = 'absolute';
+        item.style.left = `${x}px`;
+        item.style.top = `${y}px`;
+      }
+    }
+  }
+
+  function dropItem() {
+    if (isDragging) {
+      const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
+      const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
+
+      if (!isPositionOccupied(x, y)) {
+        item.style.left = `${x}px`;
+        item.style.top = `${y}px`;
+        markPositionOccupied(x, y);
+      } else {
+        item.style.left = `${item.offsetLeft}px`;
+        item.style.top = `${item.offsetTop}px`;
+      }
+
+      isDragging = false;
+      window.removeEventListener('mousemove', moveItem);
+      window.removeEventListener('mouseup', dropItem);
+    }
+  }
+}
+
+function isPositionOccupied(x, y) {
+  return occupiedCells.some(cell => cell.x === x && cell.y === y);
+}
+
+function markPositionOccupied(x, y) {
+  occupiedCells.push({ x, y });
+}
+
+function removeOccupiedPosition(x, y) {
+  occupiedCells = occupiedCells.filter(cell => !(cell.x === x && cell.y === y));
+}
+
+function openItemContextMenu(item, mouseX, mouseY) {
+  contextMenu.style.top = `${mouseY}px`;
+  contextMenu.style.left = `${mouseX}px`;
+  contextMenu.style.display = 'block';
+
+  const openOption = document.createElement('div');
+  openOption.classList.add('context-menu-item');
+  openOption.textContent = 'Open';
+  openOption.addEventListener('click', () => {
+    openItem(item);
+  });
+
+  const deleteOption = document.createElement('div');
+  deleteOption.classList.add('context-menu-item');
+  deleteOption.textContent = 'Delete';
+  deleteOption.addEventListener('click', () => {
+    deleteItem(item);
+  });
+
+  contextMenu.innerHTML = ''; // Clear existing options
+  contextMenu.appendChild(openOption);
+  contextMenu.appendChild(deleteOption);
+}
+
+function openItem(item) {
+  alert(`Opening ${item.querySelector('span').textContent}`);
+  contextMenu.style.display = 'none';
+}
+
+function deleteItem(item) {
+  item.remove();
+  const x = Math.round(item.offsetLeft / gridSpacing) * gridSpacing;
+  const y = Math.round(item.offsetTop / gridSpacing) * gridSpacing;
+
+  removeOccupiedPosition(x, y);
+  contextMenu.style.display = 'none';
+}
+
+window.addEventListener('click', () => {
+  contextMenu.style.display = 'none';
+});
+
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
+  </script>
+</body>
+</html>
