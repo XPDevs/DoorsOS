@@ -10,7 +10,21 @@
             font-family: Arial, sans-serif;
             display: flex;
             height: 100vh;
-        }
+          cursor: none; /* Hide cursor globally */
+    }
+
+    /* Custom cursor style */
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
 
         .sidebar {
             width: 250px;
@@ -139,6 +153,9 @@
     </style>
 </head>
 <body>
+
+      <div class="cursor" id="cursor"></div>
+    
     <div class="sidebar">
         <h2>Settings</h2>
         <ul>
@@ -217,6 +234,13 @@
         document.getElementById('exit-btn').addEventListener('click', function() {
             window.location.href = "settings.html"; // Example redirection to the main page
         });
+         const cursor = document.getElementById('cursor');
+
+    // Track mouse movement and set the custom cursor position
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
     </script>
 </body>
 </html>
