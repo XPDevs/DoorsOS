@@ -14,9 +14,20 @@
       background-color: #000; /* Start with black background */
       font-family: Arial, sans-serif;
       color: #fff;
-      cursor: none;
       transition: background-color 2s ease; /* Fade effect */
+   cursor: none; /* Hide cursor globally */
     }
+    .cursor {
+      position: absolute;
+      width: 32px; /* Customize the size of the cursor */
+      height: 32px;
+      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
+      background-size: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
 
     /* Change background color to Windows 10 blue */
     body.fade {
@@ -66,6 +77,9 @@
   </style>
 </head>
 <body>
+
+ <div class="cursor" id="cursor"></div>
+  
   <div class="container">
     <div class="spinner"></div>
     <div class="message" id="message"></div>
@@ -139,6 +153,15 @@
         }
       }
     }, 20000); // Wait 20 seconds before checking installation status and redirecting
+
+ const cursor = document.getElementById('cursor');
+
+    // Track mouse movement and set the custom cursor position
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
+    
   </script>
 </body>
 </html>
