@@ -241,6 +241,9 @@
                     statusDiv.innerText += newText;
                     statusDiv.scrollTop = statusDiv.scrollHeight; // Auto-scroll to the bottom
                     setTimeout(appendText, 1000); // Add a delay between messages for better effect
+                } else {
+                    // After the last message, redirect to another HTML file
+                    window.location.href = '../end/rest.html'; // Change 'nextpage.html' to your target page
                 }
             }
 
