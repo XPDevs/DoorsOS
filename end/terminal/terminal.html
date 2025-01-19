@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Screen Custom Terminal</title>
+    <style>
+        /* Full screen styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-family: Consolas, monospace;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            font-size: 20px;
+            overflow: hidden; /* Remove overall scrollbars */
+            cursor: none; /* Hide cursor globally */
+        }
+
+        .cursor {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-image: url('../../ui/cursor/terminal.ico');
+            background-size: contain;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        #terminal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px;
+            white-space: pre-wrap;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .output {
+            color: #FFFFFF;
+            margin: 2px 0;
+            cursor: none;
+        }
+
+        .command {
+            color: #00FF00;
+            cursor: none;
+        }
+
+        input {
+            color: #00FF00;
+            background-color: black;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 18px;
+            padding: 5px;
+            cursor: none;
+        }
+
+        #inputArea {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            cursor: none;
+        }
+
+        span {
+            color: white;
+            cursor: none;
+        }
+
+        #terminal {
+            display: block;
+            overflow-y: auto;
+            cursor: none;
+        }
+
+       /* Modal styles */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: black;
+    color: white;
+    border: 1px solid #00FF00;
+    padding: 20px;
+    display: none;
+    z-index: 10000;
+    cursor: none; /* Disable cursor inside the modal */
+}
+
+.modal-content {
+    margin-bottom: 10px;
+    cursor: none; /* Disable cursor inside the modal content */
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    cursor: none; /* Disable cursor inside the button container */
+}
+
+.modal-button {
+    background-color: #00FF00;
+    border: none;
+    color: black;
+    padding: 5px 10px;
+    cursor: none; /* Disable cursor for buttons */
+}
+
+
+        /* Updated spinner styles */
+        .spinner {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .spinner div {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .spinner div:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); animation-delay: -1.1s; }
+        .spinner div:nth-child(2) { top: 14%; left: 86%; transform: translate(-50%, -50%); animation-delay: -1s; }
+        .spinner div:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); animation-delay: -0.9s; }
+        .spinner div:nth-child(4) { top: 86%; left: 86%; transform: translate(-50%, -50%); animation-delay: -0.8s; }
+        .spinner div:nth-child(5) { top: 100%; left: 50%; transform: translate(-50%, -50%); animation-delay: -0.7s; }
+        .spinner div:nth-child(6) { top: 86%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.6s; }
+        .spinner div:nth-child(7) { top: 50%; left: 0; transform: translate(-50%, -50%); animation-delay: -0.5s; }
+        .spinner div:nth-child(8) { top: 14%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.4s; }
+
+        @keyframes spinner {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+    <div id="terminal">
+        <div class="output" id="output"></div>
+        <div id="inputArea">
+            <span>> </span><input type="text" id="commandInput" autofocus />
+        </div>
+    </div>
+
+    <!-- Modal for force-panic -->
+    <div id="forcePanicModal" class="modal">
+        <div class="modal-content">Are you sure you want to force a kernel panic?</div>
+        <div class="modal-buttons">
+            <button class="modal-button" id="forcePanicYes">Yes</button>
+            <button class="modal-button" id="forcePanicNo">No</button>
+        </div>
+    </div>
+
+    <!-- Modal for panic process -->
+    <div id="panicProcessModal" class="modal">
+        <div class="modal-content">
+            <div class="spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            Forcing kernel panic, please do not touch your device during the process.
+        </div>
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('output');
+        const commandInput = document.getElementById('commandInput');
+        const forcePanicModal = document.getElementById('forcePanicModal');
+        const panicProcessModal = document.getElementById('panicProcessModal');
+        const forcePanicYes = document.getElementById('forcePanicYes');
+        const forcePanicNo = document.getElementById('forcePanicNo');
+        let isAwaitingPassword = false;
+
+        // Predefined commands
+        const commands = {
+            '/end-temp': () => {
+                window.location.href = '../../end/rest.html';
+                return 'Exiting terminal...';
+            },
+            '/end-perm': () => {
+                window.location.href = '../../end/shut.html';
+                return 'Exiting terminal...';
+            },
+            '/about-system': () => {
+                return `About DevOS
+Operating System: DevOS
+Version: 4.0.0
+Kernel: NexShell
+Build: 2024.12.15
+License: Open Source downloadable
+Developer: XPDevs`;
+            },
+            '/help': () => {
+                return `Available Commands:
+- /end-temp - Exit to temporary shutdown
+- /end-perm - Exit to permanent shutdown
+- /reset-all - Reset the system after password verification
+- /about-system - Show system information
+- /clear - Clear the terminal screen
+- /date - Display the current date and time
+- /echo [text] - Echo back the provided text
+- /force-panic - Force a kernel panic`;
+            },
+            '/clear': () => {
+                terminalOutput.innerHTML = '';
+                return '';
+            },
+            '/date': () => {
+                return new Date().toString();
+            },
+            '/echo': (text) => {
+                return text ? text : 'Error: No text provided';
+            },
+            '/reset-all': () => {
+                isAwaitingPassword = true;
+                appendToTerminal('/reset-all', 'Enter root password:');
+                return '';
+            },
+            '/force-panic': () => {
+                forcePanicModal.style.display = 'block'; // Show the modal
+                return 'Are you sure you want to force a kernel panic?';
+            }
+        };
+
+        commandInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const input = commandInput.value.trim();
+                commandInput.value = '';
+                if (isAwaitingPassword) {
+                    validatePassword(input);
+                } else {
+                    processCommand(input);
+                }
+            }
+        });
+
+        function validatePassword(input) {
+            if (input === "root") {
+                localStorage.clear();
+                appendToTerminal('', 'Local storage cleared. Please restart to apply changes.');
+            } else {
+                appendToTerminal('', 'Incorrect password. Access denied.');
+            }
+            isAwaitingPassword = false;
+        }
+
+        function processCommand(input) {
+            let output;
+            const parts = input.split(' ');
+            const command = parts[0];
+            const argument = parts.slice(1).join(' ');
+
+            if (commands[command]) {
+                output = commands[command](argument);
+            } else {
+                output = `Command not found: ${input}`;
+            }
+            appendToTerminal(input, output);
+        }
+
+        function appendToTerminal(input, output) {
+            if (input) terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
+            if (output) terminalOutput.innerHTML += `<div class="output">${output}</div>`;
+        }
+
+        forcePanicYes.addEventListener('click', () => {
+    forcePanicModal.style.display = 'none'; // Hide first modal
+    panicProcessModal.style.display = 'block'; // Show panic process modal
+    // Simulate kernel panic process
+    setTimeout(() => {
+        panicProcessModal.style.display = 'none'; // Hide panic process modal
+        appendToTerminal('', 'The kernel panic has been successfully triggered. The system will need a full restart.');
+        
+        // Redirect to another HTML file
+        window.location.href = '../../error/error.html'; // Change this to the correct file path
+    }, 5000); // Panic process lasts for 5 seconds
+});
+
+
+        forcePanicNo.addEventListener('click', () => {
+            forcePanicModal.style.display = 'none'; // Close the modal
+            appendToTerminal('', 'Returning to terminal...');
+        });
+
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.pageX}px`;
+            cursor.style.top = `${e.pageY}px`;
+        });
+    </script>
+</body>
+</html>
