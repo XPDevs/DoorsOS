@@ -152,7 +152,7 @@
 <!-- Main container for options -->
 <div class="container" id="main-options">
   <div class="title">Advanced Boot Options</div>
-  <div class="subtitle">Use the arrow keys to select an option</div>
+  <div class="subtitle">Use the buttons to choose an option to use.</div>
   <ul class="option-list">
     <li><a href="rest.html" class="btn">Restart to WebOS</a></li>
     <li><a href="shut.html" class="btn">Shutdown</a></li>
@@ -165,16 +165,35 @@
   <a href="javascript:void(0);" class="back-btn" id="back-btn"></a>
   <div class="title">Advanced Options</div>
   <ul class="option-list">
-    <li><a href="terminal/termrst.html" class="btn">Restart to Terminal</a></li>
+    <li><a href="option/termrst.html" class="btn">Restart to Terminal</a></li>
+    <li><a href="javascript:void(0);" class="btn" id="startup-settings">Startup Settings</a></li>
   </ul>
+</div>
+
+<!-- Startup Settings container, initially hidden -->
+<div class="container" id="startup-settings-container" style="display: none;">
+  <a href="javascript:void(0);" class="back-btn" id="back-to-advanced-btn"></a>
+  <div class="title">Startup Settings</div>
+  <div class="subtitle">Here are the options you can configure:</div>
+  <div class="option-list">
+    <p>1. Boot from USB</p>
+    <p>2. Boot in Safe Mode</p>
+    <p>3. Boot with Recovery Tools</p>
+    <p>4. Enable Debug Mode</p>
+  </div>
+  <a href="javascript:void(0);" class="btn" id="restart-btn">Restart</a>
 </div>
 
 <script>
   const cursor = document.getElementById('cursor');
   const advancedOptionsButton = document.getElementById('advanced-options');
+  const startupSettingsButton = document.getElementById('startup-settings');
   const backButton = document.getElementById('back-btn');
+  const backToAdvancedButton = document.getElementById('back-to-advanced-btn');
   const mainOptionsContainer = document.getElementById('main-options');
   const advancedOptionsContainer = document.getElementById('advanced-options-container');
+  const startupSettingsContainer = document.getElementById('startup-settings-container');
+  const restartButton = document.getElementById('restart-btn');
 
   // Track mouse movement and set the custom cursor position
   document.addEventListener('mousemove', (e) => {
@@ -188,10 +207,27 @@
     advancedOptionsContainer.style.display = 'block';  // Show advanced options
   });
 
-  // Go back to main options when back button is clicked
+  // Show startup settings when "Startup Settings" is clicked
+  startupSettingsButton.addEventListener('click', () => {
+    advancedOptionsContainer.style.display = 'none';  // Hide advanced options
+    startupSettingsContainer.style.display = 'block';  // Show startup settings
+  });
+
+  // Go back to advanced options when back button is clicked
   backButton.addEventListener('click', () => {
     mainOptionsContainer.style.display = 'block';  // Show main options
     advancedOptionsContainer.style.display = 'none';  // Hide advanced options
+  });
+
+  // Go back to advanced options from startup settings
+  backToAdvancedButton.addEventListener('click', () => {
+    advancedOptionsContainer.style.display = 'block';  // Show advanced options
+    startupSettingsContainer.style.display = 'none';  // Hide startup settings
+  });
+
+  // Handle restart button click
+  restartButton.addEventListener('click', () => {
+    window.location.href = 'startup_set/setrst.html'; // Redirect to restart page (replace with your target file)
   });
 </script>
 
