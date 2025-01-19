@@ -14,7 +14,7 @@
       background-color: #000; /* Black background */
       font-family: Arial, sans-serif;
       color: #fff; /* Ensure text is visible if needed */
-    cursor: none; /* Hide cursor globally */
+      cursor: none; /* Hide cursor globally */
     }
 
     /* Custom cursor style */
@@ -29,7 +29,6 @@
       z-index: 9999;
     }
 
-    
     .container {
       text-align: center;
     }
@@ -54,6 +53,12 @@
         transform: rotate(360deg);
       }
     }
+    #advanced-message {
+      display: none; /* Initially hidden */
+      margin-top: 20px;
+      font-size: 16px;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -63,6 +68,7 @@
   <div class="container">
     <div class="spinner"></div>
     <p>Restarting your computer.</p>
+    <p id="advanced-message">Going to Advanced Boot Options.</p>
   </div>
 
   <script>
@@ -86,11 +92,14 @@
     // Check if Shift key is held down for more than 5 seconds
     function checkShiftDuration() {
       if (shiftHeldDown && Date.now() - shiftPressedTime >= 5000) {
-        window.location.href = 'op.html'; // Redirect to op.html after holding Shift for 5 seconds
+        document.getElementById('advanced-message').style.display = 'block'; // Show the message
+        setTimeout(() => {
+          window.location.href = 'op.html'; // Redirect to op.html after showing the message
+        }, 2000); // Delay for 2 seconds to let the user see the message
       }
     }
 
-    // Redirect to check.html after 10 seconds
+    // Redirect to index.html after 10 seconds if Shift is not held
     setTimeout(() => {
       if (!shiftHeldDown || Date.now() - shiftPressedTime < 5000) {
         window.location.href = "../index.html";
@@ -100,7 +109,7 @@
     // Periodically check if Shift is held for 5 seconds
     setInterval(checkShiftDuration, 100);
 
-        const cursor = document.getElementById('cursor');
+    const cursor = document.getElementById('cursor');
 
     // Track mouse movement and set the custom cursor position
     document.addEventListener('mousemove', (e) => {
