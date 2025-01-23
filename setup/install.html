@@ -288,6 +288,12 @@ This section applies to the following software: TestOS, version 2.7. This Agreem
     // Show the first question
     showQuestion();
 });
+    const cursor = document.getElementById('cursor');
+
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = `${e.pageX}px`;
+  cursor.style.top = `${e.pageY}px`;
+});
 </script>
 </body>
 </html>
