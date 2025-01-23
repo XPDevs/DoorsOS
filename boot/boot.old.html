@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slideshow</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #000;
+      cursor: none;
+    }
+
+    #imageContainer {
+      max-width: 100%;
+      max-height: 100%;
+      cursor: none;
+    }
+
+    #imageContainer img {
+      width: 100%;
+      height: 100%;
+      cursor: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="imageContainer">
+    <!-- Images from the 'animation' folder with names 000.png to 059.png -->
+    <img src="animation/000.png" alt="Image 000">
+    <img src="animation/001.png" alt="Image 001">
+    <img src="animation/002.png" alt="Image 002">
+    <img src="animation/003.png" alt="Image 003">
+    <img src="animation/004.png" alt="Image 004">
+    <img src="animation/005.png" alt="Image 005">
+    <img src="animation/006.png" alt="Image 006">
+    <img src="animation/007.png" alt="Image 007">
+    <img src="animation/008.png" alt="Image 008">
+    <img src="animation/009.png" alt="Image 009">
+    <img src="animation/010.png" alt="Image 010">
+    <img src="animation/011.png" alt="Image 011">
+    <img src="animation/012.png" alt="Image 012">
+    <img src="animation/013.png" alt="Image 013">
+    <img src="animation/014.png" alt="Image 014">
+    <img src="animation/015.png" alt="Image 015">
+    <img src="animation/016.png" alt="Image 016">
+    <img src="animation/017.png" alt="Image 017">
+    <img src="animation/018.png" alt="Image 018">
+    <img src="animation/019.png" alt="Image 019">
+    <img src="animation/020.png" alt="Image 020">
+    <img src="animation/021.png" alt="Image 021">
+    <img src="animation/022.png" alt="Image 022">
+    <img src="animation/023.png" alt="Image 023">
+    <img src="animation/024.png" alt="Image 024">
+    <img src="animation/025.png" alt="Image 025">
+    <img src="animation/026.png" alt="Image 026">
+    <img src="animation/027.png" alt="Image 027">
+    <img src="animation/028.png" alt="Image 028">
+    <img src="animation/029.png" alt="Image 029">
+    <img src="animation/030.png" alt="Image 030">
+    <img src="animation/031.png" alt="Image 031">
+    <img src="animation/032.png" alt="Image 032">
+    <img src="animation/033.png" alt="Image 033">
+    <img src="animation/034.png" alt="Image 034">
+    <img src="animation/035.png" alt="Image 035">
+    <img src="animation/036.png" alt="Image 036">
+    <img src="animation/037.png" alt="Image 037">
+    <img src="animation/038.png" alt="Image 038">
+    <img src="animation/039.png" alt="Image 039">
+    <img src="animation/040.png" alt="Image 040">
+    <img src="animation/041.png" alt="Image 041">
+    <img src="animation/042.png" alt="Image 042">
+    <img src="animation/043.png" alt="Image 043">
+    <img src="animation/044.png" alt="Image 044">
+    <img src="animation/045.png" alt="Image 045">
+    <img src="animation/046.png" alt="Image 046">
+    <img src="animation/047.png" alt="Image 047">
+    <img src="animation/048.png" alt="Image 048">
+    <img src="animation/049.png" alt="Image 049">
+    <img src="animation/050.png" alt="Image 050">
+    <img src="animation/051.png" alt="Image 051">
+    <img src="animation/052.png" alt="Image 052">
+    <img src="animation/053.png" alt="Image 053">
+    <img src="animation/054.png" alt="Image 054">
+    <img src="animation/055.png" alt="Image 055">
+    <img src="animation/056.png" alt="Image 056">
+    <img src="animation/057.png" alt="Image 057">
+    <img src="animation/058.png" alt="Image 058">
+    <img src="animation/059.png" alt="Image 059">
+  </div>
+
+  <script>
+    const images = document.querySelectorAll('#imageContainer img');
+    let currentIndex = 0;
+
+    // Initially hide all images
+    images.forEach(image => {
+      image.style.display = 'none';
+    });
+    images[currentIndex].style.display = 'block';
+
+    function showNextImage() {
+      images[currentIndex].style.display = 'none';
+      currentIndex = (currentIndex + 1) % images.length;
+      images[currentIndex].style.display = 'block';
+    }
+
+    // Show each image for 30 milliseconds and move to the next
+    setInterval(showNextImage, 30); // 30 millisecond interval
+
+    // Countdown and redirect after 18 seconds with a 1 in 5 chance of going to error.html
+    let countdown = 18; // Countdown starts at 18 seconds
+    const countdownInterval = setInterval(() => {
+      console.log(`Redirecting in ${countdown} seconds...`);
+      countdown--;
+      if (countdown < 0) {
+        clearInterval(countdownInterval);
+
+        // 1 in 5 chance of redirecting to error.html
+        const redirectToError = Math.random() < 0.2; // 0.2 is a 1 in 5 chance
+
+        if (redirectToError) {
+          console.log('Redirecting to error.html...');
+          window.location.href = "error.html"; // Redirect to error.html
+        } else {
+          console.log('Redirecting to connect.html...');
+          window.location.href = "../connect/connect.html"; // Redirect to connect.html
+        }
+      }
+    }, 1000); // 1 second interval for countdown
+  </script>
+</body>
+</html>
