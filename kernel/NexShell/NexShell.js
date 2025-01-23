@@ -59,8 +59,18 @@ function KERNEL() {
     }, 1000);
 }
 function INDEX() {
-window.location.href = "kernel/init.html"; // Redirect after countdown end
+    // Comprehensive check for mobile devices
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|webOS|Opera Mini|IEMobile|Kindle|Silk|Mobile|PlayBook/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // Redirect to the error page for mobile devices
+        window.location.href = "../../../error/error.html";
+    } else {
+        // Redirect to the standard version
+        window.location.href = "kernel/init.html";
+    }
 }
+
 function BOOT() {
     let shiftHeld = false;
     let shiftStartTime = 0;
