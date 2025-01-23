@@ -100,7 +100,22 @@
 
     <div id="status" class="status-text"></div>
 
+    <audio id="checksumAudio" loop>
+        <source src="CHECKSUM.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
+        let isAudioPlayed = false;
+
+        // Wait for user click to play the audio
+        document.addEventListener('click', function() {
+            if (!isAudioPlayed) {
+                document.getElementById("checksumAudio").play();
+                isAudioPlayed = true; // Ensure audio plays only once
+            }
+        });
+
         function simulateBootProcess() {
             const statusDiv = document.getElementById("status");
 
