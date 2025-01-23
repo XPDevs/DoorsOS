@@ -157,7 +157,7 @@
 
     <div class="installer-window" id="installer-window">
         <div class="window-header" id="window-header">
-            <span>Operating System Installer</span>
+            <span>DoorsOS Installer</span>
             <button id="close-btn" class="close-btn">X</button>
         </div>
         <div id="installation-status" class="status">
@@ -195,27 +195,27 @@ document.addEventListener("DOMContentLoaded", function () {
         let inputField = "";
 
         if (q.type === "text" || q.type === "password") {
-            inputField = `<input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>`;
+            inputField = <input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>;
         } else if (q.type === "select") {
-            inputField = `
+            inputField = 
                 <select id="user-input">
-                    ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    ${q.options.map(option => <option value="${option}">${option}</option>).join('')}
                 </select>
-            `;
+            ;
         } else if (q.type === "checkbox") {
-            inputField = `
+            inputField = 
                 <div class="checkbox-label">
                     <input type="checkbox" id="user-input">
                     I agree to the terms and conditions
                 </div>
-            `;
+            ;
         }
 
-        questionContainer.innerHTML = `
+        questionContainer.innerHTML = 
             <p>${q.question}</p>
-            ${q.isEULA ? `<div class="eula-container"><div class="eula-text">END USER LICENSE AGREEMENT (EULA)
+            ${q.isEULA ? <div class="eula-container"><div class="eula-text">END USER LICENSE AGREEMENT (EULA)
 
-Last Updated: [Date]
+Last Updated: 23/01/2025
 
 This End User License Agreement ("Agreement") is a legal agreement between you ("Licensee" or "you") and XPDevs, the creator and owner of TestOS ("Licensor" or "we") regarding your use of the web-based operating system TestOS ("Software").
 
@@ -256,9 +256,9 @@ Amendments to this Agreement
 Licensor reserves the right to modify this Agreement at any time. Your continued use of the Software following any changes constitutes your acceptance of the new terms.
 
 Software Specific Terms
-This section applies to the following software: TestOS, version 2.7. This Agreement is issued by XPDevs, covering any updates or upgrades to TestOS, unless expressly excluded by XPDevs.</div></div>` : ''}
+This section applies to the following software: TestOS, version 2.7. This Agreement is issued by XPDevs, covering any updates or upgrades to TestOS, unless expressly excluded by XPDevs.</div></div> : ''}
             ${inputField}
-        `;
+        ;
     }
 
     nextBtn.addEventListener("click", function () {
@@ -277,23 +277,90 @@ This section applies to the following software: TestOS, version 2.7. This Agreem
             ? userInput.checked
             : userInput.value;
 
+        // Move to the next step
         currentStep++;
+
         if (currentStep < questions.length) {
             showQuestion();
         } else {
-            alert("Installation Complete!");
+            showReviewInfo();
         }
     });
 
-    // Show the first question
+    function showReviewInfo() {
+        questionContainer.innerHTML = 
+            <p><strong>Review your information:</strong></p>
+            <p>Language: ${userData.language}</p>
+            <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
+            <p>Username: ${userData.username}</p>
+            <p>Password: ${userData.password ? "********" : "No password set"}</p>
+            <p>Installation Type: ${userData.installationType}</p>
+            <p>Install Path: ${userData.installPath}</p>
+            <p>Do you agree with this information?</p>
+            <button id="agree-btn" class="submit-btn">Yes, Install</button>
+            <button id="disagree-btn" class="submit-btn">No, Restart</button>
+        ;
+
+        document.getElementById("agree-btn").addEventListener("click", startInstallation);
+        document.getElementById("disagree-btn").addEventListener("click", function () {
+            currentStep = 0;
+            userData = {};
+            showQuestion();
+        });
+    }
+
+    function startInstallation() {
+        localStorage.setItem("username", userData.username);
+        localStorage.setItem("password", userData.password);
+        localStorage.setItem("isInstalled", "true");
+
+        questionContainer.innerHTML = 
+            <p>Installing your operating system...</p>
+            <p>Progress: <span id="install-progress">0%</span></p>
+            <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+        ;
+
+        let progress = 0;
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("install-progress");
+
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.value = progress;
+            progressText.innerText = ${progress}%;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                questionContainer.innerHTML = 
+                    <p>Installation Complete!</p>
+                    <p>Your OS has been successfully installed.</p>
+                    <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
+                ;
+            }
+        }, 100);
+    }
+
+    closeBtn.addEventListener("click", function () {
+        warningModal.style.display = "flex";
+    });
+
+    closeSetupBtn.addEventListener("click", function () {
+        window.location.href = "../end/rest.html";
+    });
+
+    cancelBtn.addEventListener("click", function () {
+        warningModal.style.display = "none";
+    });
+
     showQuestion();
 });
+
     const cursor = document.getElementById('cursor');
 
-document.addEventListener('mousemove', (e) => {
-  cursor.style.left = `${e.pageX}px`;
-  cursor.style.top = `${e.pageY}px`;
-});
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = ${e.pageX}px;
+      cursor.style.top = ${e.pageY}px;
+    });
 </script>
 </body>
 </html>
