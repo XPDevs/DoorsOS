@@ -50,16 +50,23 @@
 <body>
   <div class="container">
     <div class="spinner"></div>
-<br><br><br><br>
+    <br><br><br><br>
     <p>Please Wait.</p>
-    <p>Were loading Startup settings.</p>
+    <p>We're loading Startup settings.</p>
   </div>
 
   <script>
-    // Redirect to check.html after 10 seconds
+    // Function to play the sound and then redirect after 5 seconds
     setTimeout(() => {
-      window.location.href = "startup_set.html";
-    }, 10000);
+      // Play sound
+      const audio = new Audio('CHECKSUM.mp3');
+      audio.play();
+
+      // Redirect after 5 seconds of playing sound
+      setTimeout(() => {
+        window.location.href = "startup_set.html";
+      }, 5000);  // 5 seconds delay before redirect
+    }, 5000);  // Initial 5-second delay before playing sound
   </script>
 </body>
 </html>
