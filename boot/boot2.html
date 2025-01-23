@@ -111,27 +111,12 @@
 
     // Show each image for 30 milliseconds and move to the next
     setInterval(showNextImage, 30); // 30 millisecond interval
-
-    // Countdown and redirect after 18 seconds with a 1 in 5 chance of going to error.html
-    let countdown = 18; // Countdown starts at 18 seconds
-    const countdownInterval = setInterval(() => {
-      console.log(`Redirecting in ${countdown} seconds...`);
-      countdown--;
-      if (countdown < 0) {
-        clearInterval(countdownInterval);
-
-        // 1 in 5 chance of redirecting to error.html
-        const redirectToError = Math.random() < 0.2; // 0.2 is a 1 in 5 chance
-
-        if (redirectToError) {
-          console.log('Redirecting to error.html...');
-          window.location.href = "error.html"; // Redirect to error.html
-        } else {
-          console.log('Redirecting to connect.html...');
-          window.location.href = "../connect/connect.html"; // Redirect to connect.html
-        }
+    // Redirect to check.html after 10 seconds
+    setTimeout(() => {
+      if (!shiftHeld) {
+        window.location.href = "check.html";
       }
-    }, 1000); // 1 second interval for countdown
+    }, 10000);
   </script>
 </body>
 </html>
