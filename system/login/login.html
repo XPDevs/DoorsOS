@@ -191,57 +191,58 @@
             font-size: 18px;
             cursor: none;
         }
-            .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
 
+        .cursor {
+            position: absolute;
+            width: 32px; /* Customize the size of the cursor */
+            height: 32px;
+            background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image */
+            background-size: contain;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
 
 <div class="cursor" id="cursor"></div>
-    
-    <!-- Audio element to play sound -->
-    <audio id="login-sound" src="login-sound.mp3" preload="auto"></audio>
 
-    <div class="screen active" id="main-screen">
-        <div class="time-date-box">
-            <div class="time" id="time"></div>
-            <div class="date" id="date"></div>
-        </div>
+<!-- Audio element to play sound -->
+<audio id="login-sound" src="login-sound.mp3" preload="auto"></audio>
+<audio id="wrong-sound" src="wrong.mp3" preload="auto"></audio>
+
+<div class="screen active" id="main-screen">
+    <div class="time-date-box">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
     </div>
+</div>
 
-    <div class="screen" id="login-screen">
-        <div class="login-window">
-            <h2>Login</h2>
-            <input type="text" id="username" placeholder="Enter Username" />
-            <input type="password" id="password" placeholder="Enter Password" />
-            <button id="login-btn">Login</button>
-            <p id="login-message" style="color:red;"></p>
-        </div>
+<div class="screen" id="login-screen">
+    <div class="login-window">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter Username" />
+        <input type="password" id="password" placeholder="Enter Password" />
+        <button id="login-btn">Login</button>
+        <p id="login-message" style="color:red;"></p>
     </div>
+</div>
 
-    <div class="modal" id="power-modal">
-        <div class="modal-content">
-            <h3>Power Options</h3>
-            <button id="shutdown-btn">Shutdown</button>
-            <button id="restart-btn">Restart</button>
-            <button id="cancel-btn">Cancel</button>
-        </div>
+<div class="modal" id="power-modal">
+    <div class="modal-content">
+        <h3>Power Options</h3>
+        <button id="shutdown-btn">Shutdown</button>
+        <button id="restart-btn">Restart</button>
+        <button id="cancel-btn">Cancel</button>
     </div>
+</div>
 
-    <div class="power-btn-container">
-        <button class="power-btn" id="power-btn">⚡</button>
-    </div>
+<div class="power-btn-container">
+    <button class="power-btn" id="power-btn">⚡</button>
+</div>
 
-    <script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     const mainScreen = document.getElementById("main-screen");
     const loginScreen = document.getElementById("login-screen");
@@ -256,8 +257,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const passwordInput = document.getElementById("password");
     const loginMessage = document.getElementById("login-message");
 
-    // Audio element to play sound
+    // Audio elements
     const loginSound = document.getElementById("login-sound");
+    const wrongSound = document.getElementById("wrong-sound");
 
     let inactivityTimer;
 
@@ -336,17 +338,19 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             loginMessage.textContent = "Invalid Username or Password.";
             loginMessage.style.color = "red";
+
+            // Play wrong sound
+            wrongSound.play();
         }
     });
 });
 
+const cursor = document.getElementById('cursor');
 
-        const cursor = document.getElementById('cursor');
-
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
-    </script>
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = `${e.pageX}px`;
+  cursor.style.top = `${e.pageY}px`;
+});
+</script>
 </body>
 </html>
