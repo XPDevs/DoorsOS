@@ -19,19 +19,6 @@
       align-items: center;
       height: 100vh;
       color: #000;
-      cursor: none; /* Hide default cursor */
-    }
-
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image (update the path) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      display: block; /* Ensure the cursor is displayed */
     }
 
     .container {
@@ -41,7 +28,6 @@
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
       font-family: "Consolas", monospace;
       color: #000;
-cursor: none; /* Hide default cursor */
     }
 
     .back-btn {
@@ -60,24 +46,20 @@ cursor: none; /* Hide default cursor */
       border: none;
       text-decoration: none;
       transition: all 0.3s ease;
-cursor: none; /* Hide default cursor */
     }
 
     .back-btn:hover {
       background-color: #0044cc;
       opacity: 0.8;
-cursor: none; /* Hide default cursor */
     }
 
     .back-btn:active {
       opacity: 0.6;
-cursor: none; /* Hide default cursor */
     }
 
     .back-btn::before {
       content: '←';
       font-size: 24px;
-cursor: none; /* Hide default cursor */
     }
 
     .title {
@@ -86,51 +68,59 @@ cursor: none; /* Hide default cursor */
       font-weight: bold;
       text-transform: uppercase;
       margin-bottom: 30px;
-cursor: none; /* Hide default cursor */
+    }
+
+    select, button {
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #005DFF;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #005DFF;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0044cc;
+    }
+
+    #resultMessage {
+      margin-top: 20px;
+      font-size: 16px;
     }
 
     .modal {
       display: none;
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
       padding: 20px;
-      background-color: #ADD8E6;
-      border-radius: 10px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
       text-align: center;
-cursor: none; /* Hide default cursor */
     }
 
-    .modal .modal-content {
-      font-family: "Consolas", monospace;
-      color: #000;
-cursor: none; /* Hide default cursor */
-    }
-
-    .modal .modal-button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #005DFF;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-cursor: none; /* Hide default cursor */
-    }
-
-    .modal .modal-button:hover {
-      background-color: #0044cc;
-cursor: none; /* Hide default cursor */
+    .modal-content button {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="cursor" id="cursor"></div>
-  <div class="container">
-    <a href="../rest.html" class="back-btn"></a> <!-- Redirects to another HTML file -->
+  <div class="container" id="container">
+    <a href="../rest.html" class="back-btn" id="back-btn"></a>
     <div class="title">Startup Settings</div>
     <p>Press a number key between 1 and 4.</p>
     <p>1. Boot from USB</p>
@@ -139,42 +129,79 @@ cursor: none; /* Hide default cursor */
     <p>4. Enable Debug Mode</p>
   </div>
 
-  <!-- Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
-      <p>Please select a valid number between 1 and 4.</p>
-      <button class="modal-button" onclick="closeModal()">Close</button>
+      <p id="modalText"></p>
+      <button onclick="closeModal()">Close</button>
     </div>
   </div>
 
   <script>
-    // Listen for keydown event to capture number presses
     document.addEventListener('keydown', function(event) {
       const pressedKey = event.key;
+      console.log(`Key pressed: ${pressedKey}`);
 
-      // Check if the pressed key is a number and greater than 4
-      if (pressedKey >= '1' && pressedKey <= '4') {
-        console.log(`You pressed: ${pressedKey}`);
-      } else if (pressedKey >= '5' && pressedKey <= '9') {
-        showModal();
+      if (pressedKey === '1') {
+        console.log("Switching to USB Auto-Connect UI...");
+        showUSBAutoConnectUI();
+      } else if (pressedKey === '2') {
+        showModal('Safe Mode is not available yet.');
+      } else if (pressedKey === '3') {
+        showModal('Recovery Tools are not available yet.');
+      } else if (pressedKey === '4') {
+        showModal('Debug Mode is not available yet.');
       }
     });
 
-    function showModal() {
-      document.getElementById("modal").style.display = "block";
+    async function showUSBAutoConnectUI() {
+      const container = document.getElementById('container');
+
+      // Clear the content and set up the new UI
+      container.innerHTML = `
+        <a href="../main.html" class="back-btn"></a>
+        <div class="title">Booting from USB</div>
+        <p>Select the drive letter of the USB drive to search for <strong>boot.html</strong>.</p>
+        <select id="driveSelect">
+          <option value="C">C:</option>
+          <option value="D">D:</option>
+          <option value="E">E:</option>
+          <option value="F">F:</option>
+          <option value="G">G:</option>
+        </select>
+        <button id="checkDriveBtn">Check Drive</button>
+        <div id="resultMessage"></div>
+      `;
+
+      const checkDriveBtn = document.getElementById('checkDriveBtn');
+      checkDriveBtn.addEventListener('click', checkDriveForBootFile);
+    }
+
+    function showModal(message) {
+      const modal = document.getElementById('modal');
+      const modalText = document.getElementById('modalText');
+      modalText.textContent = message;
+      modal.style.display = 'flex';
     }
 
     function closeModal() {
-      document.getElementById("modal").style.display = "none";
+      const modal = document.getElementById('modal');
+      modal.style.display = 'none';
     }
 
-    const cursor = document.getElementById('cursor');
+    function checkDriveForBootFile() {
+      const driveSelect = document.getElementById('driveSelect');
+      const resultMessage = document.getElementById('resultMessage');
+      const selectedDrive = driveSelect.value;
 
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
+      console.log(`Navigating to ${selectedDrive}:/boot.html...`);
+      resultMessage.textContent = `Navigating to ${selectedDrive}:/boot.html...`;
+
+      // Simulate the navigation to boot.html
+      setTimeout(() => {
+          resultMessage.textContent = `Found boot.html on drive ${selectedDrive}! Navigating...`;
+          window.location.href = `${selectedDrive}:/boot.html`; // Redirect to boot.html
+      }, 2000); // Simulate the time it takes to check
+    }
   </script>
 </body>
 </html>
