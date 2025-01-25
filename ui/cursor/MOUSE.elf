@@ -17,7 +17,7 @@ function getRelativePathToRoot() {
         relativePath += '../'; // go up one directory
     }
 
-    return relativePath + 'ui/cursor/cursor.ico'; // append the target path
+    return relativePath + 'TestOS/ui/cursor/cursor.ico'; // append the target path
 }
 
 // Function to create the custom cursor
