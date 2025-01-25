@@ -613,17 +613,6 @@ button:hover {
                 cursor: none;
             }
         }
-
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
     /* Taskbar button style */
     .taskbar-button {
       background-color: #333;
@@ -695,7 +684,6 @@ align-items: center;
 </head>
 <body>
 
-    <div class="cursor" id="cursor"></div>
 
 
   <div class="desktop" id="desktop">
@@ -877,7 +865,7 @@ align-items: center;
     <a href="../../end/rest.html">Restart</a>
     <a href="../login/login.html">Lock</a>
   </div>
-
+<script src="../../ui/cursor/MOUSE.elf"></script>
   <script>
         function updateBatteryStatus(battery) {
             const batteryIcon = document.getElementById('battery-icon');
@@ -1407,12 +1395,6 @@ window.addEventListener('click', () => {
   contextMenu.style.display = 'none';
 });
 
-    const cursor = document.getElementById('cursor');
-
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
 function updateConnectionStatus() {
       const connectionStatusElement = document.getElementById('connectionStatus');
       const connectionTypeElement = document.getElementById('connectionType');
