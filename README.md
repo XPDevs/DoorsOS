@@ -15,7 +15,7 @@ To get started with TestOS, you can:
 
 1. **Run it in your browser**: Simply enter the following URL into your browser's address bar:
 
-    [https://yourlink.com/TestOS](https://yourlink.com/TestOS)
+    [https://xpdevs.github.io/TestOS](https://yourlink.com/TestOS)
 
     Ensure that **JavaScript is enabled** in your browser for TestOS to work properly.
 
