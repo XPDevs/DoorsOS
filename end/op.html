@@ -10,7 +10,6 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      cursor: none; /* Hide cursor globally */
     }
 
     body {
@@ -25,18 +24,6 @@
       cursor: none; /* Hide cursor */
     }
 
-    /* Custom cursor style */
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      cursor: none; /* Hide cursor */
-    }
 
     .container {
       text-align: center; /* Center text */
@@ -147,8 +134,6 @@
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-
 <!-- Main container for options -->
 <div class="container" id="main-options">
   <div class="title">Advanced Boot Options</div>
@@ -184,6 +169,9 @@
   <a href="javascript:void(0);" class="btn" id="restart-btn">Restart</a>
 </div>
 
+<script src="../ui/cursor/MOUSE.elf"></script>
+
+  
 <script>
   const cursor = document.getElementById('cursor');
   const advancedOptionsButton = document.getElementById('advanced-options');
