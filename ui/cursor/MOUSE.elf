@@ -1,3 +1,8 @@
+// show a version for version controll
+console.log('%cVersion 1.4.0', 'color: red; font-style: italic;');
+
+
+
 // Function to hide the default cursor globally
 function hideDefaultCursor() {
     const globalStyle = document.createElement('style');
