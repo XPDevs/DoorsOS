@@ -6,10 +6,24 @@ function hideDefaultCursor() {
     console.log("Default cursor hidden");
 }
 
+// Function to get the relative path to root
+function getRelativePathToRoot() {
+    const path = window.location.pathname;
+    const pathParts = path.split('/');
+    const depth = pathParts.length - 1; // number of directory levels to go up
+    let relativePath = '';
+
+    for (let i = 0; i < depth; i++) {
+        relativePath += '../'; // go up one directory
+    }
+
+    return relativePath + 'ui/cursor/cursor.ico'; // append the target path
+}
+
 // Function to create the custom cursor
 function MOUSE() {
     console.log("Initializing custom cursor...");
-    
+
     // Hide the default cursor first
     hideDefaultCursor();
 
@@ -18,7 +32,7 @@ function MOUSE() {
     cursor.style.position = 'absolute';
     cursor.style.width = '32px';
     cursor.style.height = '32px';
-    
+
     // Attempt to load the custom ICO file, fallback to base64 if not found
     const cursorImage = new Image();
     cursorImage.onload = () => {
@@ -29,7 +43,7 @@ function MOUSE() {
         cursor.style.backgroundImage = 'url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACxUlEQVR4nO3WTUhUURQH8FsRlERRJDT25p1z7r0z6jBmNWgTYR9YVNIiqSiICmwV1YRZWYqaWGnLFgWt3EYQBEnSF0FIYBaGRJS5SLNdbVqEzjhz495RzOzDN/oeFP3hrIbH+c253PMeY//zF2QOETUhiVa/35/jeXfO+ToiUlgQTZAMDNi2zb0GlGkA1L1UWLwtTlx+4pwXeAZAxK0aYDe9U3ChT8Ha8gRy8QUAop4AiGizATS+VXbLR2VffK9w44ER5OKr/s11AABsMoDzr9MAXZf6FZZWJJF4HADKXQUg4noDaHg1DjCIAYXbYykkSiLiIddvgV3fMxGgq3lQ4c5aRUQpRIy5AgCA6NgtmAQYLdh3WSMUIp6ZcQARFZkJ1L74JUAXHryqiPMUEbXMKMC27dUGUPPstwAzicOtComnSMjrjLHZMwJAxEJzBOc6/wgwiCM3FYlAEojfiEQic6cN4JyHzQTOPp0SwFSsTaHMG0Eu2y3Lmj8tAADkmwlUd0wdoCdR9VBRbjiOQnZIKRdmDCCioAGcfuIIYBDVHQrzV8WRy+5gMLg0I4CUUpgjOPXYMcBUTZeC8Jo4ikCvZVnLHQMAAM0Eqh5lBtCTqOtWWFiiEf1SSssRQAjhN4CTDzIDNPWmt2jlfYV5K0aI6IojgN/vzzGAyns/b9D8QeGuhhREdwxjpHQIC4qHMLdwGGVuQj83oThPEtF+p0ewzABO3J3c/Lu3IiJe01sQEasR8TgRVRDRntHviRK90KSU2cxppJTZBhBr+2G0fQpL9o59F2xhbsWyrCVpwJ3x5o1vFBSXJUgEPut/xtwM53yRARy7nW5e36Nw5YY4CTmodwRzO6FQaIEBHL1l1jGGisyddnydMg0AzDPv+t2NCoPhBHDZadv2YuZlSAafGwSX7T6fL4t5HZ/PlyWEiDDGZnnenP3r+QaYWklUkvuJQQAAAABJRU5ErkJggg==)';
         console.log("Custom ICO cursor failed, fallback to base64 image");
     };
-    cursorImage.src = 'cursor.ico'; 
+    cursorImage.src = getRelativePathToRoot(); // Use the dynamic relative path
 
     cursor.style.backgroundSize = 'cover';
     cursor.style.pointerEvents = 'none';
