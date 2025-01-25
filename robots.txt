@@ -1,0 +1,38 @@
+# robots.txt for TestOS
+# This file controls how search engine crawlers interact with TestOS
+
+# Allow all user agents (search engines) to access everything
+User-agent: *
+Disallow:
+
+# Block specific bots that are known to be aggressive or unwanted
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: Yandex
+Disallow: /
+
+# Allow specific bots like Google's bot to access everything
+User-agent: Googlebot
+Disallow:
+
+# Block a specific path (useful for temporary maintenance or testing)
+# Disallow: /test/
+
+# Crawl-delay to reduce load on your server (in seconds)
+Crawl-delay: 5
+
+# Prevent crawling of duplicate content or irrelevant files like logs or backups
+Disallow: /backup/
+Disallow: /logs/
+
+# Allow all bots to access the main files but disallow private or admin paths
+# Disallow: /admin/
+# Disallow: /private/
+
+# Allow all bots to crawl and index content on your site
+User-agent: *
+Disallow:
+
+# Optional: Specify a sitemap location (if you create one in the future)
+# Sitemap: https://xpdevs.github.io/TestOS/sitemap.xml
