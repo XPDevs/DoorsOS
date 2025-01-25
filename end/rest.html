@@ -14,20 +14,8 @@
       background-color: #000; /* Black background */
       font-family: Arial, sans-serif;
       color: #fff; /* Ensure text is visible if needed */
-      cursor: none; /* Hide cursor globally */
     }
 
-    /* Custom cursor style */
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
 
     .container {
       text-align: center;
@@ -62,8 +50,7 @@
   </style>
 </head>
 <body>
-
-<div class="cursor" id="cursor"></div>
+<script src="../ui/cursor/MOUSE.elf"></scrip>
   
   <div class="container">
     <div class="spinner"></div>
@@ -109,13 +96,6 @@
     // Periodically check if Shift is held for 5 seconds
     setInterval(checkShiftDuration, 100);
 
-    const cursor = document.getElementById('cursor');
-
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
   </script>
 </body>
 </html>
