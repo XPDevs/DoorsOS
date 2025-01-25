@@ -3,40 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOS Terminal</title>
+    <title>HTML Elements Upload</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: #ffffff;
             margin: 0;
-            padding: 0;
+            line-height: 1.6;
+            background-color: #ADD8E6;  /* Light blue background */
+        }
+        header, section, footer {
+            margin-bottom: 20px;
+        }
+        .element-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .window {
+            width: 300px;
+            height: 400px;
+            background: #fff;
+            color: #000;
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            display: block; /* Make window visible */
+            cursor: default;
+        }
+        .window-header {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            align-items: center;
+            cursor: move; /* Indicates draggable */
+        }
+        .window-buttons {
+            display: flex;
+            margin-left: auto;
+        }
+        .window-button {
+            width: 12px;
+            height: 12px;
+            margin-left: 5px;
+            border-radius: 50%;
+        }
+        .window-button:nth-child(1) {
+            background-color: #1e90ff;
+        }
+        .window-button:nth-child(2) {
+            background-color: #00ff00;
+        }
+        .window-button:nth-child(3) {
+            background-color: #ff0000;
+        }
+        .window-content {
+            width: 100%;
+            height: calc(100% - 40px); /* Adjusted to exclude the header height */
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            padding: 10px;
+            box-sizing: border-box;
         }
+
         #terminal {
             flex: 1;
             padding: 10px;
             border: 1px solid #444;
-            margin-bottom: 10px;
-            overflow: hidden;
+            margin-bottom: 1px;
+            overflow-y: auto; /* Enable vertical scroll */
+            max-height: 250px; /* Set a maximum height for the terminal area */
+            color: black; /* Output text color set to black */
         }
-        .command {
-            color: #00ff00;
-        }
-        .output {
-            color: #ffffff;
-        }
+
         #commandInput {
-            width: 100%;
+            position: absolute;
+            bottom: 10px; /* Pin to the bottom */
+            left: 0;
+            width: 94%; /* Full width of the window */
             padding: 10px;
             border: none;
             outline: none;
             background-color: #2e2e2e;
             color: #ffffff;
         }
+
+        /* Back button styles */
+        .back-btn {
+            font-size: 24px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background-color: #005DFF;
+            border-radius: 50%;
+            border: none;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #0044cc;
+            opacity: 0.8;
+        }
+
+        .back-btn:active {
+            opacity: 0.6;
+        }
+
+        .back-btn::before {
+            content: '←';
+            font-size: 24px;
+        }
+
         #forcePanicModal, #panicProcessModal {
             display: none;
             position: fixed;
@@ -60,55 +149,99 @@
             background-color: #555;
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const windows = document.querySelectorAll(".window");
+            windows.forEach(window => {
+                const header = window.querySelector(".window-header");
+                const closeButton = window.querySelector(".window-button:nth-child(3)"); // Correctly selects the close button
+                let isDragging = false;
+                let offsetX, offsetY;
+
+                header.addEventListener("mousedown", (e) => {
+                    isDragging = true;
+                    offsetX = e.clientX - window.offsetLeft;
+                    offsetY = e.clientY - window.offsetTop;
+                    window.style.zIndex = 1000; // Bring to front
+                });
+
+                document.addEventListener("mousemove", (e) => {
+                    if (isDragging) {
+                        window.style.left = `${e.clientX - offsetX}px`;
+                        window.style.top = `${e.clientY - offsetY}px`;
+                    }
+                });
+
+                document.addEventListener("mouseup", () => {
+                    isDragging = false;
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <div id="terminal">
-        <div id="output"></div>
-    </div>
-    <input type="text" id="commandInput" placeholder="Enter command...">
+    <main>
+        <!-- Back Button added to the body -->
+        <a href="../op.html" class="back-btn"></a> <!-- Back button for navigation -->
 
-    <div id="forcePanicModal">
-        <p>Are you sure you want to force a kernel panic?</p>
-        <div class="modal-buttons">
-            <button id="forcePanicYes">Yes</button>
-            <button id="forcePanicNo">No</button>
-        </div>
-    </div>
+        <div class="window">
+            <div class="window-header">
+                <span>Terminal</span>
+                <div class="window-buttons">
+                    <div class="window-button"></div> <!-- Blue button -->
+                    <div class="window-button"></div> <!-- Green button -->
+                    <!-- Red button now wrapped in an anchor tag for href functionality -->
+                    <a href="../op.html" class="window-button"></a> <!-- Red button (close button) as a link -->
+                </div>
+            </div>
+            <div class="window-content">
+                <div id="terminal">
+                    <div id="output"></div>
+                </div>
+                <input type="text" id="commandInput" placeholder="Enter command...">
 
-    <div id="panicProcessModal">
-        <p>Kernel panic in progress. Please wait...</p>
-    </div>
-<script src="../../ui/cursor/MOUSE.elf"></script>
-    <script>
-        const terminalOutput = document.getElementById('output');
-        const commandInput = document.getElementById('commandInput');
-        const forcePanicModal = document.getElementById('forcePanicModal');
-        const panicProcessModal = document.getElementById('panicProcessModal');
-        const forcePanicYes = document.getElementById('forcePanicYes');
-        const forcePanicNo = document.getElementById('forcePanicNo');
-        let isAwaitingPassword = false;
+                <div id="forcePanicModal">
+                    <p>Are you sure you want to force a kernel panic?</p>
+                    <div class="modal-buttons">
+                        <button id="forcePanicYes">Yes</button>
+                        <button id="forcePanicNo">No</button>
+                    </div>
+                </div>
 
-        // Predefined commands
-        const commands = {
-            '/end-temp': () => {
-                window.location.href = '../../end/rest.html';
-                return 'Exiting terminal...';
-            },
-            '/end-perm': () => {
-                window.location.href = '../../end/shut.html';
-                return 'Exiting terminal...';
-            },
-            '/about-system': () => {
-                return `About TestOS
+                <div id="panicProcessModal">
+                    <p>Kernel panic in progress. Please wait...</p>
+                </div>
+
+                <script>
+                    const terminalOutput = document.getElementById('output');
+                    const commandInput = document.getElementById('commandInput');
+                    const forcePanicModal = document.getElementById('forcePanicModal');
+                    const panicProcessModal = document.getElementById('panicProcessModal');
+                    const forcePanicYes = document.getElementById('forcePanicYes');
+                    const forcePanicNo = document.getElementById('forcePanicNo');
+                    let isAwaitingPassword = false;
+
+                    // Predefined commands
+                    const commands = {
+                        '/end-temp': () => {
+                            window.location.href = '../../end/rest.html';
+                            return 'Exiting terminal...';
+                        },
+                        '/end-perm': () => {
+                            window.location.href = '../../end/shut.html';
+                            return 'Exiting terminal...';
+                        },
+                        '/about-system': () => {
+                            return `About TestOS
 Operating System: TestOS
 Version: 4.0.0
 Kernel: NexShell
 Build: 2025.01.25
 License: Open Source downloadable
 Developer: XPDevs`;
-            },
-            '/help': () => {
-                return `Available Commands:
+                        },
+                        '/help': () => {
+                            return `Available Commands:
 - /end-temp - Exit to temporary shutdown
 - /end-perm - Exit to permanent shutdown
 - /reset-all - Reset the system after password verification
@@ -117,86 +250,90 @@ Developer: XPDevs`;
 - /date - Display the current date and time
 - /echo [text] - Echo back the provided text
 - /force-panic - Force a kernel panic`;
-            },
-            '/clear': () => {
-                terminalOutput.innerHTML = '';
-                return '';
-            },
-            '/date': () => {
-                return new Date().toString();
-            },
-            '/echo': (text) => {
-                return text ? text : 'Error: No text provided';
-            },
-            '/reset-all': () => {
-                isAwaitingPassword = true;
-                appendToTerminal('/reset-all', 'Enter root password:');
-                return '';
-            },
-            '/force-panic': () => {
-                forcePanicModal.style.display = 'block'; // Show the modal
-                return 'Are you sure you want to force a kernel panic?';
-            }
-        };
+                        },
+                        '/clear': () => {
+                            terminalOutput.innerHTML = '';
+                            return '';
+                        },
+                        '/date': () => {
+                            return new Date().toString();
+                        },
+                        '/echo': (text) => {
+                            return text ? text : 'Error: No text provided';
+                        },
+                        '/reset-all': () => {
+                            isAwaitingPassword = true;
+                            appendToTerminal('/reset-all', 'Enter root password:');
+                            return '';
+                        },
+                        '/force-panic': () => {
+                            forcePanicModal.style.display = 'block'; // Show the modal
+                            return 'Are you sure you want to force a kernel panic?';
+                        }
+                    };
 
-        commandInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const input = commandInput.value.trim();
-                commandInput.value = '';
-                if (isAwaitingPassword) {
-                    validatePassword(input);
-                } else {
-                    processCommand(input);
-                }
-            }
-        });
+                    commandInput.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            const input = commandInput.value.trim();
+                            commandInput.value = '';
+                            if (isAwaitingPassword) {
+                                validatePassword(input);
+                            } else {
+                                processCommand(input);
+                            }
+                        }
+                    });
 
-        function validatePassword(input) {
-            if (input === "root") {
-                localStorage.clear();
-                appendToTerminal('', 'Local storage cleared. Please restart to apply changes.');
-            } else {
-                appendToTerminal('', 'Incorrect password. Access denied.');
-            }
-            isAwaitingPassword = false;
-        }
+                    function validatePassword(input) {
+                        if (input === "root") {
+                            localStorage.clear();
+                            appendToTerminal('', 'Local storage cleared. Please restart to apply changes.');
+                        } else {
+                            appendToTerminal('', 'Incorrect password. Access denied.');
+                        }
+                        isAwaitingPassword = false;
+                    }
 
-        function processCommand(input) {
-            let output;
-            const parts = input.split(' ');
-            const command = parts[0];
-            const argument = parts.slice(1).join(' ');
+                    function processCommand(input) {
+                        let output;
+                        const parts = input.split(' ');
+                        const command = parts[0];
+                        const argument = parts.slice(1).join(' ');
 
-            if (commands[command]) {
-                output = commands[command](argument);
-            } else {
-                output = `Command not found: ${input}`;
-            }
-            appendToTerminal(input, output);
-        }
+                        if (commands[command]) {
+                            output = commands[command](argument);
+                        } else {
+                            output = `Command not found: ${input}`;
+                        }
+                        appendToTerminal(input, output);
+                    }
 
-        function appendToTerminal(input, output) {
-            if (input) terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
-            if (output) terminalOutput.innerHTML += `<div class="output">${output}</div>`;
-        }
+                    function appendToTerminal(input, output) {
+                        if (input) terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
+                        if (output) terminalOutput.innerHTML += `<div class="output">${output}</div>`;
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;  // Automatically scroll to the bottom
+                    }
 
-        forcePanicYes.addEventListener('click', () => {
-            forcePanicModal.style.display = 'none'; // Hide first modal
-            panicProcessModal.style.display = 'block'; // Show panic process modal
-            // Simulate kernel panic process
-            setTimeout(() => {
-                panicProcessModal.style.display = 'none'; // Hide panic process modal
-                appendToTerminal('', 'The kernel panic has been successfully triggered. The system will need a full restart.');
-                
-                // Redirect to another HTML file
-                window.location.href = '../../error/error.html'; // Change this to the correct file path
-            }, 5000); // Panic process lasts for 5 seconds
-        });
+                    forcePanicYes.addEventListener('click', () => {
+                        forcePanicModal.style.display = 'none'; // Hide first modal
+                        panicProcessModal.style.display = 'block'; // Show panic process modal
+                        // Simulate kernel panic process
+                        setTimeout(() => {
+                            panicProcessModal.style.display = 'none'; // Hide panic process modal
+                            appendToTerminal('', 'The kernel panic has been successfully triggered. The system will need a full restart.');
+                            
+                            // Redirect to another HTML file
+                            window.location.href = '../../error/error.html'; // Change this to the correct file path
+                        }, 5000); // Panic process lasts for 5 seconds
+                    });
 
-        forcePanicNo.addEventListener('click', () => {
-            forcePanicModal.style.display = 'none'; // Close the modal
-            appendToTerminal('', 'Returning to terminal...');
-        });
-    </script>
+                    forcePanicNo.addEventListener('click', () => {
+                        forcePanicModal.style.display = 'none'; // Close the modal
+                        appendToTerminal('', 'Returning to terminal...');
+                    });
+                </script>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
