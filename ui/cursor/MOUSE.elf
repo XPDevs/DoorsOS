@@ -6,164 +6,43 @@ function hideDefaultCursor() {
     console.log("Default cursor hidden");
 }
 
-// Function to create the custom cursor and behavior
+// Function to create the custom cursor
 function MOUSE() {
     console.log("Initializing custom cursor...");
     
     // Hide the default cursor first
     hideDefaultCursor();
 
-    // Create the custom cursor container for the spinner
-    const cursorContainer = document.createElement('div');
-    cursorContainer.style.position = 'absolute';
-    cursorContainer.style.width = '30px'; // Reduced spinner size
-    cursorContainer.style.height = '30px'; // Reduced spinner size
-    cursorContainer.style.pointerEvents = 'none';
-    cursorContainer.style.zIndex = '9999';
-    cursorContainer.style.display = 'none'; // Initially hidden
-    document.body.appendChild(cursorContainer);
+    // Create the normal cursor
+    const cursor = document.createElement('div');
+    cursor.style.position = 'absolute';
+    cursor.style.width = '32px';
+    cursor.style.height = '32px';
+    
+    // Attempt to load the custom ICO file, fallback to base64 if not found
+    const cursorImage = new Image();
+    cursorImage.onload = () => {
+        cursor.style.backgroundImage = `url(${cursorImage.src})`;
+        console.log("Custom ICO cursor loaded successfully");
+    };
+    cursorImage.onerror = () => {
+        cursor.style.backgroundImage = 'url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACxUlEQVR4nO3WTUhUURQH8FsRlERRJDT25p1z7r0z6jBmNWgTYR9YVNIiqSiICmwV1YRZWYqaWGnLFgWt3EYQBEnSF0FIYBaGRJS5SLNdbVqEzjhz495RzOzDN/oeFP3hrIbH+c253PMeY//zF2QOETUhiVa/35/jeXfO+ToiUlgQTZAMDNi2zb0GlGkA1L1UWLwtTlx+4pwXeAZAxK0aYDe9U3ChT8Ha8gRy8QUAop4AiGizATS+VXbLR2VffK9w44ER5OKr/s11AABsMoDzr9MAXZf6FZZWJJF4HADKXQUg4noDaHg1DjCIAYXbYykkSiLiIddvgV3fMxGgq3lQ4c5aRUQpRIy5AgCA6NgtmAQYLdh3WSMUIp6ZcQARFZkJ1L74JUAXHryqiPMUEbXMKMC27dUGUPPstwAzicOtComnSMjrjLHZMwJAxEJzBOc6/wgwiCM3FYlAEojfiEQic6cN4JyHzQTOPp0SwFSsTaHMG0Eu2y3Lmj8tAADkmwlUd0wdoCdR9VBRbjiOQnZIKRdmDCCioAGcfuIIYBDVHQrzV8WRy+5gMLg0I4CUUpgjOPXYMcBUTZeC8Jo4ikCvZVnLHQMAAM0Eqh5lBtCTqOtWWFiiEf1SSssRQAjhN4CTDzIDNPWmt2jlfYV5K0aI6IojgN/vzzGAyns/b9D8QeGuhhREdwxjpHQIC4qHMLdwGGVuQj83oThPEtF+p0ewzABO3J3c/Lu3IiJe01sQEasR8TgRVRDRntHviRK90KSU2cxppJTZBhBr+2G0fQpL9o59F2xhbsWyrCVpwJ3x5o1vFBSXJUgEPut/xtwM53yRARy7nW5e36Nw5YY4CTmodwRzO6FQaIEBHL1l1jGGisyddnydMg0AzDPv+t2NCoPhBHDZadv2YuZlSAafGwSX7T6fL4t5HZ/PlyWEiDDGZnnenP3r+QaYWklUkvuJQQAAAABJRU5ErkJggg==)';
+        console.log("Custom ICO cursor failed, fallback to base64 image");
+    };
+    cursorImage.src = 'cursor.ico'; 
 
-    // Create the spinner inside the cursor container
-    const spinner = document.createElement('div');
-    spinner.classList.add('spinner');
-    cursorContainer.appendChild(spinner);
+    cursor.style.backgroundSize = 'cover';
+    cursor.style.pointerEvents = 'none';
+    cursor.style.zIndex = '9999';
+    document.body.appendChild(cursor);
 
-    // Add spinner elements dynamically
-    for (let i = 0; i < 8; i++) {
-        const spinnerChild = document.createElement('div');
-        spinner.appendChild(spinnerChild);
-    }
-
-    // Add spinner styles dynamically
-    const style = document.createElement('style');
-    style.innerHTML = `  
-        .spinner {
-            position: relative;
-            width: 30px; /* Smaller spinner */
-            height: 30px; /* Smaller spinner */
-        }
-
-        .spinner div {
-            position: absolute;
-            width: 5px; /* Smaller circles */
-            height: 5px; /* Smaller circles */
-            background-color: blue; /* Blue color for the spinner */
-            border-radius: 50%;
-            animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        }
-
-        .spinner div:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); animation-delay: -1.1s; }
-        .spinner div:nth-child(2) { top: 14%; left: 86%; transform: translate(-50%, -50%); animation-delay: -1s; }
-        .spinner div:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); animation-delay: -0.9s; }
-        .spinner div:nth-child(4) { top: 86%; left: 86%; transform: translate(-50%, -50%); animation-delay: -0.8s; }
-        .spinner div:nth-child(5) { top: 100%; left: 50%; transform: translate(-50%, -50%); animation-delay: -0.7s; }
-        .spinner div:nth-child(6) { top: 86%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.6s; }
-        .spinner div:nth-child(7) { top: 50%; left: 0; transform: translate(-50%, -50%); animation-delay: -0.5s; }
-        .spinner div:nth-child(8) { top: 14%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.4s; }
-
-        @keyframes spinner {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Show the spinner cursor in the center of the screen initially
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    cursorContainer.style.display = 'block';
-    cursorContainer.style.left = `${centerX - 15}px`; // Adjust for spinner size
-    cursorContainer.style.top = `${centerY - 15}px`; // Adjust for spinner size
-
-    console.log("Custom spinner cursor created at the center");
-
-    // Flag to track if the cursor has been changed to the main cursor
-    let cursorChanged = false;
-
-    // Snap to the real cursor position after 1 second
-    setTimeout(() => {
-        cursorContainer.style.left = `${centerX - 15}px`; // Adjust for spinner size
-        cursorContainer.style.top = `${centerY - 15}px`; // Adjust for spinner size
-
-        // Change to the main cursor after 5 seconds
-        setTimeout(() => {
-            cursorContainer.style.display = 'none'; // Hide the spinner
-            const cursor = document.createElement('div');
-            cursor.style.position = 'absolute';
-            cursor.style.width = '32px';
-            cursor.style.height = '32px';
-            
-            // Attempt to load the custom ICO file, fallback to base64 if not found
-            const cursorImage = new Image();
-            cursorImage.onload = () => {
-                cursor.style.backgroundImage = `url(${cursorImage.src})`;
-                console.log("Custom ICO cursor loaded successfully");
-            };
-            cursorImage.onerror = () => {
-                cursor.style.backgroundImage = 'url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACxUlEQVR4nO3WTUhUURQH8FsRlERRJDT25p1z7r0z6jBmNWgTYR9YVNIiqSiICmwV1YRZWYqaWGnLFgWt3EYQBEnSF0FIYBaGRJS5SLNdbVqEzjhz495RzOzDN/oeFP3hrIbH+c253PMeY//zF2QOETUhiVa/35/jeXfO+ToiUlgQTZAMDNi2zb0GlGkA1L1UWLwtTlx+4pwXeAZAxK0aYDe9U3ChT8Ha8gRy8QUAop4AiGizATS+VXbLR2VffK9w44ER5OKr/s11AABsMoDzr9MAXZf6FZZWJJF4HADKXQUg4noDaHg1DjCIAYXbYykkSiLiIddvgV3fMxGgq3lQ4c5aRUQpRIy5AgCA6NgtmAQYLdh3WSMUIp6ZcQARFZkJ1L74JUAXHryqiPMUEbXMKMC27dUGUPPstwAzicOtComnSMjrjLHZMwJAxEJzBOc6/wgwiCM3FYlAEojfiEQic6cN4JyHzQTOPp0SwFSsTaHMG0Eu2y3Lmj8tAADkmwlUd0wdoCdR9VBRbjiOQnZIKRdmDCCioAGcfuIIYBDVHQrzV8WRy+5gMLg0I4CUUpgjOPXYMcBUTZeC8Jo4ikCvZVnLHQMAAM0Eqh5lBtCTqOtWWFiiEf1SSssRQAjhN4CTDzIDNPWmt2jlfYV5K0aI6IojgN/vzzGAyns/b9D8QeGuhhREdwxjpHQIC4qHMLdwGGVuQj83oThPEtF+p0ewzABO3J3c/Lu3IiJe01sQEasR8TgRVRDRntHviRK90KSU2cxppJTZBhBr+2G0fQpL9o59F2xhbsWyrCVpwJ3x5o1vFBSXJUgEPut/xtwM53yRARy7nW5e36Nw5YY4CTmodwRzO6FQaIEBHL1l1jGGisyddnydMg0AzDPv+t2NCoPhBHDZadv2YuZlSAafGwSX7T6fL4t5HZ/PlyWEiDDGZnnenP3r+QaYWklUkvuJQQAAAABJRU5ErkJggg==)';
-                console.log("Custom ICO cursor failed, fallback to base64 image");
-            };
-            cursorImage.src = 'cursor.ico'; 
-
-            cursor.style.backgroundSize = 'cover';
-            cursor.style.pointerEvents = 'none';
-            cursor.style.zIndex = '9999';
-            document.body.appendChild(cursor);
-
-            // Track mouse movement to position the main cursor
-            document.addEventListener('mousemove', function(e) {
-                if (cursorChanged) {  // Only track movement if the cursor has been changed
-                    cursor.style.left = e.pageX + 'px';
-                    cursor.style.top = e.pageY + 'px';
-                }
-            });
-
-            // Mark the cursor as changed to the main cursor
-            cursorChanged = true;
-            console.log("Cursor changed to main cursor");
-        }, 5000);
-    }, 1000); // Time before snapping to the cursor's actual position
-
-    // Track mouse movement to position the spinner
+    // Track mouse movement to position the cursor
     document.addEventListener('mousemove', function(e) {
-        if (!cursorChanged) {  // Only track spinner movement before it's changed
-            cursorContainer.style.left = e.pageX - 15 + 'px';  // Adjust for smaller spinner
-            cursorContainer.style.top = e.pageY - 15 + 'px';  // Adjust for smaller spinner
-        }
+        cursor.style.left = e.pageX + 'px';
+        cursor.style.top = e.pageY + 'px';
     });
 
-    // Prevent context menu unless Shift is held
-    document.addEventListener('contextmenu', function(e) {
-        if (!e.shiftKey) {
-            e.preventDefault();
-            console.log("Context menu disabled");
-        }
-    });
-}
-
-// Create a modal for errors
-function showErrorModal() {
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.padding = '20px';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    modal.style.color = 'white';
-    modal.style.borderRadius = '10px';
-    modal.style.fontSize = '16px';
-    modal.style.zIndex = '99999';
-    modal.innerText = 'Restarting Mouse driver';
-
-    document.body.appendChild(modal);
-    console.log("Error modal shown");
-
-    // Restart the MOUSE function after 3 seconds
-    setTimeout(() => {
-        document.body.removeChild(modal);
-        MOUSE(); // Restart the MOUSE function
-    }, 3000);
+    console.log("Cursor created and tracking mouse movement");
 }
 
 // Global error handler
