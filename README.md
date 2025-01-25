@@ -57,7 +57,7 @@ We welcome contributions to TestOS! If you want to contribute, feel free to fork
 
 ## License
 
-TestOS is released under the [MIT License](LICENSE), so feel free to use it, modify it, and distribute it as you like!
+TestOS is released under the [MIT License](LICENSE.md), so feel free to use it, modify it, and distribute it as you like!
 
 ## Contact
 
