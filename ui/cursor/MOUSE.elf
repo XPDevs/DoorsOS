@@ -43,11 +43,41 @@ function MOUSE() {
     });
 
     console.log("Cursor created and tracking mouse movement");
+
+    // Prevent context menu unless Shift is held
+    document.addEventListener('contextmenu', function(e) {
+        if (!e.shiftKey) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Create a modal for errors
+function showErrorModal() {
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.padding = '20px';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    modal.style.color = 'white';
+    modal.style.borderRadius = '10px';
+    modal.style.fontSize = '16px';
+    modal.style.zIndex = '99999';
+    modal.innerText = 'Restarting Mouse driver';
+
+    document.body.appendChild(modal);
+
+    // Restart the MOUSE function after 3 seconds
+    setTimeout(() => {
+        document.body.removeChild(modal);
+        MOUSE(); // Restart the MOUSE function
+    }, 3000);
 }
 
 // Global error handler
 window.onerror = function(message, source, lineno, colno, error) {
-    console.log(`Error caught: ${message} at ${source}:${lineno}:${colno}`);
     showErrorModal(); // Show the error modal if any JavaScript error occurs
     return true; // Prevent the default browser error handling
 };
