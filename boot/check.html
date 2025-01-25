@@ -15,17 +15,6 @@
       font-family: Arial, sans-serif;
       color: #fff;
       transition: background-color 2s ease; /* Fade effect */
-   cursor: none; /* Hide cursor globally */
-    }
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
     }
 
 
@@ -45,7 +34,7 @@
       cursor: none;
     }
 
-    .spinner {
+    .spinner-ch {
       margin: 20px auto;
       width: 40px;
       height: 40px;
@@ -78,13 +67,12 @@
 </head>
 <body>
 
- <div class="cursor" id="cursor"></div>
-  
+
   <div class="container">
-    <div class="spinner"></div>
+    <div class="spinner-ch"></div>
     <div class="message" id="message"></div>
   </div>
-
+  <script src="../ui/cursor/MOUSE.elf"></script>
   <script>
     // Fade the background to Windows 10 blue after 2 seconds
     setTimeout(() => {
@@ -154,13 +142,6 @@
       }
     }, 20000); // Wait 20 seconds before checking installation status and redirecting
 
- const cursor = document.getElementById('cursor');
-
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
     
   </script>
 </body>
