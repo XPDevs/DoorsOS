@@ -1,7 +1,8 @@
-// show a version for version controll
+// Show a version for version control
 console.log('%cVersion 1.4.0', 'color: red; font-style: italic;');
 
-
+// Log the current HTML file and its file path
+console.log(`%cFile: ${document.location.pathname}`, 'color: red; font-style: italic;');
 
 // Function to hide the default cursor globally
 function hideDefaultCursor() {
