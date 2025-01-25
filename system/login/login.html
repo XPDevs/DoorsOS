@@ -192,21 +192,10 @@
             cursor: none;
         }
 
-        .cursor {
-            position: absolute;
-            width: 32px; /* Customize the size of the cursor */
-            height: 32px;
-            background-image: url('../../ui/cursor/cursor.ico'); /* Custom cursor image */
-            background-size: contain;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
     </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
 
 <!-- Audio element to play sound -->
 <audio id="login-sound" src="login-sound.mp3" preload="auto"></audio>
@@ -242,6 +231,9 @@
     <button class="power-btn" id="power-btn">⚡</button>
 </div>
 
+<script src="../../ui/cursor/MOUSE.elf"></script>
+
+    
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const mainScreen = document.getElementById("main-screen");
@@ -343,13 +335,6 @@ document.addEventListener("DOMContentLoaded", function () {
             wrongSound.play();
         }
     });
-});
-
-const cursor = document.getElementById('cursor');
-
-document.addEventListener('mousemove', (e) => {
-  cursor.style.left = `${e.pageX}px`;
-  cursor.style.top = `${e.pageY}px`;
 });
 </script>
 </body>
