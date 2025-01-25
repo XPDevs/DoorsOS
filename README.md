@@ -15,13 +15,12 @@ To get started with TestOS, you can:
 
 1. **Run it in your browser**: Simply enter the following URL into your browser's address bar:
 
-    [https://xpdevs.github.io/TestOS](https://yourlink.com/TestOS)
+    [https://xpdevs.github.io/TestOS](https://xpdevs.github.io/TestOS)
 
     Ensure that **JavaScript is enabled** in your browser for TestOS to work properly.
 
 2. **Clone or download the repository**:
     - Clone the repository to your local machine:
-
     ```bash
     git clone https://github.com/XPDevs/TestOS.git
     ```
