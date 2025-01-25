@@ -15,19 +15,6 @@
       font-family: Arial, sans-serif;
       color: #fff; /* Ensure text is visible if needed */
       overflow: hidden;
-    cursor: none; /* Hide cursor globally */
-    }
-
-    /* Custom cursor style */
-    .cursor {
-      position: absolute;
-      width: 32px; /* Customize the size of the cursor */
-      height: 32px;
-      background-image: url('../ui/cursor/cursor.ico'); /* Custom cursor image (ICO file) */
-      background-size: contain;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
     }
     .container {
       text-align: center;
@@ -62,13 +49,12 @@
   </style>
 </head>
 <body>
-<div class="cursor" id="cursor"></div>
   
   <div class="container" id="container">
     <div class="spinner"></div>
 <p>Shutting down your computer.</p>
   </div>
-
+<script src="../ui/cursor/MOUSE.elf"></script>
   <script>
     // After 10 seconds, clear the screen and display the message
     setTimeout(() => {
@@ -78,7 +64,7 @@
       // Create the message element
       const message = document.createElement("div");
       message.className = "message";
-      message.innerText = "It is now ok to turn off your computer";
+      message.innerText = "";
       
       // Append the message to the body
       document.body.appendChild(message);
@@ -87,13 +73,7 @@
       message.style.display = "block";
     }, 10000);
 
-        const cursor = document.getElementById('cursor');
 
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
   </script>
 </body>
 </html>
