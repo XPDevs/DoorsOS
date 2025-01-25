@@ -3,193 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Custom Terminal</title>
+    <title>DevOS Terminal</title>
     <style>
-        /* Full screen styling */
-        * {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            background-color: black;
-            color: white;
-            font-family: Consolas, monospace;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            font-size: 20px;
-            overflow: hidden; /* Remove overall scrollbars */
-            cursor: none; /* Hide cursor globally */
-        }
-
-        .cursor {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            background-image: url('../../ui/cursor/terminal.ico');
-            background-size: contain;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-
-        #terminal {
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            padding: 10px;
-            white-space: pre-wrap;
+            height: 100vh;
             overflow: hidden;
-            cursor: none;
         }
-
-        .output {
-            color: #FFFFFF;
-            margin: 2px 0;
-            cursor: none;
+        #terminal {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+            overflow: hidden;
         }
-
         .command {
-            color: #00FF00;
-            cursor: none;
+            color: #00ff00;
         }
-
-        input {
-            color: #00FF00;
-            background-color: black;
+        .output {
+            color: #ffffff;
+        }
+        #commandInput {
+            width: 100%;
+            padding: 10px;
             border: none;
             outline: none;
-            width: 100%;
-            font-size: 18px;
-            padding: 5px;
-            cursor: none;
+            background-color: #2e2e2e;
+            color: #ffffff;
         }
-
-        #inputArea {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            cursor: none;
+        #forcePanicModal, #panicProcessModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-
-        span {
-            color: white;
-            cursor: none;
+        .modal-buttons button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            cursor: pointer;
         }
-
-        #terminal {
-            display: block;
-            overflow-y: auto;
-            cursor: none;
-        }
-
-       /* Modal styles */
-.modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    background-color: black;
-    color: white;
-    border: 1px solid #00FF00;
-    padding: 20px;
-    display: none;
-    z-index: 10000;
-    cursor: none; /* Disable cursor inside the modal */
-}
-
-.modal-content {
-    margin-bottom: 10px;
-    cursor: none; /* Disable cursor inside the modal content */
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    cursor: none; /* Disable cursor inside the button container */
-}
-
-.modal-button {
-    background-color: #00FF00;
-    border: none;
-    color: black;
-    padding: 5px 10px;
-    cursor: none; /* Disable cursor for buttons */
-}
-
-
-        /* Updated spinner styles */
-        .spinner {
-            position: relative;
-            width: 50px;
-            height: 50px;
-        }
-
-        .spinner div {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: #fff;
-            border-radius: 50%;
-            animation: spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        }
-
-        .spinner div:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); animation-delay: -1.1s; }
-        .spinner div:nth-child(2) { top: 14%; left: 86%; transform: translate(-50%, -50%); animation-delay: -1s; }
-        .spinner div:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); animation-delay: -0.9s; }
-        .spinner div:nth-child(4) { top: 86%; left: 86%; transform: translate(-50%, -50%); animation-delay: -0.8s; }
-        .spinner div:nth-child(5) { top: 100%; left: 50%; transform: translate(-50%, -50%); animation-delay: -0.7s; }
-        .spinner div:nth-child(6) { top: 86%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.6s; }
-        .spinner div:nth-child(7) { top: 50%; left: 0; transform: translate(-50%, -50%); animation-delay: -0.5s; }
-        .spinner div:nth-child(8) { top: 14%; left: 14%; transform: translate(-50%, -50%); animation-delay: -0.4s; }
-
-        @keyframes spinner {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
+        .modal-buttons button:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
-<div class="cursor" id="cursor"></div>
     <div id="terminal">
-        <div class="output" id="output"></div>
-        <div id="inputArea">
-            <span>> </span><input type="text" id="commandInput" autofocus />
-        </div>
+        <div id="output"></div>
     </div>
+    <input type="text" id="commandInput" placeholder="Enter command...">
 
-    <!-- Modal for force-panic -->
-    <div id="forcePanicModal" class="modal">
-        <div class="modal-content">Are you sure you want to force a kernel panic?</div>
+    <div id="forcePanicModal">
+        <p>Are you sure you want to force a kernel panic?</p>
         <div class="modal-buttons">
-            <button class="modal-button" id="forcePanicYes">Yes</button>
-            <button class="modal-button" id="forcePanicNo">No</button>
+            <button id="forcePanicYes">Yes</button>
+            <button id="forcePanicNo">No</button>
         </div>
     </div>
 
-    <!-- Modal for panic process -->
-    <div id="panicProcessModal" class="modal">
-        <div class="modal-content">
-            <div class="spinner">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            Forcing kernel panic, please do not touch your device during the process.
-        </div>
+    <div id="panicProcessModal">
+        <p>Kernel panic in progress. Please wait...</p>
     </div>
-
+<script src="../../ui/cursor/MOUSE.elf"></script>
     <script>
         const terminalOutput = document.getElementById('output');
         const commandInput = document.getElementById('commandInput');
@@ -210,11 +99,11 @@
                 return 'Exiting terminal...';
             },
             '/about-system': () => {
-                return `About DevOS
-Operating System: DevOS
+                return `About TestOS
+Operating System: TestOS
 Version: 4.0.0
 Kernel: NexShell
-Build: 2024.12.15
+Build: 2025.01.25
 License: Open Source downloadable
 Developer: XPDevs`;
             },
@@ -292,28 +181,21 @@ Developer: XPDevs`;
         }
 
         forcePanicYes.addEventListener('click', () => {
-    forcePanicModal.style.display = 'none'; // Hide first modal
-    panicProcessModal.style.display = 'block'; // Show panic process modal
-    // Simulate kernel panic process
-    setTimeout(() => {
-        panicProcessModal.style.display = 'none'; // Hide panic process modal
-        appendToTerminal('', 'The kernel panic has been successfully triggered. The system will need a full restart.');
-        
-        // Redirect to another HTML file
-        window.location.href = '../../error/error.html'; // Change this to the correct file path
-    }, 5000); // Panic process lasts for 5 seconds
-});
-
+            forcePanicModal.style.display = 'none'; // Hide first modal
+            panicProcessModal.style.display = 'block'; // Show panic process modal
+            // Simulate kernel panic process
+            setTimeout(() => {
+                panicProcessModal.style.display = 'none'; // Hide panic process modal
+                appendToTerminal('', 'The kernel panic has been successfully triggered. The system will need a full restart.');
+                
+                // Redirect to another HTML file
+                window.location.href = '../../error/error.html'; // Change this to the correct file path
+            }, 5000); // Panic process lasts for 5 seconds
+        });
 
         forcePanicNo.addEventListener('click', () => {
             forcePanicModal.style.display = 'none'; // Close the modal
             appendToTerminal('', 'Returning to terminal...');
-        });
-
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = `${e.pageX}px`;
-            cursor.style.top = `${e.pageY}px`;
         });
     </script>
 </body>
