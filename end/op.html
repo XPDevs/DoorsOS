@@ -183,11 +183,6 @@
   const startupSettingsContainer = document.getElementById('startup-settings-container');
   const restartButton = document.getElementById('restart-btn');
 
-  // Track mouse movement and set the custom cursor position
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = `${e.pageX}px`;
-    cursor.style.top = `${e.pageY}px`;
-  });
 
   // Show advanced options when "Advanced Options" is clicked
   advancedOptionsButton.addEventListener('click', () => {
