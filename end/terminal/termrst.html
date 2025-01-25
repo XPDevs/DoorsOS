@@ -58,13 +58,6 @@
     setTimeout(() => {
       window.location.href = "boot.html";
     }, 10000);
-    const cursor = document.getElementById('cursor');
-
-    // Track mouse movement and set the custom cursor position
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
-    });
   </script>
 </body>
 </html>
