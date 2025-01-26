@@ -7,15 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ADD8E6;  /* Light blue background */
+            background-color: #ADD8E6; /* Light blue background */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            
-    }
+        }
 
         .installer-window {
             background-color: white;
@@ -28,7 +27,6 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 100;
-            cursor: none;
         }
 
         .window-header {
@@ -37,26 +35,23 @@
             align-items: center;
             font-weight: bold;
             padding-bottom: 10px;
-            cursor: none;
         }
 
         .close-btn {
             background: none;
             border: none;
             font-size: 20px;
-            cursor: none;
+            cursor: pointer;
         }
 
         .status {
             text-align: center;
             margin-bottom: 20px;
-            cursor: none;
         }
 
         .question {
             text-align: center;
             margin-bottom: 20px;
-            cursor: none;
         }
 
         .install-btn, .next-btn, .submit-btn {
@@ -65,13 +60,11 @@
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: none;
             font-size: 16px;
         }
 
         .install-btn:hover, .next-btn:hover, .submit-btn:hover {
             background-color: #45a049;
-            cursor: none;
         }
 
         /* Modal */
@@ -86,7 +79,6 @@
             justify-content: center;
             align-items: center;
             z-index: 200;
-            cursor: none;
         }
 
         .modal-content {
@@ -94,18 +86,15 @@
             padding: 20px;
             text-align: center;
             border-radius: 5px;
-            cursor: none;
         }
 
         button {
             padding: 10px 20px;
             margin: 10px;
-            cursor: none;
         }
 
         button:hover {
             background-color: #ddd;
-            cursor: none;
         }
     </style>
 </head>
@@ -119,7 +108,7 @@
     </div>
 
     <div class="installer-window" id="installer-window">
-        <div class="window-header" id="window-header">
+        <div class="window-header">
             <span>Operating System Installer</span>
             <button id="close-btn" class="close-btn">X</button>
         </div>
@@ -132,149 +121,150 @@
         <button id="next-btn" class="next-btn">Next</button>
     </div>
 <script src="../ui/cursor/MOUSE.elf"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const closeBtn = document.getElementById("close-btn");
-    const warningModal = document.getElementById("warning-modal");
-    const closeSetupBtn = document.getElementById("close-setup-btn");
-    const cancelBtn = document.getElementById("cancel-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const questionContainer = document.getElementById("question-container");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const closeBtn = document.getElementById("close-btn");
+            const warningModal = document.getElementById("warning-modal");
+            const closeSetupBtn = document.getElementById("close-setup-btn");
+            const cancelBtn = document.getElementById("cancel-btn");
+            const nextBtn = document.getElementById("next-btn");
+            const questionContainer = document.getElementById("question-container");
 
-    let currentStep = 0;
-    let userData = {};
+            let currentStep = 0;
+            let userData = {};
 
-    const questions = [
-        { question: "What language do you want to use for this installation?", type: "select", options: ["English", "Spanish", "French", "German"], key: "language" },
-        { question: "Do you accept the terms and conditions?", type: "checkbox", key: "terms" },
-        { question: "What is your username?", type: "text", key: "username" },
-        { question: "What would you like your password to be?", type: "password", key: "password" },
-        { question: "Choose the type of installation: Typical or Custom", type: "select", options: ["Typical", "Custom"], key: "installationType" },
-        { question: "Where would you like to install the OS? (Enter installation path)", type: "text", key: "installPath" }
-    ];
+            const questions = [
+                { question: "What language do you want to use for this installation?", type: "select", options: ["English", "Spanish", "French", "German"], key: "language" },
+                { question: "Do you accept the terms and conditions?", type: "checkbox", key: "terms" },
+                { question: "What is your username?", type: "text", key: "username" },
+                { question: "What would you like your password to be?", type: "password", key: "password" },
+                { question: "Choose the type of installation: Typical or Custom", type: "select", options: ["Typical", "Custom"], key: "installationType" },
+                { question: "Where would you like to install the OS? (Enter installation path)", type: "text", key: "installPath" }
+            ];
 
-    function showQuestion() {
-        const q = questions[currentStep];
-        let inputField = "";
+            function showQuestion() {
+                const q = questions[currentStep];
+                let inputField = "";
 
-        if (q.type === "text" || q.type === "password") {
-            inputField = `<input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>`;
-        } else if (q.type === "select") {
-            inputField = `
-                <select id="user-input">
-                    ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
-                </select>
-            `;
-        } else if (q.type === "checkbox") {
-            inputField = `
-                <label>
-                    <input type="checkbox" id="user-input">
-                    I agree to the terms and conditions
-                </label>
-            `;
-        }
+                if (q.type === "text" || q.type === "password") {
+                    inputField = `<input type="${q.type}" id="user-input" placeholder="Enter ${q.question.toLowerCase()}" required>`;
+                } else if (q.type === "select") {
+                    inputField = `
+                        <select id="user-input">
+                            ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                        </select>
+                    `;
+                } else if (q.type === "checkbox") {
+                    inputField = `
+                        <label>
+                            <input type="checkbox" id="user-input">
+                            I agree to the terms and conditions
+                        </label>
+                    `;
+                }
 
-        questionContainer.innerHTML = `
-            <p>${q.question}</p>
-            ${inputField}
-        `;
-    }
+                questionContainer.innerHTML = `
+                    <p>${q.question}</p>
+                    ${inputField}
+                `;
 
-    nextBtn.addEventListener("click", function () {
-        const userInput = document.getElementById("user-input");
+                nextBtn.style.display = "block";
+            }
 
-        if (!userInput) return; // Prevent errors if input is missing.
+            function showReviewInfo() {
+                questionContainer.innerHTML = `
+                    <p><strong>Review your information:</strong></p>
+                    <p>Language: ${userData.language}</p>
+                    <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
+                    <p>Username: ${userData.username}</p>
+                    <p>Password: ${userData.password ? "********" : "No password set"}</p>
+                    <p>Installation Type: ${userData.installationType}</p>
+                    <p>Install Path: ${userData.installPath}</p>
+                    <p>Do you agree with this information?</p>
+                    <button id="agree-btn" class="submit-btn">Yes, Install</button>
+                    <button id="disagree-btn" class="submit-btn">No, Restart</button>
+                `;
 
-        // Validate input
-        if (questions[currentStep].type === "checkbox" && !userInput.checked) {
-            alert("You must agree to the terms and conditions.");
-            return;
-        }
+                nextBtn.style.display = "none";
 
-        // Store data
-        userData[questions[currentStep].key] = questions[currentStep].type === "checkbox"
-            ? userInput.checked
-            : userInput.value;
+                document.getElementById("agree-btn").addEventListener("click", startInstallation);
+                document.getElementById("disagree-btn").addEventListener("click", function () {
+                    currentStep = 0;
+                    userData = {};
+                    showQuestion();
+                });
+            }
 
-        // Move to the next step
-        currentStep++;
+            function startInstallation() {
+                localStorage.setItem("username", userData.username);
+                localStorage.setItem("password", userData.password);
+                localStorage.setItem("isInstalled", "true");
 
-        if (currentStep < questions.length) {
-            showQuestion();
-        } else {
-            showReviewInfo();
-        }
-    });
+                questionContainer.innerHTML = `
+                    <p>Installing your operating system...</p>
+                    <p>Progress: <span id="install-progress">0%</span></p>
+                    <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
+                `;
 
-    function showReviewInfo() {
-        questionContainer.innerHTML = `
-            <p><strong>Review your information:</strong></p>
-            <p>Language: ${userData.language}</p>
-            <p>Terms and Conditions: ${userData.terms ? "Agreed" : "Not Agreed"}</p>
-            <p>Username: ${userData.username}</p>
-            <p>Password: ${userData.password ? "********" : "No password set"}</p>
-            <p>Installation Type: ${userData.installationType}</p>
-            <p>Install Path: ${userData.installPath}</p>
-            <p>Do you agree with this information?</p>
-            <button id="agree-btn" class="submit-btn">Yes, Install</button>
-            <button id="disagree-btn" class="submit-btn">No, Restart</button>
-        `;
+                let progress = 0;
+                const progressBar = document.getElementById("progress-bar");
+                const progressText = document.getElementById("install-progress");
 
-        document.getElementById("agree-btn").addEventListener("click", startInstallation);
-        document.getElementById("disagree-btn").addEventListener("click", function () {
-            currentStep = 0;
-            userData = {};
+                const interval = setInterval(() => {
+                    progress += 0.1;
+                    progressBar.value = progress;
+                    progressText.innerText = `${progress.toFixed(1)}%`;
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        questionContainer.innerHTML = `
+                            <p>Installation Complete!</p>
+                            <p>Your OS has been successfully installed.</p>
+                            <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
+                        `;
+                    }
+                }, 18000); // 18 seconds per 0.1%
+
+                nextBtn.style.display = "none";
+            }
+
+            nextBtn.addEventListener("click", function () {
+                const userInput = document.getElementById("user-input");
+
+                if (!userInput) return;
+
+                if (questions[currentStep].type === "checkbox" && !userInput.checked) {
+                    alert("You must agree to the terms and conditions.");
+                    return;
+                }
+
+                userData[questions[currentStep].key] = questions[currentStep].type === "checkbox"
+                    ? userInput.checked
+                    : userInput.value;
+
+                currentStep++;
+
+                if (currentStep < questions.length) {
+                    showQuestion();
+                } else {
+                    showReviewInfo();
+                }
+            });
+
+            closeBtn.addEventListener("click", function () {
+                warningModal.style.display = "flex";
+            });
+
+            closeSetupBtn.addEventListener("click", function () {
+                window.location.href = "../end/rest.html";
+            });
+
+            cancelBtn.addEventListener("click", function () {
+                warningModal.style.display = "none";
+            });
+
             showQuestion();
         });
-    }
-
-    function startInstallation() {
-        localStorage.setItem("username", userData.username);
-        localStorage.setItem("password", userData.password);
-        localStorage.setItem("isInstalled", "true");
-
-        questionContainer.innerHTML = `
-            <p>Installing your operating system...</p>
-            <p>Progress: <span id="install-progress">0%</span></p>
-            <progress id="progress-bar" value="0" max="100" style="width: 100%;"></progress>
-        `;
-
-        let progress = 0;
-        const progressBar = document.getElementById("progress-bar");
-        const progressText = document.getElementById("install-progress");
-
-        const interval = setInterval(() => {
-            progress += 1;
-            progressBar.value = progress;
-            progressText.innerText = `${progress}%`;
-
-            if (progress >= 100) {
-                clearInterval(interval);
-                questionContainer.innerHTML = `
-                    <p>Installation Complete!</p>
-                    <p>Your OS has been successfully installed.</p>
-                    <button class="install-btn" onclick="window.location.href='../end/rest.html'">Finish</button>
-                `;
-            }
-        }, 100);
-    }
-
-    closeBtn.addEventListener("click", function () {
-        warningModal.style.display = "flex";
-    });
-
-    closeSetupBtn.addEventListener("click", function () {
-        window.location.href = "../end/rest.html";
-    });
-
-    cancelBtn.addEventListener("click", function () {
-        warningModal.style.display = "none";
-    });
-
-    showQuestion();
-});
-
-</script>
-    
+    </script>
 </body>
 </html>
