@@ -64,7 +64,7 @@ function INDEX() {
 
     if (isMobile) {
         // Redirect to the error page for mobile devices
-        window.location.href = "../../../error/error.html";
+        window.location.href = "../../error/error.html";
     } else {
         // Redirect to the standard version
         window.location.href = "kernel/init.html";
