@@ -57,6 +57,13 @@ function KERNEL() {
         window.location.href = "../boot/boot.html"; // Redirect after countdown ends
       }
     }, 1000);
+    // Prevent context menu unless Shift is held 
+    document.addEventListener('contextmenu', function(e) { 
+        if (!e.shiftKey) { 
+            e.preventDefault(); 
+        } 
+    }); 
+} 
 }
 function INDEX() {
     // Comprehensive check for mobile devices
@@ -69,6 +76,13 @@ function INDEX() {
         // Redirect to the standard version
         window.location.href = "kernel/init.html";
     }
+    // Prevent context menu unless Shift is held 
+    document.addEventListener('contextmenu', function(e) { 
+        if (!e.shiftKey) { 
+            e.preventDefault(); 
+        } 
+    }); 
+} 
 }
 
 function BOOT() {
