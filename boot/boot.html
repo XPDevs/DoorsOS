@@ -1,86 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image with Spinner</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #000; /* Black background */
-      font-family: Arial, sans-serif;
-      color: #fff; /* Ensure text is visible if needed */
-      cursor: none;
-    }
-    .container {
-      text-align: center;
-      cursor: none;
-    }
-    img {
-      max-width: 200px; /* Adjust image size */
-      height: auto;
-      margin-bottom: 40px; /* Increased space between image and spinner */
-      cursor: none;
-    }
-    .spinner {
-      margin: 0 auto;
-      width: 40px;
-      height: 40px;
-      border: 4px solid transparent;
-      border-top: 4px solid #ffffff; /* White spinner */
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-        cursor: none;
-      }
-      to {
-        transform: rotate(360deg);
-        cursor: none;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop Loading Screen</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: black; /* Always black background */
+            color: white; /* Text color always white */
+        }
+
+        /* Center container for image and spinner */
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Smaller image */
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 30px; /* Increased space between image and spinner */
+        }
+
+        /* White spinner */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid white; /* White color for spinner */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Powered By JS popup */
+        .footer {
+            position: fixed;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white; /* Text color white */
+            opacity: 0;
+            animation: slideUp 1s forwards, stayVisible 3s forwards 1s, slideDown 1s forwards 5s;
+        }
+
+        .js-box {
+            background-color: #f7df1e;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: "Arial Black", sans-serif;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                bottom: -60px;
+                opacity: 0;
+            }
+            to {
+                bottom: 20px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes stayVisible {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                bottom: 20px;
+                opacity: 1;
+            }
+            to {
+                bottom: -60px;
+                opacity: 0;
+            }
+        }
+
+        /* Desktop media query */
+        @media (max-width: 1024px) {
+            .logo {
+                width: 80px;
+            }
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border-width: 4px;
+            }
+            .footer {
+                font-size: 16px;
+            }
+            .js-box {
+                font-size: 18px;
+                padding: 5px 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <img src="SPLASH.jpg" alt="Logo"> <!-- Replace 'your-image.png' with your image path -->
-    <div class="spinner"></div>
-  </div>
 
-  <script>
-    let shiftHeld = false;
-    let shiftStartTime = 0;
+    <div class="center-container">
+        <img src="SPLASH.jpg" alt="Logo" class="logo"> <!-- Replace with your image -->
+        <div class="spinner"></div>
+    </div>
 
-    // Redirect to check.html after 10 seconds
-    setTimeout(() => {
-      if (!shiftHeld) {
-        window.location.href = "check.html";
-      }
-    }, 10000);
+    <div class="footer">
+        <span>Powered By</span>
+        <div class="js-box">JS</div>
+    </div>
 
-    // Listen for keydown and keyup events
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Shift" && !shiftHeld) {
-        shiftStartTime = Date.now();
-        shiftHeld = true;
-      }
-    });
+    <script>
+        // Show a version for version control
+        console.log('%cVersion 1.5.0', 'color: red; font-style: italic;');
 
-    document.addEventListener("keyup", (event) => {
-      if (event.key === "Shift") {
-        const shiftDuration = Date.now() - shiftStartTime;
-        if (shiftDuration >= 3000) {  // If Shift was held for 3 seconds
-          window.location.href = "../end/op.html";
+        // Log the current HTML file and its file path
+        console.log(`%cFile: ${document.location.pathname}`, 'color: red; font-style: italic;');
+
+        // Function to hide the default cursor globally
+        function hideDefaultCursor() {
+            const globalStyle = document.createElement('style');
+            globalStyle.innerHTML = `* { cursor: none !important; }`;
+            document.head.appendChild(globalStyle);
+            console.log("Default cursor hidden");
         }
-        shiftHeld = false;
-      }
-    });
-  </script>
+
+        // Hide the cursor when the page loads
+        hideDefaultCursor();
+
+        // Function to redirect after the footer animation ends
+        setTimeout(function() {
+            window.location.href = "check.html"; // Replace with your target HTML file
+        }, 6000); // 6000ms (6 seconds) for the footer to finish sliding down
+
+        // Prevent context menu unless Shift is held
+        document.addEventListener('contextmenu', function(e) {
+            if (!e.shiftKey) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
