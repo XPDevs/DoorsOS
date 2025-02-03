@@ -137,12 +137,16 @@
     <div class="center-container">
         <img src="SPLASH.jpg" alt="Logo" class="logo"> <!-- Replace with your image -->
         <div class="spinner"></div>
+        <p>Awaiting User Input</p>
     </div>
 
     <div class="footer">
         <span>Powered By</span>
         <div class="js-box">JS</div>
     </div>
+
+    <!-- Audio file -->
+    <audio id="loadingSound" src="Startup.mp3"></audio>
 
     <script>
         // Show a version for version control
@@ -164,7 +168,7 @@
 
         // Function to redirect after the footer animation ends
         setTimeout(function() {
-            window.location.href = "check.html"; // Replace with your target HTML file
+            window.location.href = "test.html"; // Redirect to test.html instead of check.html
         }, 6000); // 6000ms (6 seconds) for the footer to finish sliding down
 
         // Prevent context menu unless Shift is held
@@ -173,6 +177,26 @@
                 e.preventDefault();
             }
         });
+
+        // Function to play sound
+        function playSound() {
+            const audio = document.getElementById('loadingSound');
+            audio.play().catch(error => console.log("Autoplay blocked, user interaction needed:", error));
+        }
+
+        // Try to autoplay on page load
+        window.addEventListener('load', playSound);
+
+        // Fallback: Play sound on user interaction if autoplay is blocked
+        document.addEventListener('click', playSound, { once: true });
+
+        // Play sound when Enter is pressed
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {
+                playSound();
+            }
+        });
+
     </script>
 </body>
 </html>
