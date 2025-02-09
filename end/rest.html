@@ -14,9 +14,8 @@
       background-color: #000; /* Black background */
       font-family: Arial, sans-serif;
       color: #fff; /* Ensure text is visible if needed */
+      overflow: hidden;
     }
-
-
     .container {
       text-align: center;
     }
@@ -25,39 +24,81 @@
       height: auto;
     }
     .spinner {
+      position: relative;
+      width: 60px;
+      height: 60px;
       margin: 20px auto;
-      width: 40px;
-      height: 40px;
-      border: 4px solid transparent;
-      border-top: 4px solid #ffffff; /* White spinner */
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
+    .spinner div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      animation: r 5s infinite cubic-bezier(0.15, 0.55, 0.85, 0.45), o 5s infinite step-end;
     }
-    #advanced-message {
-      display: none; /* Initially hidden */
-      margin-top: 20px;
-      font-size: 16px;
+    .spinner div::after {
+      content: "";
+      display: block;
+      width: 5px;
+      height: 5px;
+      background-color: currentColor;
+      border-radius: 100%;
+      translate: 0 27.5px;
+    }
+    .spinner div:nth-child(1) { animation-delay: 0s; }
+    .spinner div:nth-child(2) { animation-delay: 0.2s; }
+    .spinner div:nth-child(3) { animation-delay: 0.4s; }
+    .spinner div:nth-child(4) { animation-delay: 0.6s; }
+    .spinner div:nth-child(5) { animation-delay: 0.8s; }
+    .spinner div:nth-child(6) { animation-delay: 1s; }
+
+    @keyframes r {
+      0% { transform: rotate(-90deg); }
+      35% { transform: rotate(270deg); }
+      70% { transform: rotate(630deg); }
+      100% { transform: rotate(630deg); }
+    }
+
+    @keyframes o {
+      0% { opacity: 1; }
+      70% { opacity: 0; }
+    }
+    .message {
+      font-size: 36px;
       color: #fff;
+      display: none;
+      font-weight: bold;
+    }
+    .advanced-message {
+      font-size: 24px;
+      color: red;
+      display: none;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
-<script src="../ui/cursor/MOUSE.elf"></script>
-  
-  <div class="container">
-    <div class="spinner"></div>
-    <p>Restarting your computer.</p>
-    <p id="advanced-message">Going to Advanced Boot Options.</p>
+  <div class="container" id="container">
+    <div class="spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <p>Shutting down your computer.</p>
   </div>
 
+  <div id="advanced-message" class="advanced-message">Advanced mode activated</div>
+
+  <script src="../ui/cursor/MOUSE.elf"></script>
   <script>
     let shiftPressedTime = 0;
     let shiftHeldDown = false;
@@ -86,16 +127,35 @@
       }
     }
 
-    // Redirect to index.html after 10 seconds if Shift is not held
     setTimeout(() => {
-      if (!shiftHeldDown || Date.now() - shiftPressedTime < 5000) {
-        window.location.href = "../index.html";
+      document.getElementById("container").style.display = "none";
+      const message = document.createElement("div");
+      message.className = "message";
+      message.innerText = "";
+      document.body.appendChild(message);
+      message.style.display = "block";
+
+      // Function to hide the default cursor globally
+      function hideDefaultCursor() {
+        const globalStyle = document.createElement('style');
+        globalStyle.innerHTML = `* { cursor: none !important; }`;
+        document.head.appendChild(globalStyle);
+        console.log("Default cursor hidden");
       }
+
+      hideDefaultCursor();
+
+      // Periodically check if Shift is held for 5 seconds
+      setInterval(checkShiftDuration, 100);
+
+      // Redirect to index.html after 10 seconds if Shift is not held
+      setTimeout(() => {
+        if (!shiftHeldDown || Date.now() - shiftPressedTime < 5000) {
+          window.location.href = "../index.html";
+        }
+      }, 10000);
     }, 10000);
-
-    // Periodically check if Shift is held for 5 seconds
-    setInterval(checkShiftDuration, 100);
-
   </script>
 </body>
 </html>
+
